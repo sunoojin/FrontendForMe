@@ -6,7 +6,7 @@ Widget contentsCard({required List<Widget> children}) {
     margin: EdgeInsets.only(bottom: 16),
     width: double.maxFinite,
     clipBehavior: Clip.antiAlias,
-    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 20),
+    padding: EdgeInsets.symmetric(horizontal: 0, vertical: 20),
     decoration: ShapeDecoration(
       shape: SmoothRectangleBorder(
         borderRadius: BorderRadius.circular(32),
@@ -32,7 +32,7 @@ Widget contentsCard({required List<Widget> children}) {
 
 Widget contents({required List<Widget> children}) {
   return Padding(
-    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+    padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
     child: Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: children

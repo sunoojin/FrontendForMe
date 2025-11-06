@@ -8,6 +8,7 @@ class ContainerButton extends StatefulWidget {
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
+  final double? animScale;
 
   const ContainerButton({
     super.key,
@@ -16,7 +17,8 @@ class ContainerButton extends StatefulWidget {
     this.padding,
     this.width,
     this.height,
-    this.borderRadius
+    this.borderRadius,
+    this.animScale
   });
 
   @override
@@ -43,7 +45,7 @@ class _ContainerButtonState extends State<ContainerButton> {
   @override
   Widget build(BuildContext context) {
     // _isPressed 상태에 따라 값 결정
-    final double scale = _isPressed ? 0.97 : 1.0;
+    final double scale = _isPressed ? ( widget.animScale ?? 0.97 ) : 1.0;
     final Color bgColor =
     _isPressed ? Color(0xFF111111).withAlpha(16) : Colors.transparent;
 
@@ -79,9 +81,12 @@ class _ContainerButtonState extends State<ContainerButton> {
 }
 
 Widget bottomButton({required VoidCallback onTap, required Widget child}) {
-  return ContainerButton(
-    onTap: onTap,
-    padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
-    child: child,
+  return Padding(
+    padding: EdgeInsets.symmetric(horizontal: 10),
+    child: ContainerButton(
+      onTap: onTap,
+      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
+      child: child,
+    )
   );
 }

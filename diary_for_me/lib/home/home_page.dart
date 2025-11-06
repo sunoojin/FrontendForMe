@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+import 'package:diary_for_me/my_library/my_library_page.dart';
+import 'package:diary_for_me/my_library/diary_tile.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -19,10 +21,11 @@ class _HomePageState extends State<HomePage> {
           Text('앱 타이틀'),
           Expanded(child: SizedBox()),
           ContainerButton(
-            width: 36,
-            height: 36,
+            animScale: 0.94,
+            width: 34,
+            height: 34,
             child: Center(
-              child: Icon(Icons.settings, color: Color(0xff111111).withAlpha(120), size: 32,),
+              child: Icon(Icons.settings, color: Color(0xff111111).withAlpha(120), size: 30,),
             ),
             onTap: () {},
           )
@@ -76,7 +79,7 @@ class _HomePageState extends State<HomePage> {
                         height: 10,
                         decoration: ShapeDecoration(
                           shape: SmoothRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
+                            borderRadius: BorderRadius.circular(5),
                             smoothness: 0.6
                           ),
                         ),
@@ -109,7 +112,12 @@ class _HomePageState extends State<HomePage> {
                         '저장된 일기들을 이곳에서 볼 수 있어요',
                         style: cardDetail()
                       ),
-                      SizedBox(height: 16,),
+                    ]
+                  ),
+                  DiaryTile(),
+                  DiaryTile(),
+                  contents(
+                    children: [
                       borderhorizontal()
                     ]
                   ),
@@ -124,7 +132,12 @@ class _HomePageState extends State<HomePage> {
                         Icon(Icons.arrow_forward, size: 19, color: textTertiary,)
                       ],
                     ),
-                    onTap: () {}
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const MyLibraryPage())
+                      );
+                    }
                   ),
                 ],
               ),

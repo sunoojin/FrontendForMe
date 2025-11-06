@@ -52,9 +52,10 @@ TextStyle contentTitle({
 TextStyle contentDetail({
   Color color = textTertiary,
   FontWeight fontWeight = FontWeight.w500,
+  double fontSize = 14.0
 }) {
   return TextStyle(
-      fontSize: 14.0,
+      fontSize: fontSize,
       height: 1.2,
       fontWeight: fontWeight,
       color: color

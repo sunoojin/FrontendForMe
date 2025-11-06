@@ -6,9 +6,9 @@ PreferredSizeWidget blurryAppBar({required List<Widget> children, required Color
     preferredSize: const Size.fromHeight(kToolbarHeight),
     child: ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 16, sigmaY: 16),
+        filter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
         child: AppBar(
-          backgroundColor: color.withAlpha(160),
+          backgroundColor: color.withAlpha(224),
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           titleSpacing: 20,
