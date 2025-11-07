@@ -3,10 +3,20 @@ import 'package:diary_for_me/common/text_style.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/widgets/buttons.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+import 'package:intl/intl.dart';
+
 
 class DiaryTile extends StatefulWidget {
+  final String title;
+  final String details;
+  final DateTime date;
 
-  const DiaryTile({super.key});
+  const DiaryTile({
+    super.key,
+    required this.title,
+    required this.details,
+    required this.date
+  });
 
   @override
   State<DiaryTile> createState() => _DiaryTileState();
@@ -19,12 +29,15 @@ class _DiaryTileState extends State<DiaryTile> {
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: ContainerButton(
         borderRadius: BorderRadius.circular(26),
+        // 터치 시 동작
+        // 일기 페이지로 이동
         onTap: () {},
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // 사진
+            // 사진이 들어갈 영역
+            // 임시로 대체함
             Container(
               width: 88,
               height: 88,
@@ -43,26 +56,27 @@ class _DiaryTileState extends State<DiaryTile> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    '2025.11.11 (화)',
                     style: cardDetail(),
+                    DateFormat('yyyy.MM.dd (E)').format(widget.date)
                   ),
                   SizedBox(height: 6,),
                   Text(
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: contentTitle(),
-                    '일기 제목'
+                    widget.title
                   ),
                   SizedBox(height: 6,),
                   Text(
                     maxLines: 2,
                     overflow: TextOverflow.ellipsis,
                     style: contentDetail(fontSize: 12),
-                    '일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용일기내용'
+                    widget.details
                   )
                 ],
               ),
             ),
+            ContainerButton(child: SizedBox(height: 88, width: 88,), onTap: () {})
           ],
         ),
       )

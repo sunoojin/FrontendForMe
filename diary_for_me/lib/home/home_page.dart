@@ -114,8 +114,8 @@ class _HomePageState extends State<HomePage> {
                       ),
                     ]
                   ),
-                  DiaryTile(),
-                  DiaryTile(),
+                  // DiaryTile(),
+                  // DiaryTile(),
                   contents(
                     children: [
                       borderhorizontal()

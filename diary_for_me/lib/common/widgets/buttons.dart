@@ -50,6 +50,7 @@ class _ContainerButtonState extends State<ContainerButton> {
     _isPressed ? Color(0xFF111111).withAlpha(16) : Colors.transparent;
 
     return GestureDetector(
+      behavior: HitTestBehavior.opaque,
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
