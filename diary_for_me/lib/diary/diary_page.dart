@@ -192,7 +192,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     height: 100,
                     decoration: ShapeDecoration(
                       shape: SmoothRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(32),
+                        borderRadius: BorderRadius.circular(32),
                         smoothness: 0.6
                       ),
                       color: themePageColor

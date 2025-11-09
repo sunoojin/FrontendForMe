@@ -17,7 +17,7 @@ class _TodayWidgetState extends State<TodayWidget> {
   late double _progress;
   late bool _isReady;
 
-  final int _targetSec = 22 * 3600;
+  final int _targetSec = 8 * 3600;
 
   @override
   void initState() {
