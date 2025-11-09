@@ -74,7 +74,7 @@ class _WriteDraftPageState extends State<WriteDraftPage> {
               child: SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 child: Container(
-                  margin: EdgeInsets.only(bottom: 32),
+                  margin: EdgeInsets.only(bottom: 16),
                   decoration: ShapeDecoration(
                     shape: SmoothRectangleBorder(
                       side: BorderSide(
@@ -98,7 +98,7 @@ class _WriteDraftPageState extends State<WriteDraftPage> {
                     style: diaryDetail(fontWeight: FontWeight.w400),
                     decoration: InputDecoration(
                       border: InputBorder.none,
-                      contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                      contentPadding: EdgeInsets.all(20),
                       hintText: '내용을 입력해주세요.',
                       hintStyle: diaryDetail(color: textTertiary)
                     ),
@@ -107,11 +107,7 @@ class _WriteDraftPageState extends State<WriteDraftPage> {
               ),
             ),
             Center(
-              child: Text(
-                textAlign: TextAlign.center,
-                '일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',
-                style: contentDetail(),
-              ),
+              child: _controller.text.isEmpty ? Text(textAlign: TextAlign.center,'일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',style: contentDetail(),) : SizedBox.shrink()
             ),
             SizedBox(height: 16,),
             // 버튼

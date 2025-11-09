@@ -1,5 +1,4 @@
 import 'dart:ffi';
-import 'dart:ui';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/my_library/tag_box.dart';
 import 'package:diary_for_me/my_library/test_diary.dart';
@@ -28,12 +27,12 @@ List<Map<String, dynamic>> emotions = [
   {
     'img' : '😢',
     'text' : '기쁨',
-    'color' : Colors.green.withAlpha(65)
+    'color' : Colors.cyanAccent.withAlpha(65)
   },
   {
     'img' : '😢',
     'text' : '즐거움',
-    'color' : Colors.orangeAccent.withAlpha(65)
+    'color' : Colors.deepOrangeAccent.withAlpha(65)
   },
 ];
 
@@ -50,14 +49,16 @@ class _SelectMoodPageState extends State<SelectMoodPage> {
   int _selectedIndex = 2;
   bool _isChanging = false;
 
+  double startPadding = 20; // Row 맨 앞 SizedBox(width: 20)
+  double endPadding = 16;
+
   // 스크롤 컨트롤러 선언
   final ScrollController _scrollController = ScrollController();
 
   void _scrollToCenter(int index) {
     const double itemWidth = 86;   // 각 아이템의 고정 폭
     const double itemMargin = 4;   // 오른쪽 여백
-    const double startPadding = 20; // Row 맨 앞 SizedBox(width: 20)
-    const double endPadding = 16;   // Row 맨 끝 SizedBox(width: 16)
+  // Row 맨 끝 SizedBox(width: 16)
 
     // 전체 아이템의 폭(간격 포함)
     final double totalItemWidth = itemWidth + itemMargin;
@@ -78,7 +79,7 @@ class _SelectMoodPageState extends State<SelectMoodPage> {
     _scrollController.animateTo(
       targetOffset,
       duration: const Duration(milliseconds: 350),
-      curve: Curves.easeInOut,
+      curve: Curves.fastOutSlowIn,
     );
   }
 
@@ -171,16 +172,17 @@ class _SelectMoodPageState extends State<SelectMoodPage> {
                 onPageChanged: (int index) {
                   setState(() {
                     _currentIndex = index;
+                    if(!_isChanging) {
+                      _scrollToCenter(index);
+                      _selectedIndex = _currentIndex;
+                    }
                     if(_currentIndex == _selectedIndex) {
                       _isChanging = false;
-                    }
-                    if(!_isChanging) {
-                      _scrollToCenter(index); // 선택 시 중앙으로 스크롤
-                      _selectedIndex = _currentIndex;
                     }
                   });
                 },
                 children: ['😢', '😡', '😑', '😊', '🤣'].map((e) => Center(
+
                   child: Text(
                     e,
                     style: TextStyle(
@@ -188,6 +190,7 @@ class _SelectMoodPageState extends State<SelectMoodPage> {
                       fontSize: 225.0
                     ),
                   ),
+
                 )).toList(),
               ),
             ),

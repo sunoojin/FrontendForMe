@@ -17,7 +17,7 @@ class _TodayWidgetState extends State<TodayWidget> {
   late double _progress;
   late bool _isReady;
 
-  final int _targetSec = 8 * 3600;
+  final int _targetSec = 12 * 3600;
 
   @override
   void initState() {
@@ -34,8 +34,8 @@ class _TodayWidgetState extends State<TodayWidget> {
 
     if (mounted) {
       setState(() {
-        _progress = nowSec / _targetSec;
-        // _progress = now.second / 14.0;
+        // _progress = nowSec / _targetSec;
+        _progress = now.second / 30.0;
         _isReady = _progress >= 1;
       });
     }
