@@ -1,8 +1,10 @@
+import 'package:diary_for_me/home/today/today_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 import 'package:diary_for_me/my_library/my_library_page.dart';
 import 'package:diary_for_me/my_library/diary_tile.dart';
+import 'package:flutter/cupertino.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -17,20 +19,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar:blurryAppBar(
-        children: [
-          Text('앱 타이틀'),
-          Expanded(child: SizedBox()),
-          ContainerButton(
-            animScale: 0.94,
-            width: 34,
-            height: 34,
-            child: Center(
-              child: Icon(Icons.settings, color: Color(0xff111111).withAlpha(120), size: 30,),
-            ),
-            onTap: () {},
-          )
-        ],
-        color: themePageColor
+        title: Text('apptitle'),
+        color: themePageColor,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.black.withAlpha(96), ),
+            onPressed: () {},
+          ),
+          SizedBox(width: 4,),
+        ]
       ),
       backgroundColor: themePageColor,
       body: SingleChildScrollView(
@@ -53,51 +50,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 16,),
               // 오늘의 일기
-              contentsCard(
-                children: [
-                  contents(
-                    children: [
-                      Text(
-                        '오늘',
-                        style: cardTitle()
-                      ),
-                      SizedBox(height: 16,),
-                      // 이미지 영역
-                      Container(
-                        width: double.infinity,
-                        height: 160,
-                        color: themeDeepColor,
-                      ),
-                      SizedBox(height: 16,),
-                      Text(
-                        '사관이 정보를 수집중이에요',
-                        style: contentTitle()
-                      ),
-                      SizedBox(height: 8),
-                      Container(
-                        clipBehavior: Clip.antiAlias,
-                        height: 10,
-                        decoration: ShapeDecoration(
-                          shape: SmoothRectangleBorder(
-                            borderRadius: BorderRadius.circular(5),
-                            smoothness: 0.6
-                          ),
-                        ),
-                        child: LinearProgressIndicator(
-                          value: 0.4,
-                          backgroundColor: themeDeepColor,
-                          color: themeColor,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '정보 수집이 끝나면 오늘의 실록을 만들 수 있어요. 준비가 완료되면 알림을 보내드려요',
-                        style: contentDetail()
-                      ),
-                    ]
-                  ),
-                ],
-              ),
+              TodayWidget(),
               // 나의 서고
               contentsCard(
                 children: [
@@ -118,7 +71,7 @@ class _HomePageState extends State<HomePage> {
                   // DiaryTile(),
                   contents(
                     children: [
-                      borderhorizontal()
+                      borderHorizontal()
                     ]
                   ),
                   bottomButton(
@@ -135,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(builder: (context) => const MyLibraryPage())
+                        CupertinoPageRoute(builder: (context) => const MyLibraryPage())
                       );
                     }
                   ),
@@ -165,7 +118,7 @@ class _HomePageState extends State<HomePage> {
                         style: cardDetail()
                       ),
                       SizedBox(height: 16,),
-                      borderhorizontal()
+                      borderHorizontal()
                     ]
                   ),
                   bottomButton(

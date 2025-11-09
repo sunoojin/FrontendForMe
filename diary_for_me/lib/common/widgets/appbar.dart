@@ -1,24 +1,28 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 
-PreferredSizeWidget blurryAppBar({required List<Widget> children, required Color color}) {
+PreferredSizeWidget blurryAppBar({
+  Widget? title,
+  required Color color,
+  List<Widget>? actions,
+  bool? centerTitle
+}) {
   return PreferredSize(
     preferredSize: const Size.fromHeight(kToolbarHeight),
     child: ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 26, sigmaY: 26),
+        filter: ImageFilter.blur(sigmaX: 18, sigmaY:18),
         child: AppBar(
-          backgroundColor: color.withAlpha(224),
+          iconTheme: IconThemeData(
+            size: 28.0
+          ),
+          backgroundColor: color.withAlpha(236),
           surfaceTintColor: Colors.transparent,
           elevation: 0,
           titleSpacing: 20,
-          title: SizedBox(
-            width: double.infinity, height: kToolbarHeight,
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: children
-            ),
-          ),
+          title: title,
+          centerTitle: centerTitle,
+          actions: actions
         ),
       ),
     ),

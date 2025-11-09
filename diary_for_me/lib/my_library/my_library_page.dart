@@ -2,27 +2,7 @@ import 'package:diary_for_me/my_library/diary_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'tag_box.dart';
-
-List<Map<String, dynamic>> diary = [
-  {
-    'title' : '제목1',
-    'details' : '일기 내용1',
-    'date' : DateTime(2025, 10, 31),
-    'tags' : ['@f', '가족', '여행'],
-  },
-  {
-    'title' : '제목2',
-    'details' : '일기 내용2',
-    'date' : DateTime(2025, 10, 30),
-    'tags' : ['친구', '스포츠'],
-  },
-  {
-    'title' : '제목3',
-    'details' : '일기 내용3',
-    'date' : DateTime(2025, 10, 29),
-    'tags' : ['동아리', '여행'],
-  },
-];
+import 'test_diary.dart';
 
 List<String> tags = [
   '가족',
@@ -60,7 +40,7 @@ class _MyLibraryPageState extends State<MyLibraryPage> {
 
     return Scaffold(
       extendBodyBehindAppBar: true,
-      appBar: blurryAppBar(children: [], color: Colors.white),
+      appBar: blurryAppBar(color: Colors.white),
       backgroundColor: Colors.white,
       body: SingleChildScrollView(
         physics: BouncingScrollPhysics(),
@@ -69,10 +49,10 @@ class _MyLibraryPageState extends State<MyLibraryPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
+              SafeArea(bottom: false, child: SizedBox(),),
               // 페이지 제목
               contents(
                 children: [
-                  SafeArea(bottom: false, child: SizedBox(),),
                   Text(
                     '나의 서고',
                     style: pageTitle(),
@@ -135,10 +115,45 @@ class _MyLibraryPageState extends State<MyLibraryPage> {
                 physics: NeverScrollableScrollPhysics(),
                 itemCount: filteredDiary.length,
                 itemBuilder: (BuildContext context, int index) {
-                  return DiaryTile(
-                    title: filteredDiary[index]['title'],
-                    details: filteredDiary[index]['details'],
-                    date: filteredDiary[index]['date'],
+                  return Row(
+                    children: [
+                      Expanded(
+                        child: DiaryTile(
+                          title: filteredDiary[index]['title'],
+                          details: filteredDiary[index]['details'],
+                          date: filteredDiary[index]['date'],
+                          tags: filteredDiary[index]['tags'],
+                        ),
+                      ),
+                      ContainerButton(
+                        height: 40,
+                        width: 40,
+                        child: Center(
+                          child: Icon(
+                            Icons.bookmark,
+                            size: 26,
+                            color: filteredDiary[index]['tags'].contains('@f') ? themeColor : Colors.grey.shade300,
+                          ),
+                        ),
+                        // 즐겨찾기 로직(임시)
+                        onTap: () {
+                          setState(() {// 1. 현재 항목을 가져옵니다.
+                            final entry = filteredDiary[index];
+
+                            final List<String> newTags = List<String>.from(entry['tags'] ?? <String>[]);
+
+                            if (newTags.contains('@f')) {
+                              newTags.remove('@f');
+                            } else {
+                              newTags.add('@f');
+                            }
+
+                            entry['tags'] = newTags;
+                          });
+                        },
+                      ),
+                      SizedBox(width: 10,)
+                    ],
                   );
                 },
               ),

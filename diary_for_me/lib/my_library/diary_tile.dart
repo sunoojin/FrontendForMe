@@ -1,21 +1,25 @@
 import 'package:diary_for_me/common/colors.dart';
 import 'package:diary_for_me/common/text_style.dart';
+import 'package:diary_for_me/diary/diary_page.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/widgets/buttons.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 import 'package:intl/intl.dart';
+import 'package:flutter/cupertino.dart';
 
 
 class DiaryTile extends StatefulWidget {
   final String title;
   final String details;
   final DateTime date;
+  final List<String> tags;
 
   const DiaryTile({
     super.key,
     required this.title,
     required this.details,
-    required this.date
+    required this.date,
+    required this.tags,
   });
 
   @override
@@ -31,7 +35,12 @@ class _DiaryTileState extends State<DiaryTile> {
         borderRadius: BorderRadius.circular(26),
         // 터치 시 동작
         // 일기 페이지로 이동
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            CupertinoPageRoute(builder: (context) => DiaryPage(title: widget.title, details: widget.details, tags: widget.tags, date: widget.date,))
+          );
+        },
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,7 +66,7 @@ class _DiaryTileState extends State<DiaryTile> {
                 children: [
                   Text(
                     style: cardDetail(),
-                    DateFormat('yyyy.MM.dd (E)').format(widget.date)
+                    DateFormat('yyyy.MM.dd(E)').format(widget.date)
                   ),
                   SizedBox(height: 6,),
                   Text(
@@ -76,7 +85,6 @@ class _DiaryTileState extends State<DiaryTile> {
                 ],
               ),
             ),
-            ContainerButton(child: SizedBox(height: 88, width: 88,), onTap: () {})
           ],
         ),
       )

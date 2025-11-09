@@ -8,7 +8,8 @@ class ContainerButton extends StatefulWidget {
   final double? width;
   final double? height;
   final BorderRadius? borderRadius;
-  final double? animScale;
+  final Color? color;
+  final List<BoxShadow>? shadows;
 
   const ContainerButton({
     super.key,
@@ -18,7 +19,8 @@ class ContainerButton extends StatefulWidget {
     this.width,
     this.height,
     this.borderRadius,
-    this.animScale
+    this.color,
+    this.shadows
   });
 
   @override
@@ -45,9 +47,9 @@ class _ContainerButtonState extends State<ContainerButton> {
   @override
   Widget build(BuildContext context) {
     // _isPressed 상태에 따라 값 결정
-    final double scale = _isPressed ? ( widget.animScale ?? 0.97 ) : 1.0;
-    final Color bgColor =
-    _isPressed ? Color(0xFF111111).withAlpha(16) : Colors.transparent;
+    final double scale = _isPressed ? 0.96 : 1.0;
+    final Color dimColor =
+    _isPressed ? Color(0xFF111111).withAlpha(28) : Colors.transparent;
 
     return GestureDetector(
       behavior: HitTestBehavior.opaque,
@@ -68,7 +70,15 @@ class _ContainerButtonState extends State<ContainerButton> {
         height: widget.height,
         clipBehavior: Clip.antiAlias,
         decoration: ShapeDecoration(
-          color: bgColor,
+          color: widget.color,
+          shape: SmoothRectangleBorder(
+            borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+            smoothness: 0.6,
+          ),
+          shadows: widget.shadows
+        ),
+        foregroundDecoration: ShapeDecoration(
+          color: dimColor,
           shape: SmoothRectangleBorder(
             borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
             smoothness: 0.6,
