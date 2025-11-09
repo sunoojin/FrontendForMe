@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'profile_screen.dart';
-// import 'package:intl/date_symbol_data_local.dart';
 
 class FirstScreen extends StatelessWidget {
   const FirstScreen({super.key});

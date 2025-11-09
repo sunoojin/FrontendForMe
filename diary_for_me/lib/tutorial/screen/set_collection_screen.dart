@@ -1,13 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/colors.dart';
-import 'package:intl/date_symbol_data_local.dart';
 import 'package:diary_for_me/tutorial/widget/consent_card.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('ko_KR', null); // 생년월일 선택 오류 수정
-  runApp(const MaterialApp(home: SetCollectionScreen()));
-}
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:diary_for_me/main/home_screen.dart';
 
 class SetCollectionScreen extends StatefulWidget {
   const SetCollectionScreen({super.key});
@@ -29,6 +24,36 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
     setState(() {
       _selected[key] = !(_selected[key] ?? false);
     });
+  }
+
+  Future<void> handleStartPressed() async {
+    // 디버깅 로그 (개발모드에서만)
+    debugPrint('선택상태: $_selected');
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // 최소한의 플래그 저장: 사용자가 이미 정보 입력했음을 표시
+      await prefs.setBool('hasUserInfo', true);
+
+      // 각 항목의 선택 상태 저장
+      await prefs.setBool('consent_push', _selected['push'] ?? false);
+      await prefs.setBool('consent_gallery', _selected['gallery'] ?? false);
+      await prefs.setBool('consent_location', _selected['location'] ?? false);
+      await prefs.setBool('consent_user', _selected['user'] ?? false);
+
+      // 저장 성공 후 HomePage로 이동 (현재 화면을 대체)
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const HomePage()),
+      );
+    } catch (e) {
+      debugPrint('SharedPreferences 저장 오류: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('저장 중 오류가 발생했습니다. 다시 시도해 주세요.')),
+      );
+    }
   }
 
   @override
@@ -164,10 +189,8 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                 height: 64,
                 child: ElevatedButton(
                   onPressed: () {
-                    // 예시: 선택된 항목들을 로그로 확인
-                    // kDebugMode 또는 debugPrint 사용 가능
                     debugPrint('선택상태: $_selected');
-                    // TODO: 권한 요청/다음 화면으로 이동 등
+                    handleStartPressed();
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: mainColor,
@@ -175,7 +198,7 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                       borderRadius: BorderRadius.circular(18),
                     ),
                     elevation: 10,
-                    shadowColor: mainColor.withOpacity(0.35),
+                    shadowColor: mainColor,
                   ),
                   child: const Text(
                     '시작하기',

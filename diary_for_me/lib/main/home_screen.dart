@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
+
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
 
@@ -10,6 +13,28 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
+  String? _name;
+  String? _birth;
+  String? _gender;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadUserInfo();
+  }
+
+  Future<void> _loadUserInfo() async {
+    final prefs = await SharedPreferences.getInstance();
+    setState(() {
+      _name = prefs.getString('name') ?? '사용자';
+      _birth = prefs.getString('date') ?? '미입력';
+      _gender = prefs.getString('gender') ?? '미입력';
+    });
+    debugPrint('불러온 이름: $_name');
+    debugPrint('불러온 생년월일: $_birth');
+    debugPrint('불러온 성별: $_gender');
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,7 +53,13 @@ class _HomePageState extends State<HomePage> {
                 size: 32,
               ),
             ),
-            onTap: () {},
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const ProfileScreen()),
+              );
+              _loadUserInfo();
+            },
           ),
         ],
         color: themePageColor,
@@ -45,7 +76,7 @@ class _HomePageState extends State<HomePage> {
               SafeArea(bottom: false, child: SizedBox()),
               // 타이틀
               Text(
-                '아코님을 위한 실록',
+                '${_name ?? '기본'}님을 위한 실록',
                 // PageTitle
                 style: pageTitle(),
               ),

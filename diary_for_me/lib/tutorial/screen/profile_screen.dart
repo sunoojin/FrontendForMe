@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // date 포맷을 위함
 import 'package:diary_for_me/common/colors.dart';
+
+import 'package:shared_preferences/shared_preferences.dart';
 import 'set_collection_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -65,6 +67,34 @@ class _ProfilScreenState extends State<ProfileScreen> {
     );
     if (picked != null) {
       setState(() => _selectedDate = picked);
+    }
+  }
+
+  Future<void> handleNextPressed() async {
+    debugPrint('이름: ${_nameController.text}');
+    debugPrint('생년월일: $_selectedDate');
+    debugPrint('성별: $_gender');
+
+    try {
+      final prefs = await SharedPreferences.getInstance();
+
+      // 사용자 정보 저장
+      await prefs.setString('name', _nameController.text.trim());
+      final dateStr = _selectedDate?.toIso8601String() ?? '';
+      await prefs.setString('date', dateStr);
+      await prefs.setString('gender', _gender ?? '');
+
+      // 저장 성공 후 원하는 화면으로 이동
+      if (!mounted) return;
+      Navigator.of(context).pushReplacement(
+        MaterialPageRoute(builder: (context) => const SetCollectionScreen()),
+      );
+    } catch (e) {
+      debugPrint('SharedPreferences 저장 오류: $e');
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('저장 중 오류가 발생했습니다. 다시 시도해 주세요.')),
+      );
     }
   }
 
@@ -251,24 +281,14 @@ class _ProfilScreenState extends State<ProfileScreen> {
               child: Center(
                 child: TextButton(
                   onPressed: () {
-                    // 다음 버튼 동작 (예: validation 후 페이지 이동)
-                    // 예시: 이름 필수 체크
+                    // 다음 버튼 동작: 이름만 필수 입력
                     if (_nameController.text.trim().isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(content: Text('이름을 입력해 주세요')),
                       );
                       return;
                     }
-                    debugPrint('이름: ${_nameController.text}');
-                    debugPrint('생년월일: $_selectedDate');
-                    debugPrint('성별: $_gender');
-
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const SetCollectionScreen(),
-                      ),
-                    );
+                    handleNextPressed();
                   },
                   style: TextButton.styleFrom(
                     padding: const EdgeInsets.symmetric(
