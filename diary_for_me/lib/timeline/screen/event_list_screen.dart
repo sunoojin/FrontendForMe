@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/event_card.dart';
+import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
 
 class EventListScreen extends StatelessWidget {
   const EventListScreen({super.key, required date});
@@ -37,15 +38,19 @@ class EventListScreen extends StatelessWidget {
                 children: [
                   GestureDetector(
                     onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back),
+                    child: const Icon(Icons.arrow_back, size: 30),
                   ),
-                  const Text(
-                    "1/3",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.black54,
-                      fontWeight: FontWeight.w500,
-                    ),
+                  Row(
+                    children: [
+                      const Text(
+                        '1',
+                        style: TextStyle(fontSize: 24, color: textPrimary),
+                      ),
+                      const Text(
+                        '/3',
+                        style: TextStyle(fontSize: 24, color: textSecondary),
+                      ),
+                    ],
                   ),
                 ],
               ),
@@ -81,6 +86,7 @@ class EventListScreen extends StatelessWidget {
                         title: e["title"]!,
                         description: e["description"]!,
                         onEdit: () {
+                          ActivityEditSheet.show(context);
                           ScaffoldMessenger.of(context).showSnackBar(
                             SnackBar(content: Text("${e["title"]} 수정 클릭")),
                           );
@@ -99,7 +105,7 @@ class EventListScreen extends StatelessWidget {
                   onPressed: () {},
                   icon: const Icon(Icons.add, color: Colors.black54, size: 18),
                   label: const Text(
-                    "활동 추가 +",
+                    "활동 추가",
                     style: TextStyle(
                       color: Colors.black87,
                       fontWeight: FontWeight.w500,
@@ -125,7 +131,7 @@ class EventListScreen extends StatelessWidget {
               // 다음 버튼
               Center(
                 child: TextButton.icon(
-                  onPressed: () {},
+                  onPressed: () {}, // 감정 입력 화면으로 이동
                   icon: const Text(
                     "다음으로",
                     style: TextStyle(
