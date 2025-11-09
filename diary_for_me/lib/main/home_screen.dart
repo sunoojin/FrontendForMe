@@ -4,6 +4,7 @@ import 'package:smooth_corner/smooth_corner.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
+import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -30,9 +31,6 @@ class _HomePageState extends State<HomePage> {
       _birth = prefs.getString('date') ?? '미입력';
       _gender = prefs.getString('gender') ?? '미입력';
     });
-    debugPrint('불러온 이름: $_name');
-    debugPrint('불러온 생년월일: $_birth');
-    debugPrint('불러온 성별: $_gender');
   }
 
   @override
@@ -182,7 +180,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => const TimelineListScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
