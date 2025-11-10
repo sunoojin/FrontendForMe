@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:diary_for_me/timeline/widget/section_card.dart';
 
 class ActivityEditSheet {
   static Future<void> show(BuildContext context) async {
@@ -34,7 +36,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
         return Container(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           decoration: const BoxDecoration(
-            color: Colors.white,
+            color: backgroundColor,
             borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
           ),
           child: SingleChildScrollView(
@@ -70,7 +72,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                 const SizedBox(height: 8),
 
                 const Text(
-                  "필동함박에서 식사",
+                  "필동함박에서 식사", // event 제목
                   style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
                 ),
 
@@ -118,7 +120,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                 const SizedBox(height: 8),
                 TextField(
                   decoration: InputDecoration(
-                    hintText: "후배와 점심식사를 했다...",
+                    hintText: "활동 내용을 적어주세요",
                     filled: true,
                     fillColor: const Color(0xFFF8F8F8),
                     contentPadding: const EdgeInsets.all(14),
@@ -150,24 +152,23 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                                     : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
-                              color:
-                                  liked
-                                      ? Colors.deepPurpleAccent
-                                      : Colors.transparent,
+                              color: liked ? mainColor : Colors.transparent,
                             ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.thumb_up,
-                                color: Colors.deepPurple,
+                                color: liked ? mainColor : textSecondary,
                                 size: 20,
                               ),
                               SizedBox(width: 8),
                               Text(
                                 "좋았어요",
-                                style: TextStyle(color: Colors.deepPurple),
+                                style: TextStyle(
+                                  color: liked ? mainColor : textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -183,22 +184,27 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           decoration: BoxDecoration(
                             color:
                                 !liked
-                                    ? const Color(0xFFF3F3F3)
+                                    ? const Color(0xFFEDE4FF)
                                     : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
+                            border: Border.all(
+                              color: !liked ? mainColor : Colors.transparent,
+                            ),
                           ),
-                          child: const Row(
+                          child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Icon(
                                 Icons.thumb_down,
-                                color: Colors.black45,
+                                color: !liked ? mainColor : textSecondary,
                                 size: 20,
                               ),
                               SizedBox(width: 8),
                               Text(
                                 "나빴어요",
-                                style: TextStyle(color: Colors.black54),
+                                style: TextStyle(
+                                  color: !liked ? mainColor : textSecondary,
+                                ),
                               ),
                             ],
                           ),
@@ -207,11 +213,10 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                     ),
                   ],
                 ),
-
                 const SizedBox(height: 24),
 
                 // 관련 사진
-                _sectionCard(
+                SectionCard(
                   title: "관련 사진",
                   child: Row(
                     children: [
@@ -222,12 +227,12 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                             children: [
                               ClipRRect(
                                 borderRadius: BorderRadius.circular(12),
-                                // child: Image.network(
-                                //   "https://picsum.photos/100?random=$i",
-                                //   width: 70,
-                                //   height: 70,
-                                //   fit: BoxFit.cover,
-                                // ),
+                                child: Image.network(
+                                  "https://picsum.photos/100?random=$i",
+                                  width: 70,
+                                  height: 70,
+                                  fit: BoxFit.cover,
+                                ),
                               ),
                               Positioned(
                                 top: 4,
@@ -276,7 +281,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                 const SizedBox(height: 16),
 
                 // 위치
-                _sectionCard(
+                SectionCard(
                   title: "위치",
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -286,14 +291,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                         style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                       const SizedBox(height: 8),
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12),
-                        child: Image.network(
-                          "https://maps.googleapis.com/maps/api/staticmap?center=Seoul&zoom=14&size=400x200&key=YOUR_API_KEY",
-                          height: 150,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
+                      // 지도를 넣을 부분
                       const SizedBox(height: 6),
                       const Text(
                         "위치 변경 →",
@@ -306,11 +304,10 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                     ],
                   ),
                 ),
-
                 const SizedBox(height: 16),
 
-                // 앱 알림 내용
-                _sectionCard(
+                //   // 앱 알림 내용
+                SectionCard(
                   title: "앱 알림에서 찾은 내용",
                   child: const Text(
                     "12시 필동함박 2인 네이버 예약\n"
@@ -326,28 +323,6 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
           ),
         );
       },
-    );
-  }
-
-  Widget _sectionCard({required String title, required Widget child}) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 12),
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: const Color(0xFFF8F8F8),
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-          ),
-          const SizedBox(height: 10),
-          child,
-        ],
-      ),
     );
   }
 }
