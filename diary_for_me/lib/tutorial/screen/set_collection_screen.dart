@@ -5,7 +5,7 @@ import 'package:diary_for_me/common/colors.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:diary_for_me/tutorial/widget/consent_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:diary_for_me/main/home_screen.dart';
+import 'package:diary_for_me/home/screen/home_screen.dart';
 
 class SetCollectionScreen extends StatefulWidget {
   const SetCollectionScreen({super.key});

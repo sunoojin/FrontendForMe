@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'main/home_screen.dart';
+import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 
 void main() async {
