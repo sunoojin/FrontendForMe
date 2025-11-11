@@ -10,6 +10,7 @@ class ContainerButton extends StatefulWidget {
   final BorderRadius? borderRadius;
   final Color? color;
   final List<BoxShadow>? shadows;
+  final BorderSide? side;
 
   const ContainerButton({
     super.key,
@@ -20,7 +21,8 @@ class ContainerButton extends StatefulWidget {
     this.height,
     this.borderRadius,
     this.color,
-    this.shadows
+    this.shadows,
+    this.side
   });
 
   @override
@@ -72,6 +74,7 @@ class _ContainerButtonState extends State<ContainerButton> {
         decoration: ShapeDecoration(
           color: widget.color,
           shape: SmoothRectangleBorder(
+            side: widget.side ?? BorderSide.none,
             borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
             smoothness: 0.6,
           ),

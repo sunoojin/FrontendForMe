@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'home/home_page.dart';
+import 'home/screen/home_screen.dart';
 
 void main() {
   runApp(const MyApp());
@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: HomePage(),
+      home: HomeScreen(),
     );
   }
 }

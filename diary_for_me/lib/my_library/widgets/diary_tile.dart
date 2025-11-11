@@ -1,6 +1,6 @@
 import 'package:diary_for_me/common/colors.dart';
 import 'package:diary_for_me/common/text_style.dart';
-import 'package:diary_for_me/diary/diary_page.dart';
+import 'package:diary_for_me/diary/screen/diary_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/widgets/buttons.dart';
 import 'package:smooth_corner/smooth_corner.dart';
@@ -38,7 +38,7 @@ class _DiaryTileState extends State<DiaryTile> {
         onTap: () {
           Navigator.push(
             context,
-            CupertinoPageRoute(builder: (context) => DiaryPage(title: widget.title, details: widget.details, tags: widget.tags, date: widget.date,))
+            CupertinoPageRoute(builder: (context) => DiaryScreen(title: widget.title, details: widget.details, tags: widget.tags, date: widget.date,))
           );
         },
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),

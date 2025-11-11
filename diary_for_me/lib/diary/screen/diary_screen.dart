@@ -2,19 +2,19 @@ import 'dart:ui';
 
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/my_library/tag_box.dart';
+import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 import 'package:diary_for_me/my_library/test_diary.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-class DiaryPage extends StatefulWidget {
+class DiaryScreen extends StatefulWidget {
   final String title;
   final String details;
   final List<String> tags;
   final DateTime date;
 
-  const DiaryPage({
+  const DiaryScreen({
     super.key,
     required this.title,
     required this.details,
@@ -23,10 +23,10 @@ class DiaryPage extends StatefulWidget {
   });
 
   @override
-  State<DiaryPage> createState() => _DiaryPageState();
+  State<DiaryScreen> createState() => _DiaryScreenState();
 }
 
-class _DiaryPageState extends State<DiaryPage> {
+class _DiaryScreenState extends State<DiaryScreen> {
   bool _isplaying = false;
 
   @override
@@ -192,7 +192,7 @@ class _DiaryPageState extends State<DiaryPage> {
                     height: 100,
                     decoration: ShapeDecoration(
                       shape: SmoothRectangleBorder(
-                        borderRadius: BorderRadiusGeometry.circular(32),
+                        borderRadius: BorderRadius.circular(32),
                         smoothness: 0.6
                       ),
                       color: themePageColor

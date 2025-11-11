@@ -1,19 +1,19 @@
-import 'package:diary_for_me/home/today/today_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
-import 'package:diary_for_me/my_library/my_library_page.dart';
-import 'package:diary_for_me/my_library/diary_tile.dart';
+import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
+import 'package:diary_for_me/my_library/widgets/diary_tile.dart';
 import 'package:flutter/cupertino.dart';
+import '../widgets/today_widget.dart';
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
 
   @override
-  State<HomePage> createState() => _HomePageState();
+  State<HomeScreen> createState() => _HomeScreenState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -88,7 +88,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        CupertinoPageRoute(builder: (context) => const MyLibraryPage())
+                        CupertinoPageRoute(builder: (context) => const MyLibraryScreen())
                       );
                     }
                   ),
