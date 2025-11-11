@@ -1,4 +1,4 @@
-import 'package:diary_for_me/new_diary/select_mood_page.dart';
+import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_corner/smooth_corner.dart';
@@ -148,7 +148,7 @@ class _TodayWidgetState extends State<TodayWidget> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    CupertinoPageRoute(builder: (context) => const SelectMoodPage())
+                    CupertinoPageRoute(builder: (context) => const SelectMoodScreen())
                   );
                 },
                 child: Center(

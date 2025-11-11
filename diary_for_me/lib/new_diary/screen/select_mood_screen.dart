@@ -1,8 +1,8 @@
 import 'dart:ffi';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/my_library/tag_box.dart';
+import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 import 'package:diary_for_me/my_library/test_diary.dart';
-import 'package:diary_for_me/new_diary/write_draft_page.dart';
+import 'write_draft_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
@@ -36,15 +36,15 @@ List<Map<String, dynamic>> emotions = [
   },
 ];
 
-class SelectMoodPage extends StatefulWidget {
-  const SelectMoodPage({super.key});
+class SelectMoodScreen extends StatefulWidget {
+  const SelectMoodScreen({super.key});
 
   @override
-  State<SelectMoodPage> createState() => _SelectMoodPageState();
+  State<SelectMoodScreen> createState() => _SelectMoodScreenState();
 }
 
-class _SelectMoodPageState extends State<SelectMoodPage> {
-  PageController _controller = PageController(initialPage: 2,);
+class _SelectMoodScreenState extends State<SelectMoodScreen> {
+  final PageController _controller = PageController(initialPage: 2,);
   int _currentIndex = 2;
   int _selectedIndex = 2;
   bool _isChanging = false;
@@ -255,7 +255,7 @@ class _SelectMoodPageState extends State<SelectMoodPage> {
                 onTap: () {
                   Navigator.push(
                     context,
-                    CupertinoPageRoute(builder: (context) => WriteDraftPage())
+                    CupertinoPageRoute(builder: (context) => WriteDraftScreen())
                   );
                 },
                 child: Center(

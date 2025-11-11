@@ -1,21 +1,23 @@
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/my_library/tag_box.dart';
+import 'package:diary_for_me/home/screen/home_screen.dart';
+import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 import 'package:diary_for_me/my_library/test_diary.dart';
+import 'package:diary_for_me/new_diary/screen/finish_generation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-class WriteDraftPage extends StatefulWidget {
-  const WriteDraftPage({super.key});
+class WriteDraftScreen extends StatefulWidget {
+  const WriteDraftScreen({super.key});
 
   @override
-  State<WriteDraftPage> createState() => _WriteDraftPageState();
+  State<WriteDraftScreen> createState() => _WriteDraftScreenState();
 }
 
-class _WriteDraftPageState extends State<WriteDraftPage> {
+class _WriteDraftScreenState extends State<WriteDraftScreen> {
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -26,7 +28,17 @@ class _WriteDraftPageState extends State<WriteDraftPage> {
     super.dispose();
   }
 
-  void _generateDiary () {}
+  void _generateDiary () {
+    Navigator.pushAndRemoveUntil(
+      context,
+      CupertinoPageRoute(builder: (context) => HomeScreen()),
+          (Route<dynamic> route) => false,
+    );
+    Navigator.push(
+      context,
+      CupertinoPageRoute(builder: (context) => FinishGenerationScreen()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +49,7 @@ class _WriteDraftPageState extends State<WriteDraftPage> {
           color: textPrimary,
           size: 28.0
         ),
-        backgroundColor: Colors.transparent,
+        backgroundColor: Colors.white,
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 20,

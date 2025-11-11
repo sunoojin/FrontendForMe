@@ -1,8 +1,8 @@
-import 'package:diary_for_me/my_library/diary_tile.dart';
+import 'package:diary_for_me/my_library/widgets/diary_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'tag_box.dart';
-import 'test_diary.dart';
+import '../widgets/tag_box.dart';
+import '../test_diary.dart';
 
 List<String> tags = [
   '가족',
@@ -15,14 +15,14 @@ List<String> tags = [
   '행복'
 ];
 
-class MyLibraryPage extends StatefulWidget {
-  const MyLibraryPage({super.key});
+class MyLibraryScreen extends StatefulWidget {
+  const MyLibraryScreen({super.key});
 
   @override
-  State<MyLibraryPage> createState() => _MyLibraryPageState();
+  State<MyLibraryScreen> createState() => _MyLibraryScreenState();
 }
 
-class _MyLibraryPageState extends State<MyLibraryPage> {
+class _MyLibraryScreenState extends State<MyLibraryScreen> {
   String _selectedTag = '@a';
 
   @override
