@@ -1,6 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
+import 'package:diary_for_me/my_library/widgets/diary_tile.dart';
+import 'package:flutter/cupertino.dart';
+import '../widgets/today_widget.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
@@ -38,29 +42,15 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: blurryAppBar(
-        children: [
-          Text('앱 타이틀'),
-          Expanded(child: SizedBox()),
-          ContainerButton(
-            width: 36,
-            height: 36,
-            child: Center(
-              child: Icon(
-                Icons.settings,
-                color: Color(0xff111111).withAlpha(120),
-                size: 32,
-              ),
-            ),
-            onTap: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(builder: (context) => const ProfileScreen()),
-              );
-              _loadUserInfo();
-            },
-          ),
-        ],
+        title: Text('apptitle'),
         color: themePageColor,
+        actions: [
+          IconButton(
+            icon: Icon(Icons.settings, color: Colors.black.withAlpha(96)),
+            onPressed: () {},
+          ),
+          SizedBox(width: 4),
+        ],
       ),
       backgroundColor: themePageColor,
       body: SingleChildScrollView(
@@ -80,45 +70,7 @@ class _HomePageState extends State<HomePage> {
               ),
               SizedBox(height: 16),
               // 오늘의 일기
-              contentsCard(
-                children: [
-                  contents(
-                    children: [
-                      Text('오늘', style: cardTitle()),
-                      SizedBox(height: 16),
-                      // 이미지 영역
-                      Container(
-                        width: double.infinity,
-                        height: 160,
-                        color: themeDeepColor,
-                      ),
-                      SizedBox(height: 16),
-                      Text('사관이 정보를 수집중이에요', style: contentTitle()),
-                      SizedBox(height: 8),
-                      Container(
-                        clipBehavior: Clip.antiAlias,
-                        height: 10,
-                        decoration: ShapeDecoration(
-                          shape: SmoothRectangleBorder(
-                            borderRadius: BorderRadius.circular(4),
-                            smoothness: 0.6,
-                          ),
-                        ),
-                        child: LinearProgressIndicator(
-                          value: 0.4,
-                          backgroundColor: themeDeepColor,
-                          color: mainColor,
-                        ),
-                      ),
-                      SizedBox(height: 8),
-                      Text(
-                        '정보 수집이 끝나면 오늘의 실록을 만들 수 있어요. 준비가 완료되면 알림을 보내드려요',
-                        style: contentDetail(),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
+              TodayWidget(),
               // 나의 서고
               contentsCard(
                 children: [
@@ -127,10 +79,11 @@ class _HomePageState extends State<HomePage> {
                       Text('나의 서고', style: cardTitle()),
                       SizedBox(height: 8),
                       Text('저장된 일기들을 이곳에서 볼 수 있어요', style: cardDetail()),
-                      SizedBox(height: 16),
-                      borderhorizontal(),
                     ],
                   ),
+                  // DiaryTile(),
+                  // DiaryTile(),
+                  contents(children: [borderHorizontal()]),
                   bottomButton(
                     child: Row(
                       crossAxisAlignment: CrossAxisAlignment.end,
@@ -143,7 +96,14 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ],
                     ),
-                    onTap: () {},
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => const MyLibraryScreen(),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
@@ -165,7 +125,7 @@ class _HomePageState extends State<HomePage> {
                         style: cardDetail(),
                       ),
                       SizedBox(height: 16),
-                      borderhorizontal(),
+                      borderHorizontal(),
                     ],
                   ),
                   bottomButton(
