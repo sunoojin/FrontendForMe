@@ -1,7 +1,11 @@
+import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:flutter/cupertino.dart';
+
 import 'package:diary_for_me/timeline/widget/event_card.dart';
 import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
+import 'package:smooth_corner/smooth_corner.dart';
 
 class EventListScreen extends StatelessWidget {
   const EventListScreen({super.key, required date});
@@ -131,7 +135,14 @@ class EventListScreen extends StatelessWidget {
               // 다음 버튼
               Center(
                 child: TextButton.icon(
-                  onPressed: () {}, // 감정 입력 화면으로 이동
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => SelectMoodScreen(),
+                      ),
+                    );
+                  }, // 감정 입력 화면으로 이동
                   icon: const Text(
                     "다음으로",
                     style: TextStyle(

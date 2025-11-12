@@ -1,14 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-// import 'package:smooth_corner/smooth_corner.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
-// import 'package:diary_for_me/my_library/widgets/diary_tile.dart';
 import 'package:flutter/cupertino.dart';
 import '../widgets/today_widget.dart';
-
-import 'package:shared_preferences/shared_preferences.dart';
-// import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
 import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
+import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -47,7 +45,12 @@ class _HomePageState extends State<HomePage> {
         actions: [
           IconButton(
             icon: Icon(Icons.settings, color: Colors.black.withAlpha(96)),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(builder: (context) => ProfileScreen()),
+              );
+            },
           ),
           SizedBox(width: 4),
         ],
