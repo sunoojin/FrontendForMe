@@ -1,7 +1,8 @@
-import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
+// import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:smooth_corner/smooth_corner.dart';
+import 'package:diary_for_me/timeline/screen/event_list_screen.dart';
 import '../../common/ui_kit.dart';
 import 'dart:async';
 
@@ -131,7 +132,10 @@ class _TodayWidgetState extends State<TodayWidget> {
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
-                      builder: (context) => const SelectMoodScreen(),
+                      builder:
+                          (context) => EventListScreen(
+                            date: DateTime.now(),
+                          ), // [TODO] 선택된 날짜를 입력해야함
                     ),
                   );
                 },
