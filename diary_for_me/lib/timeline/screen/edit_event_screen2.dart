@@ -147,9 +147,9 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
                             color:
-                                liked
-                                    ? const Color(0xFFEDE4FF)
-                                    : Colors.grey.shade100,
+                            liked
+                                ? const Color(0xFFEDE4FF)
+                                : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: liked ? mainColor : Colors.transparent,
@@ -183,9 +183,9 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           padding: const EdgeInsets.symmetric(vertical: 14),
                           decoration: BoxDecoration(
                             color:
-                                !liked
-                                    ? const Color(0xFFEDE4FF)
-                                    : Colors.grey.shade100,
+                            !liked
+                                ? const Color(0xFFEDE4FF)
+                                : Colors.grey.shade100,
                             borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: !liked ? mainColor : Colors.transparent,
@@ -311,8 +311,8 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                   title: "앱 알림에서 찾은 내용",
                   child: const Text(
                     "12시 필동함박 2인 네이버 예약\n"
-                    "신한카드 필동함박에서 38000원 결제\n"
-                    "후배의 밥약 카톡",
+                        "신한카드 필동함박에서 38000원 결제\n"
+                        "후배의 밥약 카톡",
                     style: TextStyle(height: 1.5),
                   ),
                 ),

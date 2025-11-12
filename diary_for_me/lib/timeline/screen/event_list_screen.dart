@@ -1,4 +1,5 @@
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
+import 'package:diary_for_me/timeline/widget/add_event_button.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:flutter/cupertino.dart';
@@ -24,67 +25,44 @@ class EventListScreen extends StatelessWidget {
     ];
 
     return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-          decoration: const BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 상단 바
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.pop(context),
-                    child: const Icon(Icons.arrow_back, size: 30),
-                  ),
-                  Row(
-                    children: [
-                      const Text(
-                        '1',
-                        style: TextStyle(fontSize: 24, color: textPrimary),
-                      ),
-                      const Text(
-                        '/3',
-                        style: TextStyle(fontSize: 24, color: textSecondary),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              const SizedBox(height: 24),
+      appBar: blurryAppBar(color: Colors.white,
+        actions: [
+          Text('1', style: appbarButton(color: textPrimary)),
+          Text('/3', style: appbarButton(color: textTertiary)),
+          SizedBox(width: 20),
+        ]
+      ),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 제목
+            Text(
+              "하루 돌아보기",
+              style: pageTitle(),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
+              "실제 있었던 일과 다르다면 수정해 주세요.",
+              style: cardDetail()
+            ),
+            const SizedBox(height: 16),
 
-              // 제목
-              const Text(
-                "하루 돌아보기",
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.w700),
-              ),
-              const SizedBox(height: 8),
-              const Text(
-                "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
-                "실제 있었던 일과 다르다면 수정해 주세요.",
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.black54,
-                  height: 1.4,
-                ),
-              ),
-              const SizedBox(height: 24),
-
-              // 이벤트 목록
-              Expanded(
+            // 이벤트 목록
+            Expanded(
+              child: SmoothClipRRect(
+                borderRadius: BorderRadius.circular(32),
                 child: ListView.builder(
-                  itemCount: events.length,
+                  physics: BouncingScrollPhysics(),
+                  itemCount: events.length + 1,
                   itemBuilder: (context, index) {
+                    if (index == events.length) return AddEventButton();
                     final e = events[index];
                     return Padding(
-                      padding: const EdgeInsets.only(bottom: 12),
+                      padding: const EdgeInsets.only(bottom: 16),
                       child: EventCard(
                         time: e["time"]!,
                         title: e["title"]!,
@@ -100,66 +78,36 @@ class EventListScreen extends StatelessWidget {
                   },
                 ),
               ),
+            ),
 
-              const SizedBox(height: 8),
+            const SizedBox(height: 16),
 
-              // 활동 추가 버튼
-              Center(
-                child: ElevatedButton.icon(
-                  onPressed: () {},
-                  icon: const Icon(Icons.add, color: Colors.black54, size: 18),
-                  label: const Text(
-                    "활동 추가",
-                    style: TextStyle(
-                      color: Colors.black87,
-                      fontWeight: FontWeight.w500,
-                    ),
+            // 다음 버튼
+            ContainerButton(
+              borderRadius: BorderRadius.circular(24),
+              height: 68,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => SelectMoodScreen(),
                   ),
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.white,
-                    elevation: 3,
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: 28,
-                      vertical: 12,
-                    ),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(30),
-                    ),
-                    shadowColor: Colors.black,
-                  ),
+                );
+              },
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('다음으로', style: mainButton(color: textPrimary)),
+                    Icon(Icons.navigate_next, size: 24, color: textPrimary),
+                  ],
                 ),
               ),
+            ),
 
-              const SizedBox(height: 24),
-
-              // 다음 버튼
-              Center(
-                child: TextButton.icon(
-                  onPressed: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => SelectMoodScreen(),
-                      ),
-                    );
-                  }, // 감정 입력 화면으로 이동
-                  icon: const Text(
-                    "다음으로",
-                    style: TextStyle(
-                      color: Colors.black,
-                      fontSize: 17,
-                      fontWeight: FontWeight.w600,
-                    ),
-                  ),
-                  label: const Icon(
-                    Icons.arrow_right_alt,
-                    color: Colors.black,
-                    size: 22,
-                  ),
-                ),
-              ),
-            ],
-          ),
+            SafeArea(top: false,child: SizedBox(),)
+          ],
         ),
       ),
     );

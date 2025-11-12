@@ -11,6 +11,7 @@ class ContainerButton extends StatefulWidget {
   final Color? color;
   final List<BoxShadow>? shadows;
   final BorderSide? side;
+  final EdgeInsets? margin;
 
   const ContainerButton({
     super.key,
@@ -22,7 +23,8 @@ class ContainerButton extends StatefulWidget {
     this.borderRadius,
     this.color,
     this.shadows,
-    this.side
+    this.side,
+    this.margin
   });
 
   @override
@@ -54,7 +56,7 @@ class _ContainerButtonState extends State<ContainerButton> {
     _isPressed ? Color(0xFF111111).withAlpha(28) : Colors.transparent;
 
     return GestureDetector(
-      behavior: HitTestBehavior.opaque,
+      // behavior: HitTestBehavior.opaque,
       onTapDown: _onTapDown,
       onTapUp: _onTapUp,
       onTapCancel: _onTapCancel,
@@ -68,6 +70,7 @@ class _ContainerButtonState extends State<ContainerButton> {
 
         // 2. Color 애니메이션
         padding: widget.padding ?? EdgeInsets.symmetric(),
+        margin: widget.margin ?? EdgeInsets.symmetric(),
         width: widget.width,
         height: widget.height,
         clipBehavior: Clip.antiAlias,
