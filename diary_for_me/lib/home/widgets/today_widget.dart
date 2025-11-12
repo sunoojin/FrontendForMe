@@ -1,7 +1,7 @@
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:smooth_corner/smooth_corner.dart';
+// import 'package:smooth_corner/smooth_corner.dart';
 import '../../common/ui_kit.dart';
 import 'dart:async';
 
@@ -17,7 +17,7 @@ class _TodayWidgetState extends State<TodayWidget> {
   late double _progress;
   late bool _isReady;
 
-  final int _targetSec = 12 * 3600;
+  // final int _targetSec = 12 * 3600;
 
   @override
   void initState() {
@@ -30,7 +30,7 @@ class _TodayWidgetState extends State<TodayWidget> {
 
   void _updateTime() {
     final now = DateTime.now();
-    final int nowSec = now.hour * 3600 + now.minute * 60 + now.second;
+    // final int nowSec = now.hour * 3600 + now.minute * 60 + now.second;
 
     if (mounted) {
       setState(() {
