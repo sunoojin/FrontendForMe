@@ -1,38 +1,37 @@
 import 'package:flutter/material.dart';
-import 'home/home_page.dart';
+import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
+import 'package:intl/date_symbol_data_local.dart';
 
-void main() {
-  runApp(const MyApp());
+import 'home/screen/home_screen.dart';
+import 'tutorial/screen/first_screen.dart';
+
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('ko_KR', null);
+
+  // SharedPreferences 인스턴스 가져오기
+  final prefs = await SharedPreferences.getInstance();
+
+  // 사용자 정보 입력 여부 확인 (true면 이미 입력 완료)
+  final bool hasUserInfo = prefs.getBool('hasUserInfo') ?? false;
+
+  runApp(MyApp(hasUserInfo: hasUserInfo));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool hasUserInfo;
+  const MyApp({super.key, required this.hasUserInfo});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
+      title: 'Diary for me',
       theme: ThemeData(
-        // This is the theme of your application.
-        //
-        // TRY THIS: Try running your application with "flutter run". You'll see
-        // the application has a purple toolbar. Then, without quitting the app,
-        // try changing the seedColor in the colorScheme below to Colors.green
-        // and then invoke "hot reload" (save your changes or press the "hot
-        // reload" button in a Flutter-supported IDE, or press "r" if you used
-        // the command line to start the app).
-        //
-        // Notice that the counter didn't reset back to zero; the application
-        // state is not lost during the reload. To reset the state, use hot
-        // restart instead.
-        //
-        // This works for code too, not just values: Most code changes can be
-        // tested with just a hot reload.
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
       // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: HomePage(),
+      home: hasUserInfo ? const HomePage() : const FirstScreen(),
     );
   }
 }
