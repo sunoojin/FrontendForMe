@@ -1,4 +1,5 @@
 import 'dart:io' show Platform;
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/colors.dart';
 
@@ -6,6 +7,8 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:diary_for_me/tutorial/widget/consent_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
+
+import '../../common/ui_kit.dart';
 
 class SetCollectionScreen extends StatefulWidget {
   const SetCollectionScreen({super.key});
@@ -183,86 +186,47 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
 
     // 8) 모든 흐름 끝나면 홈으로 이동
     if (!mounted) return;
-    Navigator.of(context).pushReplacement(
-      MaterialPageRoute(builder: (context) => const HomePage()),
+    Navigator.of(context).pushAndRemoveUntil(
+      CupertinoPageRoute(builder: (context) => const HomePage()),
+      (Route<dynamic> route) => false,
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    const horizontalPadding = 20.0;
     return Scaffold(
-      backgroundColor: backgroundColor,
-      body: SafeArea(
-        child: Column(
-          children: [
-            // 상단 바: 뒤로가기 + 진행도
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: 12,
-              ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).maybePop(),
-                    child: const Icon(Icons.arrow_back, size: 24),
-                  ),
-                  const Spacer(),
-                  const Text(
-                    '2',
-                    style: TextStyle(fontSize: 24, color: textPrimary),
-                  ),
-                  const Text(
-                    '/2',
-                    style: TextStyle(fontSize: 24, color: textSecondary),
-                  ),
-                ],
-              ),
-            ),
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: textPrimary, size: 28.0),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        titleSpacing: 20,
+        actions: [
+          Text('2', style: appbarButton(color: textPrimary)),
+          Text('/2', style: appbarButton(color: textTertiary)),
+          SizedBox(width: 20),
+        ],
+      ),
+      backgroundColor: themePageColor,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: SafeArea(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-            // 본문
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: 30,
+              // 본문
+              Text(
+                '일기 생성에 사용할 항목을\n골라주세요',
+                style: pageTitle()
               ),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const SizedBox(height: 12),
-                      // 제목
-                      const Text(
-                        '일기 생성에 사용할 항목을\n골라주세요',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            ),
 
-            //const SizedBox(height: 12),
+              SizedBox(height: 16,),
 
-            // 카드 그리드
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: horizontalPadding,
-                ),
-                child: GridView.count(
-                  crossAxisCount: 2,
-                  crossAxisSpacing: 20,
-                  mainAxisSpacing: 20,
-                  childAspectRatio: 1,
-                  shrinkWrap: true,
-                  physics: const BouncingScrollPhysics(),
+              //const SizedBox(height: 12),
+
+              Expanded(
+                child: Row(
                   children: [
                     ConsentCard(
                       title: '푸쉬 알림',
@@ -271,6 +235,7 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                       selected: _selected['push'] ?? false,
                       onTap: () => _toggle('push'),
                     ),
+                    SizedBox(width: 12,),
                     ConsentCard(
                       title: '갤러리',
                       subtitle: '갤러리 내의 사진을\n수집합니다.',
@@ -278,6 +243,14 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                       selected: _selected['gallery'] ?? false,
                       onTap: () => _toggle('gallery'),
                     ),
+                  ],
+                )
+              ),
+
+              SizedBox(height: 12,),
+              Expanded(
+                child: Row(
+                  children: [
                     ConsentCard(
                       title: '위치 정보',
                       subtitle: 'GPS 정보를\n수집합니다.',
@@ -285,6 +258,7 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                       selected: _selected['location'] ?? false,
                       onTap: () => _toggle('location'),
                     ),
+                    SizedBox(width: 12,),
                     ConsentCard(
                       title: '사용자 정보',
                       subtitle: '사용자의 성별과\n나이를 수집합니다.',
@@ -293,53 +267,84 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
                       onTap: () => _toggle('user'),
                     ),
                   ],
+                )
+              ),
+              const SizedBox(height: 16),
+              // 안내 문구
+              Center(
+                child: Text(
+                  '선택 시 민감정보수집 및 활용에 동의하는 것으로 간주됩니다.',
+                  style: TextStyle(color: infoText, fontSize: 14),
                 ),
               ),
-            ),
 
-            // 안내 문구
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-              ),
-              child: Text(
-                '선택시 민감정보수집 및 활용에 동의하는 것으로 간주됩니다.',
-                style: TextStyle(color: infoText, fontSize: 14),
-              ),
-            ),
+              const SizedBox(height: 48),
 
-            const SizedBox(height: 18),
-
-            // 시작하기 버튼
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: 16,
+              // 시작하기 버튼
+              ContainerButton(
+                borderRadius: BorderRadius.circular(24),
+                color: themeColor.withAlpha(255),
+                height: 68,
+                shadows: [
+                  BoxShadow(
+                    color: themeColor.withAlpha(128),
+                    spreadRadius: -20,
+                    blurRadius: 30,
+                    offset: Offset(0, 30),
+                  ),
+                ],
+                onTap: () {
+                  debugPrint('선택상태: $_selected');
+                  handleStartPressed();
+                },
+                child: Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('시작하기', style: mainButton()),
+                      Icon(
+                        Icons.navigate_next,
+                        size: 24,
+                        color: Colors.white,
+                      ),
+                    ],
+                  ),
+                ),
               ),
-              child: SizedBox(
-                width: double.infinity,
-                height: 64,
-                child: ElevatedButton(
-                  onPressed: () {
-                    debugPrint('선택상태: $_selected');
-                    handleStartPressed();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: mainColor,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(18),
+
+              /*
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: 16,
+                ),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 64,
+                  child: ElevatedButton(
+                    onPressed: () {
+                      debugPrint('선택상태: $_selected');
+                      handleStartPressed();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: mainColor,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(18),
+                      ),
+                      elevation: 10,
+                      shadowColor: mainColor,
                     ),
-                    elevation: 10,
-                    shadowColor: mainColor,
-                  ),
-                  child: const Text(
-                    '시작하기',
-                    style: TextStyle(fontSize: 18, color: Colors.white),
+                    child: const Text(
+                      '시작하기',
+                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    ),
                   ),
                 ),
               ),
-            ),
-          ],
+
+               */
+            ],
+          ),
         ),
       ),
     );

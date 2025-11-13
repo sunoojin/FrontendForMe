@@ -1,18 +1,22 @@
+import 'package:diary_for_me/common/text_style.dart';
+import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart'; // date 포맷을 위함
 import 'package:diary_for_me/common/colors.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:smooth_corner/smooth_corner.dart';
 import 'set_collection_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfilScreenState();
+  State<ProfileScreen> createState() => _ProfileScreenState();
 }
 
-class _ProfilScreenState extends State<ProfileScreen> {
+class _ProfileScreenState extends State<ProfileScreen> {
   final TextEditingController _nameController = TextEditingController(); // 이름
   DateTime? _selectedDate; // 생년월일
   String? _gender; // 성별
@@ -20,30 +24,32 @@ class _ProfilScreenState extends State<ProfileScreen> {
   // 입력창
   Widget _roundedInput({required String category, required Widget child}) {
     return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          children: [
-            Text(
-              category,
-              style: TextStyle(
-                fontSize: 14,
-                color: textPrimary,
-                fontWeight: FontWeight.w800,
-              ),
-            ),
-          ],
+        Text(
+          category,
+          style: const TextStyle(
+            fontSize: 18,
+            color: textPrimary,
+            fontWeight: FontWeight.w500,
+            height: 1.2
+          ),
         ),
         const SizedBox(height: 8),
         Container(
-          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-          decoration: BoxDecoration(
-            color: const Color(0xFFF6F7F8),
-            borderRadius: BorderRadius.circular(14),
-            border: Border.all(
-              color: Color(0xFFEDEEF0),
-              style: BorderStyle.solid,
+          height: 68,
+          alignment: Alignment.centerLeft,
+          padding: const EdgeInsets.symmetric(horizontal: 20),
+          decoration: ShapeDecoration(
+            shape: SmoothRectangleBorder(
+              borderRadius: BorderRadius.circular(24),
+              smoothness: 0.6,
+              side: BorderSide(
+                color: themeDeepColor,
+                width: 1.0
+              )
             ),
+            color: Colors.white,
           ),
           child: child,
         ),
@@ -62,7 +68,33 @@ class _ProfilScreenState extends State<ProfileScreen> {
       firstDate: firstDate,
       lastDate: lastDate,
       builder: (context, child) {
-        return child!;
+        return Theme(
+          // 여기에서 원하는 테마를 새로 정의합니다.
+          data: ThemeData.light().copyWith(
+            primaryColor: themeColor,
+            dividerColor: Colors.transparent,
+            colorScheme: const ColorScheme.light(primary: themeColor),
+            datePickerTheme: DatePickerThemeData(
+              dayShape: MaterialStateProperty.all<OutlinedBorder?>( // <--- 수정된 부분
+                SmoothRectangleBorder(
+                  borderRadius: BorderRadius.circular(14.0),
+                  smoothness: 1,
+                ),
+              ),
+              dividerColor: Colors.transparent,
+              shape: SmoothRectangleBorder(
+                borderRadius: BorderRadius.circular(32),
+                smoothness: 0.6
+              ),
+              headerBackgroundColor: Colors.white,
+              headerForegroundColor: textPrimary,
+            ),
+            buttonTheme: const ButtonThemeData(
+              textTheme: ButtonTextTheme.primary,
+            ),
+          ),
+          child: child!,
+        );
       },
     );
     if (picked != null) {
@@ -86,8 +118,8 @@ class _ProfilScreenState extends State<ProfileScreen> {
 
       // 저장 성공 후 원하는 화면으로 이동
       if (!mounted) return;
-      Navigator.of(context).pushReplacement(
-        MaterialPageRoute(builder: (context) => const SetCollectionScreen()),
+      Navigator.of(context).push(
+        CupertinoPageRoute(builder: (context) => const SetCollectionScreen()),
       );
     } catch (e) {
       debugPrint('SharedPreferences 저장 오류: $e');
@@ -100,73 +132,63 @@ class _ProfilScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    const horizontalPadding = 20.0;
     return Scaffold(
-      backgroundColor: backgroundColor,
+      backgroundColor: themePageColor,
+      appBar: AppBar(
+        iconTheme: IconThemeData(color: textPrimary, size: 28.0),
+        backgroundColor: Colors.transparent,
+        surfaceTintColor: Colors.transparent,
+        elevation: 0,
+        titleSpacing: 20,
+        actions: [
+          Text('1', style: appbarButton(color: textPrimary)),
+          Text('/2', style: appbarButton(color: textPrimary.withAlpha(128))),
+          SizedBox(width: 20),
+        ],
+      ),
       body: SafeArea(
         child: Column(
           children: [
-            // 상단 바: 뒤로가기 + 진행도
-            Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: horizontalPadding,
-                vertical: 12,
-              ),
-              child: Row(
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).maybePop(),
-                    child: const Icon(Icons.arrow_back, size: 24),
-                  ),
-                  const Spacer(),
-                  const Text(
-                    '1',
-                    style: TextStyle(fontSize: 24, color: textPrimary),
-                  ),
-                  const Text(
-                    '/2',
-                    style: TextStyle(fontSize: 24, color: textSecondary),
-                  ),
-                ],
-              ),
-            ),
-
             // 본문
             Expanded(
               child: SingleChildScrollView(
                 child: Padding(
                   padding: const EdgeInsets.symmetric(
-                    horizontal: horizontalPadding,
+                    horizontal: 20, vertical: 16
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const SizedBox(height: 12),
-
                       // 제목
-                      const Text(
+                      Text(
                         '정보를 입력해 주세요',
-                        style: TextStyle(
-                          fontSize: 26,
-                          fontWeight: FontWeight.w800,
-                        ),
+                        style: pageTitle(),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 16),
 
                       // 이름 입력 (둥근 박스)
                       _roundedInput(
                         category: '이름',
                         child: TextField(
+                          style: TextStyle(
+                            fontSize: 16.0,
+                            color: textPrimary,
+                            fontWeight: FontWeight.w400
+                          ),
                           controller: _nameController,
                           decoration: const InputDecoration(
                             isDense: true,
                             border: InputBorder.none,
                             hintText: '예) 홍길동',
-                            hintStyle: TextStyle(color: Colors.black38),
+                            hintStyle: TextStyle(
+                              fontSize: 16.0,
+                              color: textTertiary,
+                              fontWeight: FontWeight.w400
+                            ),
                           ),
                         ),
                       ),
-                      const SizedBox(height: 18),
+                      const SizedBox(height: 16),
 
                       // 생년월일 / 성별 (가로 배치)
                       Row(
@@ -191,17 +213,19 @@ class _ProfilScreenState extends State<ProfileScreen> {
                                                   'ko',
                                                 ).format(_selectedDate!),
                                             style: TextStyle(
+                                              fontSize: 16.0,
                                               color:
                                                   _selectedDate == null
-                                                      ? Colors.black38
-                                                      : Colors.black87,
+                                                      ? textTertiary
+                                                      : textPrimary,
+                                              fontWeight: FontWeight.w400
                                             ),
                                           ),
                                         ),
                                         const Icon(
                                           Icons.calendar_today_outlined,
-                                          size: 18,
-                                          color: Colors.black54,
+                                          size: 16,
+                                          color: textTertiary,
                                         ),
                                       ],
                                     ),
@@ -223,12 +247,24 @@ class _ProfilScreenState extends State<ProfileScreen> {
                                   category: '성별',
                                   child: DropdownButtonHideUnderline(
                                     child: DropdownButton<String>(
+                                      elevation: 8,
+                                      borderRadius: BorderRadius.circular(20),
+                                      dropdownColor: Colors.white,
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        color: textPrimary,
+                                        fontWeight: FontWeight.w400
+                                      ),
                                       value: _gender,
                                       isExpanded: true,
                                       isDense: true,
                                       hint: const Text(
                                         '선택해 주세요',
-                                        style: TextStyle(color: Colors.black38),
+                                        style: TextStyle(
+                                          fontSize: 16.0,
+                                          color: textTertiary,
+                                          fontWeight: FontWeight.w400
+                                        ),
                                       ),
                                       items: const [
                                         DropdownMenuItem(
@@ -259,12 +295,12 @@ class _ProfilScreenState extends State<ProfileScreen> {
                         ],
                       ),
 
-                      const SizedBox(height: 12),
+                      const SizedBox(height: 16),
 
                       // 안내 문구
                       const Text(
                         '입력한 정보들은 일기생성을 위해 AI에 활용될 수 있습니다.',
-                        style: TextStyle(fontSize: 14, color: infoText),
+                        style: TextStyle(fontSize: 14, color: textTertiary),
                       ),
                       SizedBox(
                         height: MediaQuery.of(context).size.height * 0.18,
@@ -277,8 +313,33 @@ class _ProfilScreenState extends State<ProfileScreen> {
 
             // 하단의 "다음으로 →" 텍스트 버튼 (가운데 정렬)
             Padding(
-              padding: const EdgeInsets.only(bottom: 18.0),
+              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Center(
+                child: ContainerButton(
+                  borderRadius: BorderRadius.circular(24),
+                  height: 68,
+                  onTap: () {
+                    // 다음 버튼 동작: 이름만 필수 입력
+                    if (_nameController.text.trim().isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('이름을 입력해 주세요')),
+                      );
+                      return;
+                    }
+                    handleNextPressed();
+                  },
+                  child: Center(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text('다음으로', style: mainButton(color: textPrimary)),
+                        Icon(Icons.navigate_next, size: 24, color: textPrimary),
+                      ],
+                    ),
+                  ),
+                ),
+                /*
                 child: TextButton(
                   onPressed: () {
                     // 다음 버튼 동작: 이름만 필수 입력
@@ -305,6 +366,8 @@ class _ProfilScreenState extends State<ProfileScreen> {
                     ),
                   ),
                 ),
+
+                 */
               ),
             ),
           ],

@@ -51,7 +51,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
   Widget build(BuildContext context) {
     return DraggableScrollableSheet(
       expand: false,
-      initialChildSize: 0.5,
+      initialChildSize: 0.6,
       minChildSize: 0.5,
       maxChildSize: 1,
       builder: (context, scrollController) {
@@ -65,50 +65,53 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
               child: ClipRRect(
                 child: BackdropFilter(
                   filter: ImageFilter.blur(sigmaX: 18, sigmaY:18),
-                  child: Container(
-                    color: Colors.white.withAlpha(249),
-                    height: 80,
-                    padding: EdgeInsets.all(20),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        IntrinsicWidth(
-                          child: ContainerButton(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: () => Navigator.pop(context),
-                            color: themeDeepColor,
-                            child: Center(
-                              child: Text(
-                                '취소',
-                                style: TextStyle(
-                                  color: Colors.red,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              )
+                  child: SingleChildScrollView(
+                    controller: scrollController,
+                    child: Container(
+                      color: Colors.white.withAlpha(249),
+                      height: 80,
+                      padding: EdgeInsets.all(20),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          IntrinsicWidth(
+                            child: ContainerButton(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: () => Navigator.pop(context),
+                              color: themeDeepColor,
+                              child: Center(
+                                child: Text(
+                                  '취소',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                )
+                              ),
                             ),
                           ),
-                        ),
-                        IntrinsicWidth(
-                          child: ContainerButton(
-                            padding: EdgeInsets.symmetric(horizontal: 16),
-                            borderRadius: BorderRadius.circular(20),
-                            onTap: _saveChanges,
-                            color: themeDeepColor,
-                            child: Center(
-                              child: Text(
-                                '완료',
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  fontSize: 16.0,
-                                  fontWeight: FontWeight.w500
-                                ),
-                              )
+                          IntrinsicWidth(
+                            child: ContainerButton(
+                              padding: EdgeInsets.symmetric(horizontal: 16),
+                              borderRadius: BorderRadius.circular(20),
+                              onTap: _saveChanges,
+                              color: themeDeepColor,
+                              child: Center(
+                                child: Text(
+                                  '완료',
+                                  style: TextStyle(
+                                    color: textPrimary,
+                                    fontSize: 16.0,
+                                    fontWeight: FontWeight.w500
+                                  ),
+                                )
+                              ),
                             ),
-                          ),
-                        )
-                      ],
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
@@ -147,7 +150,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           ),
                         ),
                         SizedBox(height: 16,),
-                        // 활동 시간
+                        // 활동 시각
                         const Text(
                           '활동 시각',
                           style: TextStyle(
@@ -160,7 +163,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                         IntrinsicWidth(
                           child: Container(
                             height: 52,
-                            padding: EdgeInsets.symmetric(horizontal: 16),
+                            padding: EdgeInsets.symmetric(horizontal: 20),
                             decoration: ShapeDecoration(
                               shape: SmoothRectangleBorder(
                                 borderRadius: BorderRadius.circular(20),
@@ -171,13 +174,14 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                             ),
                             child: Row(
                               children: [
+                                // 시간 선택
                                 DropdownButton<String>(
                                   underline: SizedBox(),
                                   value: selectedHour,
                                   dropdownColor: Colors.white,
                                   padding: EdgeInsets.all(0),
                                   elevation: 8,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(16),
                                   items: [
                                     for (int i = 0; i < 24; i++)
                                       DropdownMenuItem(
@@ -190,13 +194,14 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                                 ),
                                 Container(color: Colors.black.withAlpha(30), height: 24, width: 1,),
                                 SizedBox(width: 10,),
+                                // 분 선택
                                 DropdownButton<String>(
                                   underline: SizedBox(),
                                   value: selectedMinute,
                                   dropdownColor: Colors.white,
                                   padding: EdgeInsets.all(0),
                                   elevation: 8,
-                                  borderRadius: BorderRadius.circular(12),
+                                  borderRadius: BorderRadius.circular(20),
                                   items: [
                                     for (int i = 0; i < 60; i += 5)
                                       DropdownMenuItem(
