@@ -1,3 +1,4 @@
+import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -48,7 +49,7 @@ class _HomePageState extends State<HomePage> {
             onPressed: () {
               Navigator.push(
                 context,
-                CupertinoPageRoute(builder: (context) => ProfileScreen()),
+                CupertinoPageRoute(builder: (context) => SettingScreen()),
               );
             },
           ),
@@ -146,7 +147,7 @@ class _HomePageState extends State<HomePage> {
                     onTap: () {
                       Navigator.push(
                         context,
-                        MaterialPageRoute(
+                        CupertinoPageRoute(
                           builder: (context) => const TimelineListScreen(),
                         ),
                       );

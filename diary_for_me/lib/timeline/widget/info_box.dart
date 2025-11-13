@@ -1,4 +1,6 @@
+import 'package:diary_for_me/common/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:smooth_corner/smooth_corner.dart';
 
 class InfoBox extends StatelessWidget {
   final String title;
@@ -7,25 +9,37 @@ class InfoBox extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * 0.4,
-      padding: const EdgeInsets.symmetric(vertical: 10),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade100,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: Column(
-        children: [
-          Text(
-            title,
-            style: const TextStyle(fontSize: 13, color: Colors.black54),
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.all(16),
+        decoration: ShapeDecoration(
+          shape: SmoothRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
           ),
-          const SizedBox(height: 4),
-          Text(
-            value,
-            style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 18),
-          ),
-        ],
+          color: themePageColor,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              title,
+              style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w500, color: textPrimary, height: 1.4),
+            ),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Text(
+                  value,
+                  style: const TextStyle(fontWeight: FontWeight.w500, fontSize: 32, height: 1.4, color: textPrimary),
+                ),
+                Text(
+                  '개 ',
+                  style: const TextStyle(fontWeight: FontWeight.w400, fontSize: 32, height: 1.4, color: textTertiary),
+                ),
+              ],
+            ),
+          ],
+        ),
       ),
     );
   }
