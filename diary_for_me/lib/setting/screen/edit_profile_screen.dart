@@ -7,16 +7,17 @@ import 'package:diary_for_me/common/colors.dart';
 
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:smooth_corner/smooth_corner.dart';
-import 'set_collection_screen.dart';
 
-class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({super.key});
+import '../../home/screen/home_screen.dart';
+
+class EditProfileScreen extends StatefulWidget {
+  const EditProfileScreen({super.key});
 
   @override
-  State<ProfileScreen> createState() => _ProfileScreenState();
+  State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
-class _ProfileScreenState extends State<ProfileScreen> {
+class _EditProfileScreenState extends State<EditProfileScreen> {
   final TextEditingController _nameController = TextEditingController(); // 이름
   DateTime? _selectedDate; // 생년월일
   String? _gender; // 성별
@@ -118,8 +119,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
       // 저장 성공 후 원하는 화면으로 이동
       if (!mounted) return;
-      Navigator.of(context).push(
-        CupertinoPageRoute(builder: (context) => const SetCollectionScreen()),
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(builder: (context) => HomePage()),
+            (Route<dynamic> route) => false,
       );
     } catch (e) {
       debugPrint('SharedPreferences 저장 오류: $e');
@@ -140,11 +143,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 20,
-        actions: [
-          Text('1', style: appbarButton(color: textPrimary)),
-          Text('/2', style: appbarButton(color: textPrimary.withAlpha(128))),
-          SizedBox(width: 20),
-        ],
       ),
       body: SafeArea(
         child: Column(
@@ -161,7 +159,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     children: [
                       // 제목
                       Text(
-                        '정보를 입력해 주세요',
+                        '정보를 변경해 주세요',
                         style: pageTitle(),
                       ),
                       const SizedBox(height: 16),
@@ -316,6 +314,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
               child: Center(
                 child: ContainerButton(
+                  color: themeColor.withAlpha(24),
                   borderRadius: BorderRadius.circular(24),
                   height: 68,
                   onTap: () {
@@ -329,14 +328,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     handleNextPressed();
                   },
                   child: Center(
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('다음으로', style: mainButton(color: textPrimary)),
-                        Icon(Icons.navigate_next, size: 24, color: textPrimary),
-                      ],
-                    ),
+                    child: Text('변경하기', style: mainButton(color: themeColor)),
                   ),
                 ),
                 /*

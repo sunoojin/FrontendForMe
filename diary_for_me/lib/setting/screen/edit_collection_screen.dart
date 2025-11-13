@@ -10,14 +10,14 @@ import 'package:diary_for_me/home/screen/home_screen.dart';
 
 import '../../common/ui_kit.dart';
 
-class SetCollectionScreen extends StatefulWidget {
-  const SetCollectionScreen({super.key});
+class EditCollectionScreen extends StatefulWidget {
+  const EditCollectionScreen({super.key});
 
   @override
-  State<SetCollectionScreen> createState() => _SetCollectionScreenState();
+  State<EditCollectionScreen> createState() => _EditCollectionScreenState();
 }
 
-class _SetCollectionScreenState extends State<SetCollectionScreen> {
+class _EditCollectionScreenState extends State<EditCollectionScreen> {
   // 선택 상태들을 저장 (푸쉬 알림, 갤러리, 위치, 사용자)
   final Map<String, bool> _selected = {
     'push': false,
@@ -201,11 +201,6 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
         surfaceTintColor: Colors.transparent,
         elevation: 0,
         titleSpacing: 20,
-        actions: [
-          Text('2', style: appbarButton(color: textPrimary)),
-          Text('/2', style: appbarButton(color: textTertiary)),
-          SizedBox(width: 20),
-        ],
       ),
       backgroundColor: themePageColor,
       body: Padding(
@@ -217,7 +212,7 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
 
               // 본문
               Text(
-                '일기 생성에 사용할 항목을\n골라주세요',
+                '수집할 항목의 범위를\n변경해주세요',
                 style: pageTitle()
               ),
 
@@ -283,33 +278,14 @@ class _SetCollectionScreenState extends State<SetCollectionScreen> {
               // 시작하기 버튼
               ContainerButton(
                 borderRadius: BorderRadius.circular(24),
-                color: themeColor.withAlpha(255),
+                color: themeColor.withAlpha(24),
                 height: 68,
-                shadows: [
-                  BoxShadow(
-                    color: themeColor.withAlpha(128),
-                    spreadRadius: -20,
-                    blurRadius: 30,
-                    offset: Offset(0, 30),
-                  ),
-                ],
                 onTap: () {
                   debugPrint('선택상태: $_selected');
                   handleStartPressed();
                 },
                 child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('시작하기', style: mainButton()),
-                      Icon(
-                        Icons.navigate_next,
-                        size: 24,
-                        color: Colors.white,
-                      ),
-                    ],
-                  ),
+                  child: Text('변경하기', style: mainButton(color: themeColor)),
                 ),
               ),
 
