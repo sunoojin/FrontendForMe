@@ -36,7 +36,7 @@ class MyLibraryCard extends StatelessWidget {
               return SizedBox();
             }
 
-            diaries.sort((a, b) => a.compareTo(b));
+            diaries.sort();
             return ListView.builder(
               shrinkWrap: true,
               padding: EdgeInsets.zero,

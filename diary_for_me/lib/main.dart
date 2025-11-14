@@ -1,3 +1,5 @@
+import 'package:diary_for_me/timeline/service/event_model.dart';
+import 'package:diary_for_me/timeline/service/timeline_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
@@ -22,12 +24,17 @@ void main() async {
   // Hive db 코드
   // Hive 초기화
   await Hive.initFlutter();
-  // DiaryAdapter 등록
-  Hive.registerAdapter(DiaryAdapter());
-  Hive.registerAdapter(TagAdapter());
-  // diaryBox, tagBox
-  await Hive.openBox<Diary>('diaryBox');
+  // 어댑터 호출
+  Hive.registerAdapter(DiaryAdapter());     // Diary
+  Hive.registerAdapter(TagAdapter());       // Tag
+  Hive.registerAdapter(EventAdapter());     // Event
+  Hive.registerAdapter(TimeLineAdapter());  // Timeline
+
+  // open
   await Hive.openBox<Tag>('tagsBox');
+  await Hive.openBox<Diary>('diaryBox');
+  await Hive.openBox<TimeLine>('timelineBox');
+
 
   runApp(MyApp(hasUserInfo: hasUserInfo));
 }

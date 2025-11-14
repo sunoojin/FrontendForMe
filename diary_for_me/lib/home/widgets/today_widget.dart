@@ -129,6 +129,7 @@ class _TodayWidgetState extends State<TodayWidget> {
                   ),
                 ],
                 onTap: () {
+                  /*
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
@@ -138,6 +139,8 @@ class _TodayWidgetState extends State<TodayWidget> {
                           ), // [TODO] 선택된 날짜를 입력해야함
                     ),
                   );
+
+                   */
                 },
                 child: Center(
                   child: Row(

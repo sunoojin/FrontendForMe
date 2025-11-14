@@ -77,43 +77,6 @@ class _HomePageState extends State<HomePage> {
               // 오늘의 일기
               TodayWidget(),
               // 나의 서고
-              /*
-              contentsCard(
-                children: [
-                  contents(
-                    children: [
-                      Text('나의 서고', style: cardTitle()),
-                      SizedBox(height: 8),
-                      Text('저장된 일기들을 이곳에서 볼 수 있어요', style: cardDetail()),
-                    ],
-                  ),
-                  // DiaryTile(),
-                  // DiaryTile(),
-                  contents(children: [borderHorizontal()]),
-                  bottomButton(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text('모두 보기', style: cardDetail(color: textTertiary)),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 19,
-                          color: textTertiary,
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => const MyLibraryScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
-               */
               MyLibraryCard(),
               // 저장된 타임라인
               contentsCard(

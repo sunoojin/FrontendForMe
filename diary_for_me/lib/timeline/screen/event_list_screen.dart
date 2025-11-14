@@ -1,19 +1,30 @@
+import 'dart:developer';
+
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
+import 'package:diary_for_me/timeline/service/event_model.dart';
 import 'package:diary_for_me/timeline/widget/add_event_button.dart';
+import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:diary_for_me/timeline/widget/event_card.dart';
 import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
+import '../service/timeline_model.dart';
+
 class EventListScreen extends StatelessWidget {
-  const EventListScreen({super.key, required date});
+  final String timelineKey;
+  const EventListScreen({super.key, required this.timelineKey});
 
   @override
   Widget build(BuildContext context) {
+    final timelineBox = Hive.box<TimeLine>('timelineBox');
     // 임시 데이터
+    /*
     final events = [
       {"time": "12:00", "title": "필동함박에서 점심식사", "description": "후배와 점심식사"},
       {
@@ -23,6 +34,8 @@ class EventListScreen extends StatelessWidget {
       },
       {"time": "18:00", "title": "동아리 연습에 참여하기", "description": "축제 무대 연습"},
     ];
+
+     */
 
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white,
@@ -52,6 +65,7 @@ class EventListScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // 이벤트 목록
+            /*
             Expanded(
               child: SmoothClipRRect(
                 borderRadius: BorderRadius.circular(32),
@@ -76,6 +90,43 @@ class EventListScreen extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+              ),
+            ),
+             */
+            Expanded(
+              child: SmoothClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: ValueListenableBuilder(
+                  valueListenable: timelineBox.listenable(),
+                  builder: (context, Box<TimeLine> box, _) {
+                    final TimeLine? timeline = box.get(timelineKey);
+
+                    if(timeline == null) return Text('타임라인 에러');
+
+                    final events = timeline.events;
+
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: events.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == events.length) return AddEventButton();
+                        final e = events[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: EventCard(
+                            event: e,
+                            onEdit: () {
+                              ActivityEditSheet.show(context);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("${e.title} 수정 클릭")),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
                 ),
               ),
             ),

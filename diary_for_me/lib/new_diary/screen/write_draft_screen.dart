@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
@@ -11,7 +12,8 @@ import 'package:hive/hive.dart';
 // import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-import '../../diary/service/diary_model.dart' show Diary;
+import '../../diary/service/diary_model.dart';
+import '../../timeline/service/timeline_model.dart';
 
 class WriteDraftScreen extends StatefulWidget {
   const WriteDraftScreen({super.key});
@@ -34,10 +36,19 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
 
   void _generateDiary() {
     // 일기 생성 테스트 코드
+    // 임시 타임라인 생성
+    final newTimeLine = TimeLine(
+      id: DateTime.now().toIso8601String(),
+      title: '새 타임라인 ${DateTime.now().second}초',
+      date: DateTime.now(),
+      events: [],
+      selfsurvey: {'mood' : 'good', 'draft' : 'text'}
+    );
+    // 일기 생성
     final newDiary = Diary(
       id: DateTime.now().toIso8601String(),
       title: '새 일기 ${DateTime.now().second}초',
-      timeline: [DateTime.now().millisecondsSinceEpoch],
+      timeline: newTimeLine,
       content: {'text': DateTime.now().toIso8601String()},
       tag: [],
     );

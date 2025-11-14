@@ -1,23 +1,24 @@
+import 'package:diary_for_me/timeline/service/timeline_model.dart';
 import 'package:hive/hive.dart';
 
 import 'tag_model.dart';
 
-// 1. 생성될 g.dart 파일을 part로 지정
+// 생성될 g.dart 파일을 part로 지정
 part 'diary_model.g.dart';
-// 중요!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-// part 파일은 깃허브에 업로드 안됨 (git.ignore에 들어가있음)
-// 대신에 아래 명령어 터미널에서 실행하면 part 파일이 자동으로 생성될거임.
+// 해당 파일의 필드를 업데이트 할 경우 변경 이후 아래 명령어 실행 필요
 // flutter pub run build_runner build
+// 혹은
+// flutter packages pub run build_runner build
 
 
-@HiveType(typeId: 0) // 2. 고유한 타입 ID 지정
-class Diary extends HiveObject { // 3. HiveObject 상속 (권장)
+@HiveType(typeId: 0) // 고유한 타입 ID 지정
+class Diary extends HiveObject implements Comparable<Diary> { // 3. HiveObject 상속 (권장)
 
-  @HiveField(0) // 4. 각 필드에 고유 인덱스 부여
+  @HiveField(0) // 각 필드에 고유 인덱스 부여
   String id;
 
   @HiveField(1)
-  List<dynamic> timeline;
+  TimeLine timeline;
 
   @HiveField(2)
   String title;

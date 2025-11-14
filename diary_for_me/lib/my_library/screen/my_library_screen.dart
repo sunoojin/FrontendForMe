@@ -132,7 +132,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                   }
 
                   // 날짜별 정렬
-                  diaries.sort((a, b) => a.compareTo(b));
+                  diaries.sort();
 
                   return ListView.builder(
                     shrinkWrap: true,

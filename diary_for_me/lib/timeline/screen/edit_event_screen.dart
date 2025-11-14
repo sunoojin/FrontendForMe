@@ -5,26 +5,41 @@ import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/section_card.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+import '../service/event_model.dart';
 
 class ActivityEditSheet {
-  static Future<void> show(BuildContext context) async {
-    await showModalBottomSheet(
+  static Future<Event?> show(
+      BuildContext context, {
+        Event? initialEvent, // 1. 수정할 Event 객체를 받음
+      }) async {
+    // 2. showModalBottomSheet가 Event?를 반환하도록 타입을 지정
+    final Event? result = await showModalBottomSheet<Event?>(
       context: context,
       isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (_) => const _ActivityEditContent(),
+      backgroundColor: Colors.transparent, // 투명하게 두고
+      builder: (_) => _ActivityEditContent(
+        initialEvent: initialEvent, // 3. Content 위젯에 초기 데이터 전달
+      ),
       useSafeArea: true,
-      shape: SmoothRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
-        smoothness: 0.6
+      // ... (기존 shape, clipBehavior 등)
+      shape: RoundedRectangleBorder( // SmoothRectangleBorder 대신 표준 사용 (호환성)
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
+      enableDrag: true, // 드래그로 닫을 수 있게 하는 것이 일반적입니다.
     );
+
+    // 4. 모달에서 반환된 최종 Event 객체를 다시 반환
+    return result;
   }
 }
 
 class _ActivityEditContent extends StatefulWidget {
-  const _ActivityEditContent({super.key});
+  final Event? initialEvent;
+  const _ActivityEditContent({
+    super.key,
+    this.initialEvent
+  });
 
   @override
   State<_ActivityEditContent> createState() => _ActivityEditContentState();
@@ -389,9 +404,6 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                             ],
                           ),
                         ),
-
-
-
                       ],
                     ),
                   ),

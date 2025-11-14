@@ -1,44 +1,48 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'diary_model.dart';
+part of 'event_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class DiaryAdapter extends TypeAdapter<Diary> {
+class EventAdapter extends TypeAdapter<Event> {
   @override
-  final int typeId = 0;
+  final int typeId = 2;
 
   @override
-  Diary read(BinaryReader reader) {
+  Event read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Diary(
+    return Event(
       id: fields[0] as String,
-      timeline: fields[1] as TimeLine,
+      timestamp: fields[1] as DateTime,
       title: fields[2] as String,
-      content: (fields[3] as Map).cast<String, dynamic>(),
-      tag: (fields[4] as List).cast<String>(),
+      content: fields[3] as String,
+      feeling: fields[4] as String,
+      dailydata: (fields[5] as Map).map((dynamic k, dynamic v) =>
+          MapEntry(k as String, (v as List).cast<String>())),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Diary obj) {
+  void write(BinaryWriter writer, Event obj) {
     writer
-      ..writeByte(5)
+      ..writeByte(6)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.timeline)
+      ..write(obj.timestamp)
       ..writeByte(2)
       ..write(obj.title)
       ..writeByte(3)
       ..write(obj.content)
       ..writeByte(4)
-      ..write(obj.tag);
+      ..write(obj.feeling)
+      ..writeByte(5)
+      ..write(obj.dailydata);
   }
 
   @override
@@ -47,7 +51,7 @@ class DiaryAdapter extends TypeAdapter<Diary> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DiaryAdapter &&
+      other is EventAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

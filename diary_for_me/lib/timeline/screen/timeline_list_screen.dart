@@ -2,12 +2,18 @@ import 'package:diary_for_me/home/widgets/today_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/time_line_card.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+
+import '../service/timeline_model.dart';
 
 class TimelineListScreen extends StatelessWidget {
   const TimelineListScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final timelineBox = Hive.box<TimeLine>('timelineBox');
+
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white),
       backgroundColor: themePageColor,
@@ -35,6 +41,29 @@ class TimelineListScreen extends StatelessWidget {
             // 오늘
             TodayWidget(),
 
+            // 이전
+            ValueListenableBuilder(
+              valueListenable: timelineBox.listenable(),
+              builder: (context, Box<TimeLine> box, _) {
+                final timelines = box.values.toList();
+
+                if(timelines.isEmpty) {
+                  return SizedBox();
+                }
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  padding: EdgeInsets.zero,
+                  physics: NeverScrollableScrollPhysics(),
+                  itemCount: timelines.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    return TimeLineCard(timeline: timelines[index]);
+                  },
+                );
+              },
+            )
+
+            /*
             // 어제
             timelineCard(
               dateText: "12/8 (화)",
@@ -50,6 +79,8 @@ class TimelineListScreen extends StatelessWidget {
               infoCount: 6,
               date: DateTime.now().subtract(Duration(days: 2)), // 그제
             ),
+
+             */
           ],
         ),
       ),
