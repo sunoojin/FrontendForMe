@@ -1,3 +1,4 @@
+import 'package:diary_for_me/home/widgets/my_library_card.dart';
 import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
@@ -76,6 +77,7 @@ class _HomePageState extends State<HomePage> {
               // 오늘의 일기
               TodayWidget(),
               // 나의 서고
+              /*
               contentsCard(
                 children: [
                   contents(
@@ -111,6 +113,8 @@ class _HomePageState extends State<HomePage> {
                   ),
                 ],
               ),
+               */
+              MyLibraryCard(),
               // 저장된 타임라인
               contentsCard(
                 children: [

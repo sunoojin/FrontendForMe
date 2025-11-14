@@ -1,7 +1,10 @@
 import 'package:diary_for_me/setting/widget/setting_category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import '../../common/ui_kit.dart';
+import '../../diary/service/diary_model.dart';
+import '../../diary/service/tag_model.dart';
 import 'edit_collection_screen.dart';
 import 'edit_profile_screen.dart';
 
@@ -10,6 +13,9 @@ class SettingScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final diaryBox = Hive.box<Diary>('diaryBox');
+    final tagsBox = Hive.box<Tag>('tagsBox');
+
     return Scaffold(
       appBar: AppBar(
         iconTheme: IconThemeData(color: textPrimary, size: 28.0),
@@ -50,7 +56,17 @@ class SettingScreen extends StatelessWidget {
                     CupertinoPageRoute(builder: (context) => const EditCollectionScreen()),
                   );
                 },
-              )
+              ),
+              Expanded(child: SizedBox()),
+              // 테스트용 일기 초기화 버튼
+              SettingCategory(
+                title: '초기화',
+                icon: Icons.warning,
+                onTap: () async {
+                  await diaryBox.clear();
+                  await tagsBox.clear();
+                },
+              ),
             ],
           ),
         ),
