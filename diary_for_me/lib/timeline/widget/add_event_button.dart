@@ -3,7 +3,8 @@ import 'package:flutter/material.dart';
 import '../../common/ui_kit.dart';
 
 class AddEventButton extends StatefulWidget {
-  const AddEventButton({super.key});
+  final VoidCallback onTap;
+  const AddEventButton({super.key, required this.onTap});
 
   @override
   State<AddEventButton> createState() => _AddEventButtonState();
@@ -27,7 +28,7 @@ class _AddEventButtonState extends State<AddEventButton> {
               offset: Offset(0, 12),
             )
           ],
-          onTap: () {},
+          onTap: widget.onTap,
           child: Center(
             child: Text('활동 추가 +',
               style: TextStyle(

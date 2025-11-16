@@ -23,19 +23,22 @@ class EventListScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final timelineBox = Hive.box<TimeLine>('timelineBox');
-    // 임시 데이터
-    /*
-    final events = [
-      {"time": "12:00", "title": "필동함박에서 점심식사", "description": "후배와 점심식사"},
-      {
-        "time": "16:00",
-        "title": "카페에서 커피 마시면서 공부하기",
-        "description": "블루포트에서 혼공",
-      },
-      {"time": "18:00", "title": "동아리 연습에 참여하기", "description": "축제 무대 연습"},
-    ];
 
-     */
+    void _showEventModal(BuildContext context, TimeLine timeline, int? eventIndex) async {
+      final Event? initialEvent = (eventIndex != null) ? timeline.events[eventIndex] : null;
+
+      final Event? resultEvent = await ActivityEditSheet.show(context, initialEvent: initialEvent);
+      if (resultEvent != null) {
+        if (eventIndex != null) {
+          timeline.events[eventIndex] = resultEvent;
+        } else {
+          timeline.events ??= [];
+          timeline.events.add(resultEvent);
+        }
+      }
+
+      await timeline.save();
+    }
 
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white,
@@ -105,19 +108,20 @@ class EventListScreen extends StatelessWidget {
                     if(timeline == null) return Text('타임라인 에러');
 
                     final events = timeline.events;
+                    events.sort();
 
                     return ListView.builder(
                       physics: BouncingScrollPhysics(),
                       itemCount: events.length + 1,
                       itemBuilder: (context, index) {
-                        if (index == events.length) return AddEventButton();
+                        if (index == events.length) return AddEventButton(onTap: () => _showEventModal(context, timeline, null),);
                         final e = events[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: EventCard(
                             event: e,
                             onEdit: () {
-                              ActivityEditSheet.show(context);
+                              _showEventModal(context, timeline, index);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text("${e.title} 수정 클릭")),
                               );
