@@ -80,7 +80,7 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     style: contentDetail(fontSize: 12),
-                    diary.content['text']
+                    diary.content.text
                   )
                 ],
               ),

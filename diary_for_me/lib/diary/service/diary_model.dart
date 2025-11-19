@@ -2,6 +2,7 @@ import 'package:diary_for_me/timeline/service/timeline_model.dart';
 import 'package:hive/hive.dart';
 
 import 'tag_model.dart';
+import 'diary_content_model.dart';
 
 // 생성될 g.dart 파일을 part로 지정
 part 'diary_model.g.dart';
@@ -24,7 +25,7 @@ class Diary extends HiveObject implements Comparable<Diary> { // 3. HiveObject �
   String title;
 
   @HiveField(3)
-  Map<String, dynamic> content;
+  DiaryContent content;
 
   @HiveField(4)
   List<String> tag;

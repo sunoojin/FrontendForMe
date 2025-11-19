@@ -2,10 +2,12 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:diary_for_me/diary/service/diary_content_model.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
 // import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
 import 'package:diary_for_me/new_diary/screen/finish_generation_screen.dart';
+import 'package:diary_for_me/new_diary/service/diary_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
@@ -16,15 +18,29 @@ import '../../diary/service/diary_model.dart';
 import '../../timeline/service/timeline_model.dart';
 
 class WriteDraftScreen extends StatefulWidget {
-  const WriteDraftScreen({super.key});
+  final String timelineKey;
+  final String emotion;
+  const WriteDraftScreen({super.key, required this.timelineKey, required this.emotion});
 
   @override
   State<WriteDraftScreen> createState() => _WriteDraftScreenState();
 }
 
 class _WriteDraftScreenState extends State<WriteDraftScreen> {
-  final diaryBox = Hive.box<Diary>('diaryBox');
+  late final DiaryService diaryService;
+  late final Box<TimeLine> timelineBox;
+  late final Box<Diary> diaryBox;
   final TextEditingController _controller = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    timelineBox = Hive.box<TimeLine>('timelineBox');
+    diaryBox = Hive.box<Diary>('diaryBox');
+
+    diaryService = DiaryService(diaryBox, timelineBox);
+  }
 
   @override
   void dispose() {
@@ -34,27 +50,18 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     super.dispose();
   }
 
-  void _generateDiary() {
+  void _generateDiary() async {
     // 일기 생성 테스트 코드
     // 임시 타임라인 생성
-    final newTimeLine = TimeLine(
-      id: DateTime.now().toIso8601String(),
-      title: '새 타임라인 ${DateTime.now().second}초',
-      date: DateTime.now(),
-      events: [],
-      selfsurvey: {'mood' : 'good', 'draft' : 'text'}
+    String? newId = await diaryService.generateNewDiary(
+      timelineKey: widget.timelineKey,
+      title: '새 일기',
+      text: '새 일기 텍스트'
     );
-    // 일기 생성
-    final newDiary = Diary(
-      id: DateTime.now().toIso8601String(),
-      title: '새 일기 ${DateTime.now().second}초',
-      timeline: newTimeLine,
-      content: {'text': DateTime.now().toIso8601String()},
-      tag: [],
-    );
-    diaryBox.put(newDiary.id, newDiary);
-    newDiary.updateTag('가족');
 
+    if (newId == null) {
+      return;
+    }
     // 화면 이동
     Navigator.pushAndRemoveUntil(
       context,
@@ -63,7 +70,7 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     );
     Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => FinishGenerationScreen(diaryKey: newDiary.id,)),
+      CupertinoPageRoute(builder: (context) => FinishGenerationScreen(diaryKey: newId)),
     );
   }
 

@@ -75,7 +75,7 @@ class _DiaryTileState extends State<DiaryTile> {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: contentDetail(fontSize: 12),
-                  widget.diary.content['text']
+                  widget.diary.content.text
                 )
               ],
             ),

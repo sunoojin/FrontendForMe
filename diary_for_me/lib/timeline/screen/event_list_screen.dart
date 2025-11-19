@@ -145,7 +145,7 @@ class EventListScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => SelectMoodScreen(),
+                    builder: (context) => SelectMoodScreen(timelineKey: timelineKey,),
                   ),
                 );
               },

@@ -17,7 +17,8 @@ List<Map<String, dynamic>> emotions = [
 ];
 
 class SelectMoodScreen extends StatefulWidget {
-  const SelectMoodScreen({super.key});
+  final String timelineKey;
+  const SelectMoodScreen({super.key, required this.timelineKey});
 
   @override
   State<SelectMoodScreen> createState() => _SelectMoodScreenState();
@@ -228,7 +229,7 @@ class _SelectMoodScreenState extends State<SelectMoodScreen> {
                   Navigator.push(
                     context,
                     CupertinoPageRoute(
-                      builder: (context) => WriteDraftScreen(),
+                      builder: (context) => WriteDraftScreen(timelineKey: widget.timelineKey, emotion: emotions[_currentIndex]['text'],),
                     ),
                   );
                 },
