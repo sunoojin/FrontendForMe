@@ -1,11 +1,11 @@
-import 'package:diary_for_me/timeline/service/timeline_model.dart';
+import 'package:diary_for_me/db_models/timeline_model.dart';
 import 'package:hive/hive.dart';
 
 import 'tag_model.dart';
 import 'diary_content_model.dart';
 
 // 생성될 g.dart 파일을 part로 지정
-part 'diary_model.g.dart';
+part 'part/diary_model.g.dart';
 // 해당 파일의 필드를 업데이트 할 경우 변경 이후 아래 명령어 실행 필요
 // flutter pub run build_runner build
 // 혹은

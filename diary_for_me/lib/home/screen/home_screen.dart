@@ -8,7 +8,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
 import 'package:flutter/cupertino.dart';
-import '../../timeline/service/timeline_model.dart';
+import '../../db_models/timeline_model.dart';
 import '../widgets/today_widget.dart';
 import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
 import 'package:diary_for_me/tutorial/screen/profile_screen.dart';

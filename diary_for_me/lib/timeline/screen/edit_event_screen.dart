@@ -6,7 +6,7 @@ import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/section_card.dart';
 import 'package:hive/hive.dart';
 import 'package:smooth_corner/smooth_corner.dart';
-import '../service/event_model.dart';
+import '../../db_models/event_model.dart';
 
 class ActivityEditSheet {
   static Future<Event?> show(

@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'tag_model.g.dart'; // 1. g.dart 파일 지정
+part 'part/tag_model.g.dart'; // 1. g.dart 파일 지정
 
 @HiveType(typeId: 1)
 class Tag extends HiveObject {

@@ -1,7 +1,7 @@
-import 'package:diary_for_me/diary/service/diary_content_model.dart';
+import 'package:diary_for_me/db_models/diary_content_model.dart';
 import 'package:hive/hive.dart';
-import 'package:diary_for_me/diary/service/diary_model.dart';
-import 'package:diary_for_me/timeline/service/timeline_model.dart';
+import 'package:diary_for_me/db_models/diary_model.dart';
+import 'package:diary_for_me/db_models/timeline_model.dart';
 
 class DiaryService {
   final Box<Diary> diaryBox;

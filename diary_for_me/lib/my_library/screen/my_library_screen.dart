@@ -4,8 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import '../../diary/service/diary_model.dart';
-import '../../diary/service/tag_model.dart';
+import '../../db_models/diary_model.dart';
+import '../../db_models/tag_model.dart';
 import '../widgets/tag_box.dart';
 
 class MyLibraryScreen extends StatefulWidget {

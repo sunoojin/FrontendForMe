@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/diary/service/diary_model.dart';
+import 'package:diary_for_me/db_models/diary_model.dart';
 import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
 import 'package:flutter/material.dart';

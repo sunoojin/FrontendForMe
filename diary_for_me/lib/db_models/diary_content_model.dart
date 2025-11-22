@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'diary_content_model.g.dart';
+part 'part/diary_content_model.g.dart';
 
 @HiveType(typeId: 4)
 class DiaryContent extends HiveObject {

@@ -1,6 +1,6 @@
 import 'package:hive/hive.dart';
 
-part 'event_model.g.dart';
+part 'part/event_model.g.dart';
 
 @HiveType(typeId: 2) // typeId는 앱 내의 다른 HiveType과 겹치지 않아야 합니다.
 class Event extends HiveObject implements Comparable<Event>{

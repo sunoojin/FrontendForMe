@@ -1,7 +1,7 @@
 import 'package:hive/hive.dart';
 import 'event_model.dart';
 
-part 'timeline_model.g.dart';
+part 'part/timeline_model.g.dart';
 
 @HiveType(typeId: 3) // Event 클래스와 다른 고유한 typeId 사용
 class TimeLine extends HiveObject implements Comparable<TimeLine>{

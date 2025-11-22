@@ -1,44 +1,38 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'diary_model.dart';
+part of '../diary_content_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class DiaryAdapter extends TypeAdapter<Diary> {
+class DiaryContentAdapter extends TypeAdapter<DiaryContent> {
   @override
-  final int typeId = 0;
+  final int typeId = 4;
 
   @override
-  Diary read(BinaryReader reader) {
+  DiaryContent read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Diary(
-      id: fields[0] as String,
-      timeline: fields[1] as TimeLine,
-      title: fields[2] as String,
-      content: fields[3] as DiaryContent,
-      tag: (fields[4] as List).cast<String>(),
+    return DiaryContent(
+      text: fields[0] as String,
+      image: (fields[1] as List).cast<String>(),
+      music: (fields[2] as List).cast<String>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Diary obj) {
+  void write(BinaryWriter writer, DiaryContent obj) {
     writer
-      ..writeByte(5)
-      ..writeByte(0)
-      ..write(obj.id)
-      ..writeByte(1)
-      ..write(obj.timeline)
-      ..writeByte(2)
-      ..write(obj.title)
       ..writeByte(3)
-      ..write(obj.content)
-      ..writeByte(4)
-      ..write(obj.tag);
+      ..writeByte(0)
+      ..write(obj.text)
+      ..writeByte(1)
+      ..write(obj.image)
+      ..writeByte(2)
+      ..write(obj.music);
   }
 
   @override
@@ -47,7 +41,7 @@ class DiaryAdapter extends TypeAdapter<Diary> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is DiaryAdapter &&
+      other is DiaryContentAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

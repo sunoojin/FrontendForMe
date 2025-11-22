@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../../common/ui_kit.dart';
-import '../../diary/service/diary_model.dart';
+import '../../db_models/diary_model.dart';
 import '../../my_library/screen/my_library_screen.dart';
 import '../../my_library/widgets/diary_tile.dart';
 

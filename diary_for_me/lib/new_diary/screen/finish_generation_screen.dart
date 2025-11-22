@@ -1,4 +1,4 @@
-import 'package:diary_for_me/diary/service/diary_model.dart';
+import 'package:diary_for_me/db_models/diary_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:diary_for_me/common/ui_kit.dart';

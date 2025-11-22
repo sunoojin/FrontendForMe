@@ -1,7 +1,7 @@
 import 'dart:developer';
 
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
-import 'package:diary_for_me/timeline/service/event_model.dart';
+import 'package:diary_for_me/db_models/event_model.dart';
 import 'package:diary_for_me/timeline/widget/add_event_button.dart';
 import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +14,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-import '../service/timeline_model.dart';
+import '../../db_models/timeline_model.dart';
 
 class EventListScreen extends StatelessWidget {
   final String timelineKey;

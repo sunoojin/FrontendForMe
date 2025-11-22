@@ -1,14 +1,14 @@
-import 'package:diary_for_me/diary/service/diary_content_model.dart';
-import 'package:diary_for_me/timeline/service/event_model.dart';
-import 'package:diary_for_me/timeline/service/timeline_model.dart';
+import 'package:diary_for_me/db_models/diary_content_model.dart';
+import 'package:diary_for_me/db_models/event_model.dart';
+import 'package:diary_for_me/db_models/timeline_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'diary/service/diary_model.dart';
-import 'diary/service/tag_model.dart';
+import 'db_models/diary_model.dart';
+import 'db_models/tag_model.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 

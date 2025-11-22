@@ -1,12 +1,12 @@
 import 'package:diary_for_me/setting/widget/setting_category.dart';
-import 'package:diary_for_me/timeline/service/event_model.dart';
-import 'package:diary_for_me/timeline/service/timeline_model.dart';
+import 'package:diary_for_me/db_models/event_model.dart';
+import 'package:diary_for_me/db_models/timeline_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../common/ui_kit.dart';
-import '../../diary/service/diary_model.dart';
-import '../../diary/service/tag_model.dart';
+import '../../db_models/diary_model.dart';
+import '../../db_models/tag_model.dart';
 import 'edit_collection_screen.dart';
 import 'edit_profile_screen.dart';
 

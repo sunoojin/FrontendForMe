@@ -1,4 +1,4 @@
-import 'package:diary_for_me/timeline/service/timeline_model.dart';
+import 'package:diary_for_me/db_models/timeline_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
