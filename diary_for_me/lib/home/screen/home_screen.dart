@@ -68,16 +68,23 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // 안전영역 설정
               SafeArea(bottom: false, child: SizedBox()),
+              SizedBox(height: 28,),
               // 타이틀
               Text(
-                '${_name ?? '기본'}님을 위한 실록',
+                '좋은 아침이에요,',
+                // PageTitle
+                style: pageTitle(fontWeight: FontWeight.w500),
+              ),
+              Text(
+                '${_name ?? '기본'}님',
                 // PageTitle
                 style: pageTitle(),
               ),
+              SizedBox(height: 28,),
               SizedBox(height: 16),
               // 오늘의 일기
               TodayWidget(),

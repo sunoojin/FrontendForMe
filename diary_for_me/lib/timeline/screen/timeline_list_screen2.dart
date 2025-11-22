@@ -16,7 +16,7 @@ class TimelineListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white),
-      backgroundColor: Colors.white,
+      backgroundColor: themePageColor,
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -37,6 +37,9 @@ class TimelineListScreen extends StatelessWidget {
             ),
 
             const SizedBox(height: 16),
+
+            // 오늘
+            TodayWidget(),
 
             // 이전
             ValueListenableBuilder(
