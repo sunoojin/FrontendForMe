@@ -135,7 +135,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                 children: [
                   Text(diary.title, style: pageTitle()),
                   SizedBox(height: 16),
-                  Text(diary.content['text'], style: diaryDetail()),
+                  Text(diary.content.text, style: diaryDetail()),
                 ],
               ),
               // SizedBox(height: 8,),

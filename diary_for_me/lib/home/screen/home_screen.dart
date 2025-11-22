@@ -3,6 +3,7 @@ import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
@@ -46,7 +47,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: blurryAppBar(
-        title: Text('apptitle'),
+        title: Image.asset(
+          'lib/common/resource/logo.png',
+          width: 130,
+          height: 40,
+          fit: BoxFit.contain,
+        ),
         color: themePageColor,
         actions: [
           IconButton(
@@ -67,64 +73,76 @@ class _HomePageState extends State<HomePage> {
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               // 안전영역 설정
               SafeArea(bottom: false, child: SizedBox()),
+              SizedBox(height: 28,),
               // 타이틀
               Text(
-                '${_name ?? '기본'}님을 위한 실록',
+                '좋은 아침이에요,',
+                // PageTitle
+                style: pageTitle(fontWeight: FontWeight.w500),
+              ),
+              Text(
+                '${_name ?? '기본'}님',
                 // PageTitle
                 style: pageTitle(),
               ),
+              SizedBox(height: 28,),
               SizedBox(height: 16),
               // 오늘의 일기
               TodayWidget(),
               // 나의 서고
               MyLibraryCard(),
               // 저장된 타임라인
-              contentsCard(
-                children: [
-                  contents(
+              ValueListenableBuilder(
+                valueListenable: timelineBox.listenable(),
+                builder: (context, Box<TimeLine> box, _) {
+                  return contentsCard(
                     children: [
-                      Row(
+                      contents(
                         children: [
-                          Text('내 타임라인 ', style: cardTitle()),
-                          Text('${timelineBox.length}개', style: cardTitle(color: mainColor)),
+                          Row(
+                            children: [
+                              Text('내 타임라인 ', style: cardTitle()),
+                              Text('${timelineBox.length}개', style: cardTitle(color: mainColor)),
+                            ],
+                          ),
+                          SizedBox(height: 8),
+                          Text(
+                            '사관이 모은 기록들을 바탕으로 생성된 타임라인이에요. '
+                                '저장된 타임라인으로 일기를 작성할 수 있어요.',
+                            style: cardDetail(),
+                          ),
+                          SizedBox(height: 16),
+                          borderHorizontal(),
                         ],
                       ),
-                      SizedBox(height: 8),
-                      Text(
-                        '사관이 모은 기록들을 바탕으로 생성된 타임라인이에요. '
-                        '저장된 타임라인으로 일기를 작성할 수 있어요.',
-                        style: cardDetail(),
+                      bottomButton(
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            Text('타임라인 보기', style: cardDetail(color: textTertiary)),
+                            Icon(
+                              Icons.arrow_forward,
+                              size: 19,
+                              color: textTertiary,
+                            ),
+                          ],
+                        ),
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => const TimelineListScreen(),
+                            ),
+                          );
+                        },
                       ),
-                      SizedBox(height: 16),
-                      borderHorizontal(),
                     ],
-                  ),
-                  bottomButton(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text('타임라인 보기', style: cardDetail(color: textTertiary)),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 19,
-                          color: textTertiary,
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => const TimelineListScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
+                  );
+                },
               ),
               // 하단 안전영역
               SafeArea(top: false, child: SizedBox(height: 80)),

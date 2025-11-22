@@ -1,3 +1,4 @@
+import 'package:diary_for_me/diary/service/diary_content_model.dart';
 import 'package:diary_for_me/timeline/service/event_model.dart';
 import 'package:diary_for_me/timeline/service/timeline_model.dart';
 import 'package:flutter/material.dart';
@@ -25,10 +26,12 @@ void main() async {
   // Hive 초기화
   await Hive.initFlutter();
   // 어댑터 호출
-  Hive.registerAdapter(DiaryAdapter());     // Diary
-  Hive.registerAdapter(TagAdapter());       // Tag
-  Hive.registerAdapter(EventAdapter());     // Event
-  Hive.registerAdapter(TimeLineAdapter());  // Timeline
+  Hive.registerAdapter(TimeLineAdapter());      // Timeline
+  Hive.registerAdapter(DiaryContentAdapter());  // DiaryContent
+  Hive.registerAdapter(DiaryAdapter());         // Diary
+  Hive.registerAdapter(TagAdapter());           // Tag
+  Hive.registerAdapter(EventAdapter());         // Event
+
 
   // open
   await Hive.openBox<Tag>('tagsBox');

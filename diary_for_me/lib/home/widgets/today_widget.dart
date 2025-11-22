@@ -54,26 +54,31 @@ class _TodayWidgetState extends State<TodayWidget> {
       return contentsCard(
         children: [
           contents(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 제목(오늘)
-              Text('오늘', style: cardTitle()),
-              SizedBox(height: 16),
               // 이미지 영역
-              Container(
-                width: double.infinity,
+              Image.asset(
+                'lib/common/resource/collecting_info.png',
+                width: 160,
                 height: 160,
-                color: themeDeepColor,
+                fit: BoxFit.cover,
               ),
               SizedBox(height: 16),
               // 상태
               Text('사관이 정보를 수집중이에요', style: contentTitle()),
               SizedBox(height: 8),
+              Text(
+                '정보 수집이 끝나면 오늘의 실록을 만들 수 있어요.\n준비가 완료되면 알림을 보내드려요.',
+                textAlign: TextAlign.center,
+                style: contentDetail(),
+              ),
+              SizedBox(height: 16,),
               // 진행 바
               Container(
                 clipBehavior: Clip.antiAlias,
-                height: 10,
+                height: 12,
                 decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(6),
                   color: themeColor,
                 ),
                 child: LinearProgressIndicator(
@@ -81,13 +86,6 @@ class _TodayWidgetState extends State<TodayWidget> {
                   backgroundColor: themeDeepColor,
                   color: themeColor,
                 ),
-              ),
-              SizedBox(height: 8),
-              // 정보
-              Text(
-                '정보 수집이 끝나면 오늘의 실록을 만들 수 있어요.',
-                //    ' 준비가 완료되면 알림을 보내드려요'
-                style: contentDetail(),
               ),
             ],
           ),
@@ -97,22 +95,21 @@ class _TodayWidgetState extends State<TodayWidget> {
       return contentsCard(
         children: [
           contents(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 제목(오늘)
-              Text('오늘', style: cardTitle()),
-              SizedBox(height: 16),
               // 이미지 영역
-              Container(
-                width: double.infinity,
+              Image.asset(
+                'lib/common/resource/collecting_finish.png',
+                width: 160,
                 height: 160,
-                color: themeDeepColor,
+                fit: BoxFit.cover,
               ),
               SizedBox(height: 16),
               // 상태
               Text('오늘의 실록을 만들 준비를 마쳤어요.', style: contentTitle()),
               SizedBox(height: 8),
               // 정보
-              Text('사관이 정보 수집을 끝냈어요. 이제 일기를 생성해 보세요.', style: contentDetail()),
+              Text('사관이 정보 수집을 끝냈어요. 이제 일기를 생성해 보세요.', style: contentDetail(), textAlign: TextAlign.center,),
               SizedBox(height: 16),
               // 일기 생성 버튼
               ContainerButton(

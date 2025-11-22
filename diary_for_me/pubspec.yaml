@@ -72,6 +72,8 @@ flutter:
   assets:
     - lib/common/resource/first_screen.png
     - lib/common/resource/logo.png
+    - lib/common/resource/collecting_info.png
+    - lib/common/resource/collecting_finish.png
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 

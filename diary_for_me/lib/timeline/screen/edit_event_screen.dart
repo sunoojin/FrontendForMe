@@ -23,13 +23,12 @@ class ActivityEditSheet {
             initialEvent: initialEvent, // 3. Content 위젯에 초기 데이터 전달
           ),
       useSafeArea: true,
-      // ... (기존 shape, clipBehavior 등)
       shape: SmoothRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
         smoothness: 0.6,
       ),
       clipBehavior: Clip.antiAliasWithSaveLayer,
-      enableDrag: true,
+      enableDrag: false,
     );
 
     // 4. 모달에서 반환된 최종 Event 객체를 다시 반환

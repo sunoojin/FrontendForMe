@@ -30,11 +30,12 @@ Widget contentsCard({required List<Widget> children}) {
   );
 }
 
-Widget contents({required List<Widget> children}) {
+Widget contents({required List<Widget> children,
+  crossAxisAlignment = CrossAxisAlignment.start,}) {
   return Padding(
     padding: EdgeInsets.symmetric(horizontal: 20, vertical: 8),
     child: Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: crossAxisAlignment,
       children: children
     ),
   );

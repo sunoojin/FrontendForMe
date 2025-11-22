@@ -3,7 +3,7 @@ import 'colors.dart';
 
 TextStyle pageTitle({
   Color color = textPrimary,
-  FontWeight fontWeight = FontWeight.w700,
+  FontWeight fontWeight = FontWeight.w800,
 }) {
   return TextStyle(
     fontSize: 28.0,

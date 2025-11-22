@@ -16,7 +16,7 @@ class TimelineListScreen extends StatelessWidget {
 
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white),
-      backgroundColor: Colors.white,
+      backgroundColor: themePageColor,
       extendBodyBehindAppBar: true,
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
@@ -38,6 +38,9 @@ class TimelineListScreen extends StatelessWidget {
 
             const SizedBox(height: 16),
 
+            // 오늘
+            TodayWidget(),
+
             // 이전
             ValueListenableBuilder(
               valueListenable: timelineBox.listenable(),
@@ -47,8 +50,6 @@ class TimelineListScreen extends StatelessWidget {
                 if(timelines.isEmpty) {
                   return SizedBox();
                 }
-
-                timelines.sort();
 
                 return ListView.builder(
                   shrinkWrap: true,
@@ -61,6 +62,25 @@ class TimelineListScreen extends StatelessWidget {
                 );
               },
             )
+
+            /*
+            // 어제
+            timelineCard(
+              dateText: "12/8 (화)",
+              activityCount: 13,
+              infoCount: 135,
+              date: DateTime.now().subtract(Duration(days: 1)), // 어제
+            ),
+
+            // 그저께
+            timelineCard(
+              dateText: "12/7 (월)",
+              activityCount: 123,
+              infoCount: 6,
+              date: DateTime.now().subtract(Duration(days: 2)), // 그제
+            ),
+
+             */
           ],
         ),
       ),
