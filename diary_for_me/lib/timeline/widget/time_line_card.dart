@@ -33,102 +33,69 @@ class TimeLineCard extends StatelessWidget {
       ),
       padding: EdgeInsets.all(20),
       margin: EdgeInsets.only(bottom: 16),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Column(
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                DateFormat('yyyy 년 MM/dd (E)').format(timeline.date),
+                //DateFormat('yyyy년 MM/dd').format(timeline.date),
+                DateFormat('yyyy년 MM/dd (E)').format(timeline.date),
                 style: cardTitle(),
               ),
-              SizedBox(height: 16,),
-              Row(
+              SizedBox(height: 4,),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '수집된 정보 ',
+                    '수집된 정보 ${timeline.date.second}개',
                     style: TextStyle(
-                      fontSize: 16.0,
-                      color: textPrimary,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2
+                        fontSize: 16.0,
+                        color: textTertiary,
+                        fontWeight: FontWeight.w500,
+                        height: 1.2
                     ),
                   ),
                   Text(
-                    '${timeline.date.second}',
+                    '생성된 활동 ${timeline.events.length}개',
                     style: TextStyle(
-                      fontSize: 16.0,
-                      color: textPrimary,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2
-                    ),
-                  ),
-                  Text(
-                    '개',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: textTertiary,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2
-                    ),
-                  ),
-                ],
-              ),
-              Row(
-                children: [
-                  Text(
-                    '생성된 활동 ',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: textPrimary,
-                      fontWeight: FontWeight.w400,
-                      height: 1.2
-                    ),
-                  ),
-                  Text(
-                    '${timeline.events.length}',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: textPrimary,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2
-                    ),
-                  ),
-                  Text(
-                    '개',
-                    style: TextStyle(
-                      fontSize: 16.0,
-                      color: textTertiary,
-                      fontWeight: FontWeight.w700,
-                      height: 1.2
+                        fontSize: 16.0,
+                        color: textTertiary,
+                        fontWeight: FontWeight.w500,
+                        height: 1.2
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          IntrinsicWidth(
-            child: ContainerButton(
-              color: themeColor.withAlpha(24),
-              padding: EdgeInsets.all(10),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                      builder: (context) => EventListScreen(timelineKey: timeline.key,)),
-                );
-              },
-              child: Text(
-                '일기 생성하기',
-                style: TextStyle(
-                  fontSize: 16.0,
-                  color: themeColor,
-                  fontWeight: FontWeight.w500,
-                  height: 1.2
+          SizedBox(height: 16,),
+          ContainerButton(
+            color: themeColor.withAlpha(24),
+            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            onTap: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                    builder: (context) => EventListScreen(timelineKey: timeline.key,)),
+              );
+            },
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  '일기 생성하기',
+                  style: TextStyle(
+                    fontSize: 16.0,
+                    color: themeColor,
+                    fontWeight: FontWeight.w500,
+                    height: 1.2
+                  ),
                 ),
-              ),
+                Icon(Icons.keyboard_arrow_right, size: 24, color: themeColor,)
+              ],
             ),
           )
         ],

@@ -47,7 +47,12 @@ class _HomePageState extends State<HomePage> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: blurryAppBar(
-        title: Text('apptitle'),
+        title: Image.asset(
+          'lib/common/resource/logo.png',
+          width: 130,
+          height: 40,
+          fit: BoxFit.contain,
+        ),
         color: themePageColor,
         actions: [
           IconButton(

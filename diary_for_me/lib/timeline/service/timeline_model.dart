@@ -4,7 +4,7 @@ import 'event_model.dart';
 part 'timeline_model.g.dart';
 
 @HiveType(typeId: 3) // Event 클래스와 다른 고유한 typeId 사용
-class TimeLine extends HiveObject {
+class TimeLine extends HiveObject implements Comparable<TimeLine>{
 
   @HiveField(0)
   String id;
@@ -28,4 +28,10 @@ class TimeLine extends HiveObject {
     required this.events,
     required this.selfsurvey,
   });
+
+  @override
+  int compareTo(TimeLine other) {
+    // TODO: implement compareTo
+    return other.date.compareTo(this.date);
+  }
 }

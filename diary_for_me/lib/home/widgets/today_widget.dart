@@ -58,7 +58,7 @@ class _TodayWidgetState extends State<TodayWidget> {
             children: [
               // 이미지 영역
               Image.asset(
-                'lib/common/resource/collecting_info.png',
+                'lib/common/resource/collecting_finish.png',
                 width: 160,
                 height: 160,
                 fit: BoxFit.cover,

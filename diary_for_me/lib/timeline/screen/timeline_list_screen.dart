@@ -48,6 +48,8 @@ class TimelineListScreen extends StatelessWidget {
                   return SizedBox();
                 }
 
+                timelines.sort();
+
                 return ListView.builder(
                   shrinkWrap: true,
                   padding: EdgeInsets.zero,
@@ -59,25 +61,6 @@ class TimelineListScreen extends StatelessWidget {
                 );
               },
             )
-
-            /*
-            // 어제
-            timelineCard(
-              dateText: "12/8 (화)",
-              activityCount: 13,
-              infoCount: 135,
-              date: DateTime.now().subtract(Duration(days: 1)), // 어제
-            ),
-
-            // 그저께
-            timelineCard(
-              dateText: "12/7 (월)",
-              activityCount: 123,
-              infoCount: 6,
-              date: DateTime.now().subtract(Duration(days: 2)), // 그제
-            ),
-
-             */
           ],
         ),
       ),
