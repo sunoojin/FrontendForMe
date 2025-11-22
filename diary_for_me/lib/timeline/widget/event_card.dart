@@ -1,19 +1,17 @@
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:diary_for_me/timeline/service/event_model.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
 class EventCard extends StatelessWidget {
-  final String time;
-  final String title;
-  final String description;
   final VoidCallback? onEdit;
+  final Event event;
 
   const EventCard({
     super.key,
-    required this.time,
-    required this.title,
-    required this.description,
     this.onEdit,
+    required this.event
   });
 
   @override
@@ -32,7 +30,7 @@ class EventCard extends StatelessWidget {
             width: 48,
             height: 36,
             child: Text(
-              time,
+              DateFormat('HH:mm').format(event.timestamp),
               style: const TextStyle(
                 fontSize: 16,
                 color: textSecondary,
@@ -53,12 +51,12 @@ class EventCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  title,
+                  event.title,
                   style: contentTitle()
                 ),
                 const SizedBox(height: 6),
                 Text(
-                  description,
+                  event.content,
                   style: contentDetail()
                 ),
               ],

@@ -1,10 +1,13 @@
+import 'package:diary_for_me/home/widgets/my_library_card.dart';
 import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:hive/hive.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
 import 'package:flutter/cupertino.dart';
+import '../../timeline/service/timeline_model.dart';
 import '../widgets/today_widget.dart';
 import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
 import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
@@ -38,6 +41,8 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final timelineBox = Hive.box<TimeLine>('timelineBox');
+
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: blurryAppBar(
@@ -76,41 +81,7 @@ class _HomePageState extends State<HomePage> {
               // 오늘의 일기
               TodayWidget(),
               // 나의 서고
-              contentsCard(
-                children: [
-                  contents(
-                    children: [
-                      Text('나의 서고', style: cardTitle()),
-                      SizedBox(height: 8),
-                      Text('저장된 일기들을 이곳에서 볼 수 있어요', style: cardDetail()),
-                    ],
-                  ),
-                  // DiaryTile(),
-                  // DiaryTile(),
-                  contents(children: [borderHorizontal()]),
-                  bottomButton(
-                    child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.end,
-                      children: [
-                        Text('모두 보기', style: cardDetail(color: textTertiary)),
-                        Icon(
-                          Icons.arrow_forward,
-                          size: 19,
-                          color: textTertiary,
-                        ),
-                      ],
-                    ),
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => const MyLibraryScreen(),
-                        ),
-                      );
-                    },
-                  ),
-                ],
-              ),
+              MyLibraryCard(),
               // 저장된 타임라인
               contentsCard(
                 children: [
@@ -119,7 +90,7 @@ class _HomePageState extends State<HomePage> {
                       Row(
                         children: [
                           Text('내 타임라인 ', style: cardTitle()),
-                          Text('0개', style: cardTitle(color: mainColor)),
+                          Text('${timelineBox.length}개', style: cardTitle(color: mainColor)),
                         ],
                       ),
                       SizedBox(height: 8),

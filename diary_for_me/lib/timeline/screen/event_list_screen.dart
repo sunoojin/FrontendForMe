@@ -1,28 +1,44 @@
+import 'dart:developer';
+
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
+import 'package:diary_for_me/timeline/service/event_model.dart';
 import 'package:diary_for_me/timeline/widget/add_event_button.dart';
+import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:flutter/cupertino.dart';
 
 import 'package:diary_for_me/timeline/widget/event_card.dart';
 import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
+import '../service/timeline_model.dart';
+
 class EventListScreen extends StatelessWidget {
-  const EventListScreen({super.key, required date});
+  final String timelineKey;
+  const EventListScreen({super.key, required this.timelineKey});
 
   @override
   Widget build(BuildContext context) {
-    // 임시 데이터
-    final events = [
-      {"time": "12:00", "title": "필동함박에서 점심식사", "description": "후배와 점심식사"},
-      {
-        "time": "16:00",
-        "title": "카페에서 커피 마시면서 공부하기",
-        "description": "블루포트에서 혼공",
-      },
-      {"time": "18:00", "title": "동아리 연습에 참여하기", "description": "축제 무대 연습"},
-    ];
+    final timelineBox = Hive.box<TimeLine>('timelineBox');
+
+    void _showEventModal(BuildContext context, TimeLine timeline, int? eventIndex) async {
+      final Event? initialEvent = (eventIndex != null) ? timeline.events[eventIndex] : null;
+
+      final Event? resultEvent = await ActivityEditSheet.show(context, initialEvent: initialEvent);
+      if (resultEvent != null) {
+        if (eventIndex != null) {
+          timeline.events[eventIndex] = resultEvent;
+        } else {
+          timeline.events ??= [];
+          timeline.events.add(resultEvent);
+        }
+      }
+
+      await timeline.save();
+    }
 
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white,
@@ -52,6 +68,7 @@ class EventListScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // 이벤트 목록
+            /*
             Expanded(
               child: SmoothClipRRect(
                 borderRadius: BorderRadius.circular(32),
@@ -76,6 +93,44 @@ class EventListScreen extends StatelessWidget {
                       ),
                     );
                   },
+                ),
+              ),
+            ),
+             */
+            Expanded(
+              child: SmoothClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: ValueListenableBuilder(
+                  valueListenable: timelineBox.listenable(),
+                  builder: (context, Box<TimeLine> box, _) {
+                    final TimeLine? timeline = box.get(timelineKey);
+
+                    if(timeline == null) return Text('타임라인 에러');
+
+                    final events = timeline.events;
+                    events.sort();
+
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: events.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == events.length) return AddEventButton(onTap: () => _showEventModal(context, timeline, null),);
+                        final e = events[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: EventCard(
+                            event: e,
+                            onEdit: () {
+                              _showEventModal(context, timeline, index);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("${e.title} 수정 클릭")),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
                 ),
               ),
             ),

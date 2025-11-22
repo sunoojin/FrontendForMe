@@ -3,16 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:diary_for_me/timeline/screen/event_list_screen.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 
-class GenerateButton extends StatefulWidget {
-  final DateTime date;
+class GenerateButton extends StatelessWidget {
+  final String timelineKey;
 
-  const GenerateButton({super.key, required this.date});
+  const GenerateButton({super.key, required this.timelineKey});
 
-  @override
-  State<GenerateButton> createState() => _GenerateButtonState();
-}
-
-class _GenerateButtonState extends State<GenerateButton> {
   @override
   Widget build(BuildContext context) {
     return ContainerButton(
@@ -31,7 +26,7 @@ class _GenerateButtonState extends State<GenerateButton> {
         Navigator.push(
           context,
           CupertinoPageRoute(
-            builder: (context) => EventListScreen(date: widget.date)),
+            builder: (context) => EventListScreen(timelineKey: timelineKey,)),
         );
       },
       child: Center(
@@ -47,7 +42,6 @@ class _GenerateButtonState extends State<GenerateButton> {
     );
   }
 }
-
 
 /*
 class PurpleButton extends StatelessWidget {

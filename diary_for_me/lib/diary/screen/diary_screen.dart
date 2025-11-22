@@ -1,24 +1,20 @@
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:diary_for_me/diary/service/diary_model.dart';
 import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
 class DiaryScreen extends StatefulWidget {
-  final String title;
-  final String details;
-  final List<String> tags;
-  final DateTime date;
+  final String diaryKey;
 
   const DiaryScreen({
     super.key,
-    required this.title,
-    required this.details,
-    required this.tags,
-    required this.date,
+    required this.diaryKey
   });
 
   @override
@@ -26,7 +22,16 @@ class DiaryScreen extends StatefulWidget {
 }
 
 class _DiaryScreenState extends State<DiaryScreen> {
-  bool _isplaying = false;
+  late final Diary diary;
+
+  bool _isPlaying = false;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    diary = Hive.box<Diary>('diaryBox').get(widget.diaryKey)!;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -35,7 +40,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
       appBar: blurryAppBar(
         color: Colors.white,
         title: Text(
-          DateFormat('yyyy.MM.dd(E)').format(widget.date),
+          DateFormat('yyyy.MM.dd(E)').format(DateTime(2025)),
           style: appbarTitle(),
         ),
         centerTitle: true,
@@ -82,7 +87,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         child: GestureDetector(
                           onTap: () {
                             setState(() {
-                              _isplaying = !_isplaying;
+                              _isPlaying = !_isPlaying;
                             });
                           },
                           child: Container(
@@ -110,7 +115,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                   ),
                                   alignment: Alignment.center,
                                   child: Icon(
-                                    _isplaying ? Icons.pause : Icons.play_arrow,
+                                    _isPlaying ? Icons.pause : Icons.play_arrow,
                                     size: 24,
                                     color: Colors.white,
                                   ),
@@ -128,9 +133,9 @@ class _DiaryScreenState extends State<DiaryScreen> {
               // 내용
               contents(
                 children: [
-                  Text(widget.title, style: pageTitle()),
+                  Text(diary.title, style: pageTitle()),
                   SizedBox(height: 16),
-                  Text(widget.details, style: diaryDetail()),
+                  Text(diary.content['text'], style: diaryDetail()),
                 ],
               ),
               // SizedBox(height: 8,),
@@ -147,7 +152,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                       scrollDirection: Axis.horizontal,
                       child: Row(
                         children: [
-                          ...widget.tags.map((tagData) {
+                          ...diary.tag.map((tagData) {
                             if (tagData == '@f') return SizedBox();
                             return tagBox(text: '#$tagData', activated: false);
                           }),

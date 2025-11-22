@@ -1,18 +1,32 @@
+import 'package:diary_for_me/diary/service/diary_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:hive/hive.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
 import '../../diary/screen/diary_screen.dart';
 
 class FinishGenerationScreen extends StatefulWidget {
-  const FinishGenerationScreen({super.key});
+  final String diaryKey;
+
+  const FinishGenerationScreen({super.key, required this.diaryKey});
 
   @override
   State<FinishGenerationScreen> createState() => _FinishGenerationScreenState();
 }
 
 class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
+  late final Diary diary;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    diary = Hive.box<Diary>('diaryBox').get(widget.diaryKey)!;
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -59,14 +73,14 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: contentTitle(),
-                    '롤러코스터보다 빠른 심장',
+                    diary.title,
                   ),
                   SizedBox(height: 8,),
                   Text(
                     maxLines: 4,
                     overflow: TextOverflow.ellipsis,
                     style: contentDetail(fontSize: 12),
-                    '다른 과정론적이 2025년 의혹은 접속을 주는 행동을 규격의 잠재력의 팽창하다. 지식이 관련할 계파다 간 흑색선전의, 악용되다. 다양하여 부녀회원의 일은 하고 일을 신탁의 벗는 데 자매로, 논의되다. 나도 공사를...'
+                    diary.content['text']
                   )
                 ],
               ),
@@ -113,7 +127,7 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                     onTap: () {
                       Navigator.pushReplacement(
                         context,
-                        CupertinoPageRoute(builder: (context) => DiaryScreen(title: 'title', details: 'details', tags: [], date: DateTime(2025),))
+                        CupertinoPageRoute(builder: (context) => DiaryScreen(diaryKey: widget.diaryKey,))
                       );
                     },
                     child: Center(

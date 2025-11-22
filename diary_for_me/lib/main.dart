@@ -1,7 +1,13 @@
+import 'package:diary_for_me/timeline/service/event_model.dart';
+import 'package:diary_for_me/timeline/service/timeline_model.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 
+import 'diary/service/diary_model.dart';
+import 'diary/service/tag_model.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 
@@ -14,6 +20,21 @@ void main() async {
 
   // 사용자 정보 입력 여부 확인 (true면 이미 입력 완료)
   final bool hasUserInfo = prefs.getBool('hasUserInfo') ?? false;
+
+  // Hive db 코드
+  // Hive 초기화
+  await Hive.initFlutter();
+  // 어댑터 호출
+  Hive.registerAdapter(DiaryAdapter());     // Diary
+  Hive.registerAdapter(TagAdapter());       // Tag
+  Hive.registerAdapter(EventAdapter());     // Event
+  Hive.registerAdapter(TimeLineAdapter());  // Timeline
+
+  // open
+  await Hive.openBox<Tag>('tagsBox');
+  await Hive.openBox<Diary>('diaryBox');
+  await Hive.openBox<TimeLine>('timelineBox');
+
 
   runApp(MyApp(hasUserInfo: hasUserInfo));
 }

@@ -39,12 +39,24 @@ class _ContainerButtonState extends State<ContainerButton> {
     setState(() => _isPressed = true);
   }
 
+  void _onPointerDown(PointerDownEvent details) {
+    setState(() => _isPressed = true);
+  }
+
   void _onTapUp(TapUpDetails details) {
     setState(() => _isPressed = false);
     widget.onTap();
   }
 
+  void _onPointerUp(PointerUpEvent details) {
+    setState(() => _isPressed = false);
+  }
+
   void _onTapCancel() {
+    setState(() => _isPressed = false);
+  }
+
+  void _onPointerCanceled(PointerCancelEvent details) {
     setState(() => _isPressed = false);
   }
 
@@ -55,43 +67,47 @@ class _ContainerButtonState extends State<ContainerButton> {
     final Color dimColor =
     _isPressed ? Color(0xFF111111).withAlpha(28) : Colors.transparent;
 
-    return GestureDetector(
-      // behavior: HitTestBehavior.opaque,
-      onTapDown: _onTapDown,
-      onTapUp: _onTapUp,
-      onTapCancel: _onTapCancel,
-      child: AnimatedContainer( // AnimatedScale + Container -> AnimatedContainer
-        duration: const Duration(milliseconds: 400),
-        curve: Curves.easeOutBack, // 기존 커브 유지
+    return Listener(
+      onPointerDown: _onPointerDown,
+      onPointerUp: _onPointerUp,
+      onPointerCancel: _onPointerCanceled,
+      child: GestureDetector(
+        onTapDown: _onTapDown,
+        onTapUp: _onTapUp,
+        onTapCancel: _onTapCancel,
+        child: AnimatedContainer( // AnimatedScale + Container -> AnimatedContainer
+          duration: const Duration(milliseconds: 400),
+          curve: Curves.easeOutBack, // 기존 커브 유지
 
-        // 1. Scale 애니메이션
-        transform: Matrix4.identity()..scale(scale),
-        transformAlignment: Alignment.center,
+          // 1. Scale 애니메이션
+          transform: Matrix4.identity()..scale(scale),
+          transformAlignment: Alignment.center,
 
-        // 2. Color 애니메이션
-        padding: widget.padding ?? EdgeInsets.symmetric(),
-        margin: widget.margin ?? EdgeInsets.symmetric(),
-        width: widget.width,
-        height: widget.height,
-        clipBehavior: Clip.antiAlias,
-        decoration: ShapeDecoration(
-          color: widget.color,
-          shape: SmoothRectangleBorder(
-            side: widget.side ?? BorderSide.none,
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-            smoothness: 0.6,
+          // 2. Color 애니메이션
+          padding: widget.padding ?? EdgeInsets.symmetric(),
+          margin: widget.margin ?? EdgeInsets.symmetric(),
+          width: widget.width,
+          height: widget.height,
+          clipBehavior: Clip.antiAlias,
+          decoration: ShapeDecoration(
+            color: widget.color,
+            shape: SmoothRectangleBorder(
+              side: widget.side ?? BorderSide.none,
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+              smoothness: 0.6,
+            ),
+            shadows: widget.shadows
           ),
-          shadows: widget.shadows
-        ),
-        foregroundDecoration: ShapeDecoration(
-          color: dimColor,
-          shape: SmoothRectangleBorder(
-            borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
-            smoothness: 0.6,
+          foregroundDecoration: ShapeDecoration(
+            color: dimColor,
+            shape: SmoothRectangleBorder(
+              borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
+              smoothness: 0.6,
+            ),
           ),
+          alignment: Alignment.topLeft,
+          child: widget.child
         ),
-        alignment: Alignment.topLeft,
-        child: widget.child
       ),
     );
   }

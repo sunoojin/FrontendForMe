@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
@@ -7,8 +8,12 @@ import 'package:diary_for_me/home/screen/home_screen.dart';
 import 'package:diary_for_me/new_diary/screen/finish_generation_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 // import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+
+import '../../diary/service/diary_model.dart';
+import '../../timeline/service/timeline_model.dart';
 
 class WriteDraftScreen extends StatefulWidget {
   const WriteDraftScreen({super.key});
@@ -18,6 +23,7 @@ class WriteDraftScreen extends StatefulWidget {
 }
 
 class _WriteDraftScreenState extends State<WriteDraftScreen> {
+  final diaryBox = Hive.box<Diary>('diaryBox');
   final TextEditingController _controller = TextEditingController();
 
   @override
@@ -29,6 +35,27 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
   }
 
   void _generateDiary() {
+    // 일기 생성 테스트 코드
+    // 임시 타임라인 생성
+    final newTimeLine = TimeLine(
+      id: DateTime.now().toIso8601String(),
+      title: '새 타임라인 ${DateTime.now().second}초',
+      date: DateTime.now(),
+      events: [],
+      selfsurvey: {'mood' : 'good', 'draft' : 'text'}
+    );
+    // 일기 생성
+    final newDiary = Diary(
+      id: DateTime.now().toIso8601String(),
+      title: '새 일기 ${DateTime.now().second}초',
+      timeline: newTimeLine,
+      content: {'text': DateTime.now().toIso8601String()},
+      tag: [],
+    );
+    diaryBox.put(newDiary.id, newDiary);
+    newDiary.updateTag('가족');
+
+    // 화면 이동
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(builder: (context) => HomePage()),
@@ -36,7 +63,7 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     );
     Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => FinishGenerationScreen()),
+      CupertinoPageRoute(builder: (context) => FinishGenerationScreen(diaryKey: newDiary.id,)),
     );
   }
 
