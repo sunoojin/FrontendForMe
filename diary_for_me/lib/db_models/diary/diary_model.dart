@@ -1,18 +1,28 @@
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:hive/hive.dart';
 
-import 'tag_model.dart';
 import 'diary_content_model.dart';
 
 // 생성될 g.dart 파일을 part로 지정
-part 'part/diary_model.g.dart';
+part 'diary_model.g.dart';
 // 해당 파일의 필드를 업데이트 할 경우 변경 이후 아래 명령어 실행 필요
 // flutter pub run build_runner build
 // 혹은
 // flutter packages pub run build_runner build
 
+@HiveType(typeId: 11)
+class Tag extends HiveObject {
 
-@HiveType(typeId: 0) // 고유한 타입 ID 지정
+  @HiveField(0)
+  String name;
+
+  @HiveField(1)
+  int count;
+
+  Tag({required this.name, this.count = 0});
+}
+
+@HiveType(typeId: 12) // 고유한 타입 ID 지정
 class Diary extends HiveObject implements Comparable<Diary> { // 3. HiveObject 상속 (권장)
 
   @HiveField(0) // 각 필드에 고유 인덱스 부여

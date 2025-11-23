@@ -1,12 +1,12 @@
 import 'package:diary_for_me/setting/widget/setting_category.dart';
-import 'package:diary_for_me/db_models/event_model.dart';
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import '../../common/ui_kit.dart';
-import '../../db_models/diary_model.dart';
-import '../../db_models/tag_model.dart';
+import '../../db_models/daily_data/daily_data_model.dart';
+import '../../db_models/diary/diary_model.dart';
 import 'edit_collection_screen.dart';
 import 'edit_profile_screen.dart';
 
@@ -83,7 +83,7 @@ class SettingScreen extends StatelessWidget {
                       title: '새 이벤트 1',
                       content: '이벤트 내용 1',
                       feeling: 'good',
-                      dailydata: {'gallery' : []}
+                      dailydata: DailyData.empty()
                   );
                   final newEvent2 = Event(
                       id: DateTime.now().toIso8601String(),
@@ -91,7 +91,7 @@ class SettingScreen extends StatelessWidget {
                       title: '새 이벤트 2',
                       content: '이벤트 내용 2',
                       feeling: 'bad',
-                      dailydata: {'gallery' : []}
+                      dailydata: DailyData.empty()
                   );
                   final newTimeLine = TimeLine(
                       id: DateTime.now().toIso8601String(),

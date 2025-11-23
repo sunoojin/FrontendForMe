@@ -2,7 +2,7 @@ import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/diary_content_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
 // import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
@@ -14,8 +14,8 @@ import 'package:hive/hive.dart';
 // import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-import '../../db_models/diary_model.dart';
-import '../../db_models/timeline_model.dart';
+import '../../db_models/diary/diary_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
 
 class WriteDraftScreen extends StatefulWidget {
   final String timelineKey;

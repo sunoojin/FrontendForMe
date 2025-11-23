@@ -1,14 +1,14 @@
-import 'package:diary_for_me/db_models/diary_content_model.dart';
-import 'package:diary_for_me/db_models/event_model.dart';
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/daily_data/daily_data_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'db_models/diary_model.dart';
-import 'db_models/tag_model.dart';
+import 'db_models/diary/diary_model.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 
@@ -26,11 +26,17 @@ void main() async {
   // Hive 초기화
   await Hive.initFlutter();
   // 어댑터 호출
-  Hive.registerAdapter(TimeLineAdapter());      // Timeline
+  // 데일리 데이터
+  Hive.registerAdapter(NotificationAdapter());  // Notification
+  Hive.registerAdapter(LocationAdapter());      // LocationData
+  Hive.registerAdapter(DailyDataAdapter());     // DailyData
+  // 일기
   Hive.registerAdapter(DiaryContentAdapter());  // DiaryContent
   Hive.registerAdapter(DiaryAdapter());         // Diary
-  Hive.registerAdapter(TagAdapter());           // Tag
+  // 이벤트
   Hive.registerAdapter(EventAdapter());         // Event
+  // 타임라인
+  Hive.registerAdapter(TimeLineAdapter());      // Timeline
 
 
   // open

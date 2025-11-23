@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../diary_content_model.dart';
+part of 'diary_content_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -8,7 +8,7 @@ part of '../diary_content_model.dart';
 
 class DiaryContentAdapter extends TypeAdapter<DiaryContent> {
   @override
-  final int typeId = 4;
+  final int typeId = 10;
 
   @override
   DiaryContent read(BinaryReader reader) {

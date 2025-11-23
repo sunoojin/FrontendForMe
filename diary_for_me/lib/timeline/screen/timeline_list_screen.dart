@@ -5,7 +5,7 @@ import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
-import '../../db_models/timeline_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
 
 class TimelineListScreen extends StatelessWidget {
   const TimelineListScreen({super.key});

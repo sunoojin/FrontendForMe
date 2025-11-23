@@ -1,35 +1,44 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../tag_model.dart';
+part of 'timeline_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
 // **************************************************************************
 
-class TagAdapter extends TypeAdapter<Tag> {
+class TimeLineAdapter extends TypeAdapter<TimeLine> {
   @override
-  final int typeId = 1;
+  final int typeId = 30;
 
   @override
-  Tag read(BinaryReader reader) {
+  TimeLine read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Tag(
-      name: fields[0] as String,
-      count: fields[1] as int,
+    return TimeLine(
+      id: fields[0] as String,
+      title: fields[1] as String,
+      date: fields[2] as DateTime,
+      events: (fields[3] as List).cast<Event>(),
+      selfsurvey: (fields[4] as Map).cast<String, String>(),
     );
   }
 
   @override
-  void write(BinaryWriter writer, Tag obj) {
+  void write(BinaryWriter writer, TimeLine obj) {
     writer
-      ..writeByte(2)
+      ..writeByte(5)
       ..writeByte(0)
-      ..write(obj.name)
+      ..write(obj.id)
       ..writeByte(1)
-      ..write(obj.count);
+      ..write(obj.title)
+      ..writeByte(2)
+      ..write(obj.date)
+      ..writeByte(3)
+      ..write(obj.events)
+      ..writeByte(4)
+      ..write(obj.selfsurvey);
   }
 
   @override
@@ -38,7 +47,7 @@ class TagAdapter extends TypeAdapter<Tag> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is TagAdapter &&
+      other is TimeLineAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

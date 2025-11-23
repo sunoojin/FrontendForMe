@@ -7,7 +7,7 @@ import 'package:smooth_corner/smooth_corner.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../db_models/diary_model.dart';
+import '../../db_models/diary/diary_model.dart';
 
 
 class DiaryTile extends StatefulWidget {

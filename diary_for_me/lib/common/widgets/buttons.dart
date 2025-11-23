@@ -63,7 +63,7 @@ class _ContainerButtonState extends State<ContainerButton> {
   @override
   Widget build(BuildContext context) {
     // _isPressed 상태에 따라 값 결정
-    final double scale = _isPressed ? 0.96 : 1.0;
+    final double scale = _isPressed ? 0.94 : 1.0;
     final Color dimColor =
     _isPressed ? Color(0xFF111111).withAlpha(28) : Colors.transparent;
 
@@ -76,8 +76,8 @@ class _ContainerButtonState extends State<ContainerButton> {
         onTapUp: _onTapUp,
         onTapCancel: _onTapCancel,
         child: AnimatedContainer( // AnimatedScale + Container -> AnimatedContainer
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOutBack, // 기존 커브 유지
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut, // 기존 커브 유지
 
           // 1. Scale 애니메이션
           transform: Matrix4.identity()..scale(scale),

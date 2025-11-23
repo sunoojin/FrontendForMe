@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of '../event_model.dart';
+part of 'event_model.dart';
 
 // **************************************************************************
 // TypeAdapterGenerator
@@ -8,7 +8,7 @@ part of '../event_model.dart';
 
 class EventAdapter extends TypeAdapter<Event> {
   @override
-  final int typeId = 2;
+  final int typeId = 20;
 
   @override
   Event read(BinaryReader reader) {
@@ -22,8 +22,7 @@ class EventAdapter extends TypeAdapter<Event> {
       title: fields[2] as String,
       content: fields[3] as String,
       feeling: fields[4] as String,
-      dailydata: (fields[5] as Map).map((dynamic k, dynamic v) =>
-          MapEntry(k as String, (v as List).cast<String>())),
+      dailydata: fields[5] as DailyData,
     );
   }
 

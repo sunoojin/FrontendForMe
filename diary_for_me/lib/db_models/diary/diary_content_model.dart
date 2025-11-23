@@ -1,8 +1,8 @@
 import 'package:hive/hive.dart';
 
-part 'part/diary_content_model.g.dart';
+part 'diary_content_model.g.dart';
 
-@HiveType(typeId: 4)
+@HiveType(typeId: 10)
 class DiaryContent extends HiveObject {
 
   @HiveField(0) // 각 필드에 고유 인덱스 부여
