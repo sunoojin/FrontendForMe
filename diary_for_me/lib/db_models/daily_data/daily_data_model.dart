@@ -47,7 +47,7 @@ class Location extends HiveObject {
   Location({required this. lat, required this.lng});
 
   factory Location.empty() {
-    return Location(lat: 0.0, lng: 0.0);
+    return Location(lat: 37.5583, lng: 127.0001);
   }
 
   Location copyWith({double? lat, double? lng}) {

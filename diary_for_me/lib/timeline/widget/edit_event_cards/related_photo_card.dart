@@ -71,7 +71,7 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
             child: Stack(
               children: [
                 SmoothClipRRect(
-                  borderRadius: BorderRadius.circular(24),
+                  borderRadius: BorderRadius.circular(22),
                   smoothness: 0.6,
                   child: Image.network(
                     picture,
@@ -85,7 +85,7 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                   alignment: Alignment.topRight,
                   decoration: ShapeDecoration(
                     shape: SmoothRectangleBorder(
-                      borderRadius: BorderRadius.circular(20),
+                      borderRadius: BorderRadius.circular(22),
                       smoothness: 0.6,
                       side: BorderSide(color: Colors.black.withAlpha(24), width: 1.0)
                     )
