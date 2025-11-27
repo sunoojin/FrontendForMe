@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import '../../common/ui_kit.dart';
-import '../../db_models/diary_model.dart';
+import '../../db_models/diary/diary_model.dart';
 import '../../my_library/screen/my_library_screen.dart';
 import '../../my_library/widgets/diary_tile.dart';
 
@@ -32,7 +32,7 @@ class MyLibraryCard extends StatelessWidget {
           builder: (context, Box<Diary> box, _) {
             final diaries = box.values.toList();
 
-            if(diaries.isEmpty) {
+            if (diaries.isEmpty) {
               return SizedBox();
             }
 
@@ -43,9 +43,7 @@ class MyLibraryCard extends StatelessWidget {
               physics: NeverScrollableScrollPhysics(),
               itemCount: min(diaries.length, 2),
               itemBuilder: (BuildContext context, int index) {
-                return DiaryTile(
-                  diary: diaries[index],
-                );
+                return DiaryTile(diary: diaries[index]);
               },
             );
           },
@@ -56,19 +54,13 @@ class MyLibraryCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text('모두 보기', style: cardDetail(color: textTertiary)),
-              Icon(
-                Icons.arrow_forward,
-                size: 19,
-                color: textTertiary,
-              ),
+              Icon(Icons.arrow_forward, size: 19, color: textTertiary),
             ],
           ),
           onTap: () {
             Navigator.push(
               context,
-              CupertinoPageRoute(
-                builder: (context) => const MyLibraryScreen(),
-              ),
+              CupertinoPageRoute(builder: (context) => const MyLibraryScreen()),
             );
           },
         ),

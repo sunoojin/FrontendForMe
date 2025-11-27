@@ -1,18 +1,14 @@
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/event_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smooth_corner/smooth_corner.dart';
+// import 'package:smooth_corner/smooth_corner.dart';
 
 class EventCard extends StatelessWidget {
   final VoidCallback? onEdit;
   final Event event;
 
-  const EventCard({
-    super.key,
-    this.onEdit,
-    required this.event
-  });
+  const EventCard({super.key, this.onEdit, required this.event});
 
   @override
   Widget build(BuildContext context) {
@@ -39,37 +35,25 @@ class EventCard extends StatelessWidget {
             ),
           ),
           const SizedBox(width: 12),
-          Container(
-            height: 24,
-            width: 1,
-            color: Colors.black.withAlpha(16),
-          ),
+          Container(height: 24, width: 1, color: Colors.black.withAlpha(16)),
           const SizedBox(width: 12),
           // 내용
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  event.title,
-                  style: contentTitle()
-                ),
+                Text(event.title, style: contentTitle()),
                 const SizedBox(height: 6),
-                Text(
-                  event.content,
-                  style: contentDetail()
-                ),
+                Text(event.content, style: contentDetail()),
               ],
             ),
           ),
-          Text(
-            '편집 →',
-            style: contentDetail(),
-          ),
+          Text('편집 →', style: contentDetail()),
         ],
       ),
     );
   }
+
   /*
   Widget build(BuildContext context) {
     return Container(

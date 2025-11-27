@@ -1,10 +1,7 @@
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-
-import 'package:diary_for_me/timeline/widget/info_box.dart';
-import 'package:diary_for_me/timeline/widget/generate_button.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
@@ -13,10 +10,7 @@ import '../screen/event_list_screen.dart';
 class TimeLineCard extends StatelessWidget {
   final TimeLine timeline;
 
-  const TimeLineCard({
-    super.key,
-    required this.timeline,
-  });
+  const TimeLineCard({super.key, required this.timeline});
 
   @override
   Widget build(BuildContext context) {
@@ -25,10 +19,7 @@ class TimeLineCard extends StatelessWidget {
         shape: SmoothRectangleBorder(
           borderRadius: BorderRadius.circular(32),
           smoothness: 0.6,
-          side: BorderSide(
-            color: themeDeepColor,
-            width: 1.0
-          )
+          side: BorderSide(color: themeDeepColor, width: 1.0),
         ),
       ),
       padding: EdgeInsets.all(20),
@@ -45,33 +36,33 @@ class TimeLineCard extends StatelessWidget {
                 DateFormat('yyyy년 MM/dd (E)').format(timeline.date),
                 style: cardTitle(),
               ),
-              SizedBox(height: 4,),
+              SizedBox(height: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
                     '수집된 정보 ${timeline.date.second}개',
                     style: TextStyle(
-                        fontSize: 16.0,
-                        color: textTertiary,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2
+                      fontSize: 16.0,
+                      color: textTertiary,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
                     ),
                   ),
                   Text(
                     '생성된 활동 ${timeline.events.length}개',
                     style: TextStyle(
-                        fontSize: 16.0,
-                        color: textTertiary,
-                        fontWeight: FontWeight.w500,
-                        height: 1.2
+                      fontSize: 16.0,
+                      color: textTertiary,
+                      fontWeight: FontWeight.w500,
+                      height: 1.2,
                     ),
                   ),
                 ],
               ),
             ],
           ),
-          SizedBox(height: 16,),
+          SizedBox(height: 16),
           ContainerButton(
             color: themeColor.withAlpha(24),
             padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
@@ -79,7 +70,9 @@ class TimeLineCard extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                    builder: (context) => EventListScreen(timelineKey: timeline.key,)),
+                  builder: (context) =>
+                      EventListScreen(timelineKey: timeline.key),
+                ),
               );
             },
             child: Row(
@@ -91,13 +84,13 @@ class TimeLineCard extends StatelessWidget {
                     fontSize: 16.0,
                     color: themeColor,
                     fontWeight: FontWeight.w500,
-                    height: 1.2
+                    height: 1.2,
                   ),
                 ),
-                Icon(Icons.keyboard_arrow_right, size: 24, color: themeColor,)
+                Icon(Icons.keyboard_arrow_right, size: 24, color: themeColor),
               ],
             ),
-          )
+          ),
         ],
       ),
     );
@@ -139,4 +132,3 @@ class TimeLineCard extends StatelessWidget {
      */
   }
 }
-

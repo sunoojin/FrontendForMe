@@ -3,7 +3,18 @@
 
 #include <gtk/gtk.h>
 
+<<<<<<< HEAD
 G_DECLARE_FINAL_TYPE(MyApplication, my_application, MY, APPLICATION,
+=======
+<<<<<<< HEAD
+G_DECLARE_FINAL_TYPE(MyApplication,
+                     my_application,
+                     MY,
+                     APPLICATION,
+=======
+G_DECLARE_FINAL_TYPE(MyApplication, my_application, MY, APPLICATION,
+>>>>>>> location
+>>>>>>> oji/merge
                      GtkApplication)
 
 /**

@@ -1,7 +1,7 @@
-import 'package:diary_for_me/db_models/diary_content_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
 import 'package:hive/hive.dart';
-import 'package:diary_for_me/db_models/diary_model.dart';
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 
 class DiaryService {
   final Box<Diary> diaryBox;
@@ -14,7 +14,6 @@ class DiaryService {
     required String title,
     required String text,
   }) async {
-
     final TimeLine? selectedTimeline = timelineBox.get(timelineKey);
 
     if (selectedTimeline == null) {
@@ -24,11 +23,11 @@ class DiaryService {
 
     try {
       final newDiary = Diary(
-          id: selectedTimeline.date.toIso8601String(),
-          timeline: selectedTimeline,
-          title: title,
-          content: DiaryContent(text: text, image: [], music: []),
-          tag: []
+        id: selectedTimeline.date.toIso8601String(),
+        timeline: selectedTimeline,
+        title: title,
+        content: DiaryContent(text: text, image: [], music: []),
+        tag: [],
       );
 
       await diaryBox.put(newDiary.id, newDiary);
@@ -36,7 +35,6 @@ class DiaryService {
       await selectedTimeline.delete();
 
       return newDiary.id;
-
     } catch (e) {
       return null;
     }

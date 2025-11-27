@@ -1,8 +1,8 @@
-import 'dart:developer';
+// import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/diary_content_model.dart';
+// import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
 // import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
@@ -14,13 +14,17 @@ import 'package:hive/hive.dart';
 // import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-import '../../db_models/diary_model.dart';
-import '../../db_models/timeline_model.dart';
+import '../../db_models/diary/diary_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
 
 class WriteDraftScreen extends StatefulWidget {
   final String timelineKey;
   final String emotion;
-  const WriteDraftScreen({super.key, required this.timelineKey, required this.emotion});
+  const WriteDraftScreen({
+    super.key,
+    required this.timelineKey,
+    required this.emotion,
+  });
 
   @override
   State<WriteDraftScreen> createState() => _WriteDraftScreenState();
@@ -56,7 +60,7 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     String? newId = await diaryService.generateNewDiary(
       timelineKey: widget.timelineKey,
       title: '새 일기',
-      text: '새 일기 텍스트'
+      text: '새 일기 텍스트',
     );
 
     if (newId == null) {
@@ -70,7 +74,9 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     );
     Navigator.push(
       context,
-      CupertinoPageRoute(builder: (context) => FinishGenerationScreen(diaryKey: newId)),
+      CupertinoPageRoute(
+        builder: (context) => FinishGenerationScreen(diaryKey: newId),
+      ),
     );
   }
 
@@ -91,7 +97,9 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
       ),
       backgroundColor: Colors.white,
       body: GestureDetector(
-        onTap: () {FocusScope.of(context).unfocus();},
+        onTap: () {
+          FocusScope.of(context).unfocus();
+        },
         child: Padding(
           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
@@ -136,67 +144,70 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
                 ),
               ),
               Center(
-                child:
-                    _controller.text.isEmpty
-                        ? Text(
-                          textAlign: TextAlign.center,
-                          '일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',
-                          style: contentDetail(),
-                        )
-                        : SizedBox.shrink(),
+                child: _controller.text.isEmpty
+                    ? Text(
+                        textAlign: TextAlign.center,
+                        '일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',
+                        style: contentDetail(),
+                      )
+                    : SizedBox.shrink(),
               ),
               SizedBox(height: 16),
               // 버튼
               _controller.text.isEmpty
                   ? ContainerButton(
-                    key: ValueKey('empty'),
-                    borderRadius: BorderRadius.circular(24),
-                    color: themeColor.withAlpha(24),
-                    height: 68,
-                    onTap: _generateDiary,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '건너뛰고 일기 생성하기',
-                            style: mainButton(color: themeColor),
-                          ),
-                          Icon(Icons.navigate_next, size: 24, color: themeColor),
-                        ],
+                      key: ValueKey('empty'),
+                      borderRadius: BorderRadius.circular(24),
+                      color: themeColor.withAlpha(24),
+                      height: 68,
+                      onTap: _generateDiary,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '건너뛰고 일기 생성하기',
+                              style: mainButton(color: themeColor),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              size: 24,
+                              color: themeColor,
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                  )
+                    )
                   : ContainerButton(
-                    key: ValueKey('fill'),
-                    borderRadius: BorderRadius.circular(24),
-                    color: themeColor.withAlpha(255),
-                    height: 68,
-                    shadows: [
-                      BoxShadow(
-                        color: themeColor.withAlpha(128),
-                        spreadRadius: -20,
-                        blurRadius: 30,
-                        offset: Offset(0, 30),
-                      ),
-                    ],
-                    onTap: _generateDiary,
-                    child: Center(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('일기 생성하기', style: mainButton()),
-                          Icon(
-                            Icons.navigate_next,
-                            size: 24,
-                            color: Colors.white,
-                          ),
-                        ],
+                      key: ValueKey('fill'),
+                      borderRadius: BorderRadius.circular(24),
+                      color: themeColor.withAlpha(255),
+                      height: 68,
+                      shadows: [
+                        BoxShadow(
+                          color: themeColor.withAlpha(128),
+                          spreadRadius: -20,
+                          blurRadius: 30,
+                          offset: Offset(0, 30),
+                        ),
+                      ],
+                      onTap: _generateDiary,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('일기 생성하기', style: mainButton()),
+                            Icon(
+                              Icons.navigate_next,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
                       ),
                     ),
-                  ),
               // 안전영역
               SafeArea(child: SizedBox()),
             ],

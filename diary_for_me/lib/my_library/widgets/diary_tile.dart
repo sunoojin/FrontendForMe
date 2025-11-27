@@ -7,16 +7,12 @@ import 'package:smooth_corner/smooth_corner.dart';
 import 'package:intl/intl.dart';
 import 'package:flutter/cupertino.dart';
 
-import '../../db_models/diary_model.dart';
-
+import '../../db_models/diary/diary_model.dart';
 
 class DiaryTile extends StatefulWidget {
   final Diary diary;
 
-  const DiaryTile({
-    super.key,
-    required this.diary,
-  });
+  const DiaryTile({super.key, required this.diary});
 
   @override
   State<DiaryTile> createState() => _DiaryTileState();
@@ -34,7 +30,9 @@ class _DiaryTileState extends State<DiaryTile> {
         onTap: () {
           Navigator.push(
             context,
-            CupertinoPageRoute(builder: (context) => DiaryScreen(diaryKey: widget.diary.key,))
+            CupertinoPageRoute(
+              builder: (context) => DiaryScreen(diaryKey: widget.diary.key),
+            ),
           );
         },
         padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
@@ -49,40 +47,39 @@ class _DiaryTileState extends State<DiaryTile> {
               decoration: ShapeDecoration(
                 shape: SmoothRectangleBorder(
                   borderRadius: BorderRadius.circular(20),
-                  smoothness: 0.6
+                  smoothness: 0.6,
                 ),
-                color: themeColor.withAlpha(24)
+                color: themeColor.withAlpha(24),
               ),
             ),
-            SizedBox(width: 12,),
+            SizedBox(width: 12),
             // 제목 및 내용
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
                   style: cardDetail(),
-                  DateFormat('yyyy.MM.dd(E)').format(DateTime(2025))
+                  DateFormat('yyyy.MM.dd(E)').format(DateTime(2025)),
                 ),
-                SizedBox(height: 6,),
+                SizedBox(height: 6),
                 Text(
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: contentTitle(),
-                  widget.diary.title
+                  widget.diary.title,
                 ),
-                SizedBox(height: 6,),
+                SizedBox(height: 6),
                 Text(
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                   style: contentDetail(fontSize: 12),
-                  widget.diary.content.text
-                )
+                  widget.diary.content.text,
+                ),
               ],
             ),
           ],
         ),
-      )
+      ),
     );
   }
 }
-

@@ -2,16 +2,14 @@ import 'package:diary_for_me/home/widgets/my_library_card.dart';
 import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'package:diary_for_me/my_library/screen/my_library_screen.dart';
 import 'package:flutter/cupertino.dart';
-import '../../db_models/timeline_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
+import '../service/greeting.dart';
 import '../widgets/today_widget.dart';
 import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
-import 'package:diary_for_me/tutorial/screen/profile_screen.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -20,15 +18,42 @@ class HomePage extends StatefulWidget {
   State<HomePage> createState() => _HomePageState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String? _name;
   String? _birth;
   String? _gender;
+  String _currentGreeting = '';
 
   @override
   void initState() {
     super.initState();
+
+    // [3. 생명주기 감지기 등록]
+    WidgetsBinding.instance.addObserver(this);
+
+    // [4. 초기 인사말 설정]
+    _updateGreeting();
+
     _loadUserInfo();
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    if (state == AppLifecycleState.resumed) {
+      _updateGreeting();
+    }
+  }
+
+  void _updateGreeting() {
+    setState(() {
+      _currentGreeting = getRandomGreeting();
+    });
   }
 
   Future<void> _loadUserInfo() async {
@@ -77,19 +102,19 @@ class _HomePageState extends State<HomePage> {
             children: [
               // 안전영역 설정
               SafeArea(bottom: false, child: SizedBox()),
-              SizedBox(height: 28,),
+              SizedBox(height: 28),
               // 타이틀
               Text(
-                '좋은 아침이에요,',
-                // PageTitle
-                style: pageTitle(fontWeight: FontWeight.w500),
-              ),
-              Text(
-                '${_name ?? '기본'}님',
+                '${_name ?? '사용자'}님',
                 // PageTitle
                 style: pageTitle(),
               ),
-              SizedBox(height: 28,),
+              Text(
+                _currentGreeting,
+                // PageTitle
+                style: pageTitle(fontWeight: FontWeight.w500),
+              ),
+              SizedBox(height: 28),
               SizedBox(height: 16),
               // 오늘의 일기
               TodayWidget(),
@@ -106,13 +131,16 @@ class _HomePageState extends State<HomePage> {
                           Row(
                             children: [
                               Text('내 타임라인 ', style: cardTitle()),
-                              Text('${timelineBox.length}개', style: cardTitle(color: mainColor)),
+                              Text(
+                                '${timelineBox.length}개',
+                                style: cardTitle(color: mainColor),
+                              ),
                             ],
                           ),
                           SizedBox(height: 8),
                           Text(
                             '사관이 모은 기록들을 바탕으로 생성된 타임라인이에요. '
-                                '저장된 타임라인으로 일기를 작성할 수 있어요.',
+                            '저장된 타임라인으로 일기를 작성할 수 있어요.',
                             style: cardDetail(),
                           ),
                           SizedBox(height: 16),
@@ -123,7 +151,10 @@ class _HomePageState extends State<HomePage> {
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.end,
                           children: [
-                            Text('타임라인 보기', style: cardDetail(color: textTertiary)),
+                            Text(
+                              '타임라인 보기',
+                              style: cardDetail(color: textTertiary),
+                            ),
                             Icon(
                               Icons.arrow_forward,
                               size: 19,

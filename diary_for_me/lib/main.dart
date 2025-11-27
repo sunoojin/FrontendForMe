@@ -1,14 +1,16 @@
-import 'package:diary_for_me/db_models/diary_content_model.dart';
-import 'package:diary_for_me/db_models/event_model.dart';
-import 'package:diary_for_me/db_models/timeline_model.dart';
+import 'package:diary_for_me/db_models/daily_data/daily_data_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:flutter_naver_map/flutter_naver_map.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 
-import 'db_models/diary_model.dart';
-import 'db_models/tag_model.dart';
+import 'db_models/diary/diary_model.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 
@@ -26,18 +28,44 @@ void main() async {
   // Hive 초기화
   await Hive.initFlutter();
   // 어댑터 호출
-  Hive.registerAdapter(TimeLineAdapter());      // Timeline
-  Hive.registerAdapter(DiaryContentAdapter());  // DiaryContent
-  Hive.registerAdapter(DiaryAdapter());         // Diary
-  Hive.registerAdapter(TagAdapter());           // Tag
-  Hive.registerAdapter(EventAdapter());         // Event
-
+  // 데일리 데이터
+  Hive.registerAdapter(NotificationAdapter()); // Notification
+  Hive.registerAdapter(LocationAdapter()); // LocationData
+  Hive.registerAdapter(DailyDataAdapter()); // DailyData
+  // 일기
+  Hive.registerAdapter(DiaryContentAdapter()); // DiaryContent
+  Hive.registerAdapter(DiaryAdapter()); // Diary
+  // 이벤트
+  Hive.registerAdapter(EventAdapter()); // Event
+  // 타임라인
+  Hive.registerAdapter(TimeLineAdapter()); // Timeline
 
   // open
   await Hive.openBox<Tag>('tagsBox');
   await Hive.openBox<Diary>('diaryBox');
   await Hive.openBox<TimeLine>('timelineBox');
 
+  await dotenv.load(fileName: ".env");
+
+  // 2. 키 가져오기
+  String clientId = dotenv.env['NAVER_CLIENT_ID'] ?? '';
+
+  // 3. SDK 초기화에 사용
+  await FlutterNaverMap().init(
+    clientId: clientId,
+    onAuthFailed: (ex) {
+      switch (ex) {
+        case NQuotaExceededException(:final message):
+          print("사용량 초과 (message: $message)");
+          break;
+        case NUnauthorizedClientException() ||
+            NClientUnspecifiedException() ||
+            NAnotherAuthFailedException():
+          print("인증 실패: $ex");
+          break;
+      }
+    },
+  );
 
   runApp(MyApp(hasUserInfo: hasUserInfo));
 }

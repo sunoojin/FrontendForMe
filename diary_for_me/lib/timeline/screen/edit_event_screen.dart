@@ -1,12 +1,10 @@
 import 'dart:ui';
 
-import 'package:diary_for_me/timeline/widget/location_box.dart';
+import 'package:diary_for_me/timeline/widget/edit_dailydata_section.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/timeline/widget/section_card.dart';
-import 'package:hive/hive.dart';
 import 'package:smooth_corner/smooth_corner.dart';
-import '../../db_models/event_model.dart';
+import '../../db_models/event/event_model.dart';
 
 class ActivityEditSheet {
   static Future<Event?> show(
@@ -18,10 +16,9 @@ class ActivityEditSheet {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent, // 투명하게 두고
-      builder:
-          (_) => _ActivityEditContent(
-            initialEvent: initialEvent, // 3. Content 위젯에 초기 데이터 전달
-          ),
+      builder: (_) => _ActivityEditContent(
+        initialEvent: initialEvent, // 3. Content 위젯에 초기 데이터 전달
+      ),
       useSafeArea: true,
       shape: SmoothRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(40)),
@@ -46,9 +43,9 @@ class _ActivityEditContent extends StatefulWidget {
 
 class _ActivityEditContentState extends State<_ActivityEditContent> {
   final _formKey = GlobalKey<FormState>();
-  int newHour = 12;
-  int newMinute = 0;
-  late bool liked;
+
+  int newTime = 12 * 60 + 0;
+
   String location = '서울 중구 동호로 256';
 
   late Event _resultEvent;
@@ -67,29 +64,19 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
       // [생성 모드]: "비어있는" 새 객체를 생성
       _resultEvent = Event.empty();
     }
-    newHour = _resultEvent.timestamp.hour;
-    newMinute = (_resultEvent.timestamp.minute ~/ 10) * 10;
-    liked = _resultEvent.feeling == 'good';
-
-    // super.initState();
+    newTime =
+        _resultEvent.timestamp.hour * 60 +
+        (_resultEvent.timestamp.minute ~/ 30) * 30;
   }
-
-  // 사진 추가 함수
-  void _addPicture() {}
-  // 사진 삭제 함수
-  void _removePicture() {}
-  // 위치 변경 함수
-  void _changeLocation() {}
 
   void _saveChanges() {
     if (_formKey.currentState!.validate()) {
       // 1. 폼에 연결된 모든 onSaved 콜백을 실행시킴
       _formKey.currentState!.save();
       _resultEvent.timestamp = _resultEvent.timestamp.copyWith(
-        hour: newHour,
-        minute: newMinute,
+        hour: newTime ~/ 60,
+        minute: newTime % 60,
       );
-      _resultEvent.feeling = liked ? 'good' : 'bad';
 
       // 2. 모든 변경사항이 적용된 _resultEvent 객체를 반환
       Navigator.of(context).pop(_resultEvent);
@@ -198,38 +185,34 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      IntrinsicWidth(
-                        child: ContainerButton(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: () => _dismissChanges(),
-                          color: Colors.red.withAlpha(24),
-                          child: Center(
-                            child: Text(
-                              '취소',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      ContainerButton(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: () => _dismissChanges(),
+                        color: Colors.red.withAlpha(24),
+                        child: Center(
+                          child: Text(
+                            '취소',
+                            style: TextStyle(
+                              color: Colors.red,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
                       ),
-                      IntrinsicWidth(
-                        child: ContainerButton(
-                          padding: EdgeInsets.symmetric(horizontal: 16),
-                          borderRadius: BorderRadius.circular(20),
-                          onTap: _saveChanges,
-                          color: themeDeepColor,
-                          child: Center(
-                            child: Text(
-                              '완료',
-                              style: TextStyle(
-                                color: textPrimary,
-                                fontSize: 16.0,
-                                fontWeight: FontWeight.w500,
-                              ),
+                      ContainerButton(
+                        padding: EdgeInsets.symmetric(horizontal: 16),
+                        borderRadius: BorderRadius.circular(20),
+                        onTap: _saveChanges,
+                        color: themeDeepColor,
+                        child: Center(
+                          child: Text(
+                            '완료',
+                            style: TextStyle(
+                              color: textPrimary,
+                              fontSize: 16.0,
+                              fontWeight: FontWeight.w500,
                             ),
                           ),
                         ),
@@ -286,92 +269,159 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           },
                         ),
                         SizedBox(height: 16),
-                        // 활동 시각
-                        const Text(
-                          '활동 시각',
-                          style: TextStyle(
-                            color: textTertiary,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        IntrinsicWidth(
-                          child: Container(
-                            height: 52,
-                            padding: EdgeInsets.symmetric(horizontal: 20),
-                            decoration: ShapeDecoration(
-                              shape: SmoothRectangleBorder(
-                                borderRadius: BorderRadius.circular(20),
-                                smoothness: 0.6,
-                                side: BorderSide(
-                                  color: themeDeepColor,
-                                  width: 1.0,
-                                ),
+                        // 활동 시각 및 평가
+                        Row(
+                          children: [
+                            // 활동 시각
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '활동 시각',
+                                    style: TextStyle(
+                                      color: textTertiary,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Container(
+                                    height: 52,
+                                    padding: EdgeInsets.symmetric(
+                                      horizontal: 16,
+                                    ),
+                                    decoration: ShapeDecoration(
+                                      shape: SmoothRectangleBorder(
+                                        borderRadius: BorderRadius.circular(20),
+                                        smoothness: 0.6,
+                                        side: BorderSide(
+                                          color: themeDeepColor,
+                                          width: 1.0,
+                                        ),
+                                      ),
+                                      color: themePageColor,
+                                    ),
+                                    child: DropdownButton<int>(
+                                      isExpanded: true,
+                                      underline: SizedBox(),
+                                      value: newTime,
+                                      dropdownColor: Colors.white,
+                                      padding: EdgeInsets.all(0),
+                                      elevation: 8,
+                                      borderRadius: BorderRadius.circular(16),
+                                      items: [
+                                        for (int i = 0; i < 1440; i += 30)
+                                          DropdownMenuItem(
+                                            value: i,
+                                            child: Text(
+                                              "${(i ~/ 60).toString().padLeft(2, '0')}시 ${(i % 60).toString().padLeft(2, '0')}분",
+                                            ),
+                                          ),
+                                      ],
+                                      onChanged: (v) =>
+                                          setState(() => newTime = v!),
+                                      style: TextStyle(
+                                        fontSize: 16.0,
+                                        fontWeight: FontWeight.w400,
+                                        color: textPrimary,
+                                      ),
+                                      icon: Icon(
+                                        Icons.access_time_outlined,
+                                        size: 20,
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                              color: themePageColor,
                             ),
-                            child: Row(
-                              children: [
-                                // 시간 선택
-                                DropdownButton<int>(
-                                  underline: SizedBox(),
-                                  value: newHour,
-                                  dropdownColor: Colors.white,
-                                  padding: EdgeInsets.all(0),
-                                  elevation: 8,
-                                  borderRadius: BorderRadius.circular(16),
-                                  items: [
-                                    for (int i = 0; i < 24; i++)
-                                      DropdownMenuItem(
-                                        value: i,
-                                        child: Text(
-                                          "${i.toString().padLeft(2, '0')}시",
+                            SizedBox(width: 20),
+                            // 활동 평가
+                            Expanded(
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    '활동 평가',
+                                    style: TextStyle(
+                                      color: textTertiary,
+                                      fontSize: 16.0,
+                                      fontWeight: FontWeight.w700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 6),
+                                  Row(
+                                    children: [
+                                      Expanded(
+                                        child: ContainerButton(
+                                          color: _resultEvent.feeling == 'good'
+                                              ? Colors.redAccent.withAlpha(36)
+                                              : themePageColor,
+                                          side: BorderSide(
+                                            color:
+                                                _resultEvent.feeling == 'good'
+                                                ? Colors.redAccent.withAlpha(48)
+                                                : themeDeepColor,
+                                            width: 1.0,
+                                          ),
+                                          height: 52,
+                                          onTap: () => setState(
+                                            () => _resultEvent.feeling = 'good',
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.thumb_up,
+                                              color:
+                                                  _resultEvent.feeling == 'good'
+                                                  ? Colors.redAccent
+                                                  : textTertiary,
+                                              size: 20,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                  ],
-                                  onChanged:
-                                      (v) => setState(() => newHour = v!),
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: textPrimary,
-                                  ),
-                                ),
-                                Container(
-                                  color: Colors.black.withAlpha(30),
-                                  height: 24,
-                                  width: 1,
-                                ),
-                                SizedBox(width: 10),
-                                // 분 선택
-                                DropdownButton<int>(
-                                  underline: SizedBox(),
-                                  value: newMinute,
-                                  dropdownColor: Colors.white,
-                                  padding: EdgeInsets.all(0),
-                                  elevation: 8,
-                                  borderRadius: BorderRadius.circular(20),
-                                  items: [
-                                    for (int i = 0; i < 60; i += 5)
-                                      DropdownMenuItem(
-                                        value: i,
-                                        child: Text(
-                                          "${i.toString().padLeft(2, '0')}분",
+                                      SizedBox(width: 6),
+                                      Expanded(
+                                        child: ContainerButton(
+                                          color: _resultEvent.feeling == 'bad'
+                                              ? Colors.blueAccent.withAlpha(36)
+                                              : themePageColor,
+                                          side: BorderSide(
+                                            color: _resultEvent.feeling == 'bad'
+                                                ? Colors.blueAccent.withAlpha(
+                                                    48,
+                                                  )
+                                                : themeDeepColor,
+                                            width: 1.0,
+                                          ),
+                                          height: 52,
+                                          onTap: () => setState(
+                                            () => _resultEvent.feeling = 'bad',
+                                          ),
+                                          borderRadius: BorderRadius.circular(
+                                            20,
+                                          ),
+                                          child: Center(
+                                            child: Icon(
+                                              Icons.thumb_down,
+                                              color:
+                                                  _resultEvent.feeling == 'bad'
+                                                  ? Colors.blueAccent
+                                                  : textTertiary,
+                                              size: 20,
+                                            ),
+                                          ),
                                         ),
                                       ),
-                                  ],
-                                  onChanged:
-                                      (v) => setState(() => newMinute = v!),
-                                  style: TextStyle(
-                                    fontSize: 15.0,
-                                    fontWeight: FontWeight.w400,
-                                    color: textPrimary,
+                                    ],
                                   ),
-                                ),
-                              ],
+                                ],
+                              ),
                             ),
-                          ),
+                          ],
                         ),
                         const SizedBox(height: 16),
                         // 활동 내용
@@ -416,272 +466,12 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                           ),
                         ),
                         const SizedBox(height: 16),
-
-                        // 평가
-                        const Text(
-                          '활동 평가',
-                          style: TextStyle(
-                            color: textTertiary,
-                            fontSize: 16.0,
-                            fontWeight: FontWeight.w700,
-                          ),
-                        ),
-                        const SizedBox(height: 6),
-                        Row(
-                          children: [
-                            Expanded(
-                              child: ContainerButton(
-                                shadows: [
-                                  BoxShadow(
-                                    color:
-                                        liked
-                                            ? Colors.redAccent.withAlpha(128)
-                                            : Colors.transparent,
-                                    spreadRadius: -12,
-                                    blurRadius: 18,
-                                    offset: Offset(0, 18),
-                                  ),
-                                ],
-                                color:
-                                    liked
-                                        ? Colors.redAccent
-                                        : Colors.transparent,
-                                height: 56,
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => setState(() => liked = true),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.thumb_up,
-                                        color:
-                                            liked ? Colors.white : textTertiary,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "좋았어요",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color:
-                                              liked
-                                                  ? Colors.white
-                                                  : textTertiary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                            const SizedBox(width: 8),
-                            Expanded(
-                              child: ContainerButton(
-                                shadows: [
-                                  BoxShadow(
-                                    color:
-                                        !liked
-                                            ? Colors.blueAccent.withAlpha(128)
-                                            : Colors.transparent,
-                                    spreadRadius: -12,
-                                    blurRadius: 18,
-                                    offset: Offset(0, 18),
-                                  ),
-                                ],
-                                color:
-                                    !liked
-                                        ? Colors.blueAccent
-                                        : Colors.transparent,
-                                height: 56,
-                                borderRadius: BorderRadius.circular(20),
-                                onTap: () => setState(() => liked = false),
-                                child: Center(
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.thumb_down,
-                                        color:
-                                            !liked
-                                                ? Colors.white
-                                                : textTertiary,
-                                        size: 20,
-                                      ),
-                                      SizedBox(width: 8),
-                                      Text(
-                                        "별로였어요",
-                                        style: TextStyle(
-                                          fontSize: 16.0,
-                                          color:
-                                              !liked
-                                                  ? Colors.white
-                                                  : textTertiary,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ],
                     ),
                   ),
                 ),
                 // 관련 항목
-                Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-                  child: Column(
-                    children: [
-                      // 관련 사진
-                      SectionCard2(
-                        title: '관련 사진',
-                        children: [
-                          SizedBox(height: 16),
-
-                          // 사진 목록
-                          SingleChildScrollView(
-                            scrollDirection: Axis.horizontal,
-                            physics: BouncingScrollPhysics(),
-                            child: Row(
-                              children: [
-                                SizedBox(width: 20),
-                                for (int i = 0; i < 3; i++)
-                                  Padding(
-                                    padding: const EdgeInsets.only(right: 10),
-                                    child: Stack(
-                                      children: [
-                                        SmoothClipRRect(
-                                          borderRadius: BorderRadius.circular(
-                                            20,
-                                          ),
-                                          smoothness: 0.6,
-                                          child: Image.network(
-                                            "https://picsum.photos/100?random=$i",
-                                            width: 100,
-                                            height: 100,
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                        Positioned(
-                                          top: 8,
-                                          right: 8,
-                                          child: GestureDetector(
-                                            onTap: () => _removePicture(),
-                                            child: Container(
-                                              decoration: const BoxDecoration(
-                                                color: Colors.black45,
-                                                shape: BoxShape.circle,
-                                              ),
-                                              padding: const EdgeInsets.all(2),
-                                              child: const Icon(
-                                                Icons.close,
-                                                size: 20,
-                                                color: Colors.white,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                GestureDetector(
-                                  onTap: _addPicture,
-                                  child: Container(
-                                    width: 100,
-                                    height: 100,
-                                    decoration: ShapeDecoration(
-                                      shape: SmoothRectangleBorder(
-                                        borderRadius: BorderRadius.circular(20),
-                                        smoothness: 0.6,
-                                        side: BorderSide(
-                                          color: themeDeepColor,
-                                          width: 1.0,
-                                        ),
-                                      ),
-                                      color: themePageColor,
-                                    ),
-                                    child: const Center(
-                                      child: Text(
-                                        "사진\n추가하기\n+",
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          fontSize: 15,
-                                          color: textSecondary,
-                                          fontWeight: FontWeight.w500,
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                ),
-                                SizedBox(width: 20),
-                              ],
-                            ),
-                          ),
-                          SizedBox(height: 8),
-                        ],
-                      ),
-
-                      // 위치
-                      SectionCard2(
-                        title: '위치',
-                        children: [
-                          contents(
-                            children: [
-                              Text(location ?? '주소 없음', style: cardTitle()),
-                              SizedBox(height: 16),
-                              // LocationBox에 위치 위젯 구현하면됨
-                              LocationBox(),
-                              borderHorizontal(),
-                            ],
-                          ),
-                          bottomButton(
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: [
-                                Text(
-                                  '위치 변경',
-                                  style: cardDetail(color: textTertiary),
-                                ),
-                                Icon(
-                                  Icons.arrow_forward,
-                                  size: 19,
-                                  color: textTertiary,
-                                ),
-                              ],
-                            ),
-                            onTap: _changeLocation,
-                          ),
-                        ],
-                      ),
-
-                      // 알림
-                      SectionCard2(
-                        title: '앱 알림에서 찾은 내용',
-                        children: [
-                          contents(
-                            children: [
-                              const Text(
-                                "12시 필동함박 2인 네이버 예약\n"
-                                "신한카드 필동함박에서 38000원 결제\n"
-                                "후배의 밥약 카톡",
-                                style: TextStyle(
-                                  color: textPrimary,
-                                  height: 1.8,
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 16.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 80),
+                dailyDataEdit(event: _resultEvent),
               ],
             ),
           ),

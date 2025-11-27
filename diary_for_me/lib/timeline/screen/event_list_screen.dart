@@ -1,9 +1,9 @@
-import 'dart:developer';
+// import 'dart:developer';
 
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
-import 'package:diary_for_me/db_models/event_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:diary_for_me/timeline/widget/add_event_button.dart';
-import 'package:diary_for_me/timeline/widget/time_line_card.dart';
+// import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:flutter/cupertino.dart';
@@ -14,7 +14,7 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
-import '../../db_models/timeline_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
 
 class EventListScreen extends StatelessWidget {
   final String timelineKey;
@@ -24,10 +24,19 @@ class EventListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     final timelineBox = Hive.box<TimeLine>('timelineBox');
 
-    void _showEventModal(BuildContext context, TimeLine timeline, int? eventIndex) async {
-      final Event? initialEvent = (eventIndex != null) ? timeline.events[eventIndex] : null;
+    void showEventModal(
+      BuildContext context,
+      TimeLine timeline,
+      int? eventIndex,
+    ) async {
+      final Event? initialEvent = (eventIndex != null)
+          ? timeline.events[eventIndex]
+          : null;
 
-      final Event? resultEvent = await ActivityEditSheet.show(context, initialEvent: initialEvent);
+      final Event? resultEvent = await ActivityEditSheet.show(
+        context,
+        initialEvent: initialEvent,
+      );
       if (resultEvent != null) {
         if (eventIndex != null) {
           timeline.events[eventIndex] = resultEvent;
@@ -41,12 +50,13 @@ class EventListScreen extends StatelessWidget {
     }
 
     return Scaffold(
-      appBar: blurryAppBar(color: Colors.white,
+      appBar: blurryAppBar(
+        color: Colors.white,
         actions: [
           Text('1', style: appbarButton(color: textPrimary)),
           Text('/3', style: appbarButton(color: textTertiary)),
           SizedBox(width: 20),
-        ]
+        ],
       ),
       backgroundColor: Colors.white,
       body: Padding(
@@ -55,15 +65,12 @@ class EventListScreen extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             // 제목
-            Text(
-              "하루 돌아보기",
-              style: pageTitle(),
-            ),
+            Text("하루 돌아보기", style: pageTitle()),
             const SizedBox(height: 8),
             Text(
               "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
               "실제 있었던 일과 다르다면 수정해 주세요.",
-              style: cardDetail()
+              style: cardDetail(),
             ),
             const SizedBox(height: 16),
 
@@ -105,7 +112,7 @@ class EventListScreen extends StatelessWidget {
                   builder: (context, Box<TimeLine> box, _) {
                     final TimeLine? timeline = box.get(timelineKey);
 
-                    if(timeline == null) return Text('타임라인 에러');
+                    if (timeline == null) return Text('타임라인 에러');
 
                     final events = timeline.events;
                     events.sort();
@@ -114,14 +121,18 @@ class EventListScreen extends StatelessWidget {
                       physics: BouncingScrollPhysics(),
                       itemCount: events.length + 1,
                       itemBuilder: (context, index) {
-                        if (index == events.length) return AddEventButton(onTap: () => _showEventModal(context, timeline, null),);
+                        if (index == events.length)
+                          return AddEventButton(
+                            onTap: () =>
+                                showEventModal(context, timeline, null),
+                          );
                         final e = events[index];
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 16),
                           child: EventCard(
                             event: e,
                             onEdit: () {
-                              _showEventModal(context, timeline, index);
+                              showEventModal(context, timeline, index);
                               ScaffoldMessenger.of(context).showSnackBar(
                                 SnackBar(content: Text("${e.title} 수정 클릭")),
                               );
@@ -130,7 +141,7 @@ class EventListScreen extends StatelessWidget {
                         );
                       },
                     );
-                  }
+                  },
                 ),
               ),
             ),
@@ -145,7 +156,8 @@ class EventListScreen extends StatelessWidget {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => SelectMoodScreen(timelineKey: timelineKey,),
+                    builder: (context) =>
+                        SelectMoodScreen(timelineKey: timelineKey),
                   ),
                 );
               },
@@ -161,7 +173,7 @@ class EventListScreen extends StatelessWidget {
               ),
             ),
 
-            SafeArea(top: false,child: SizedBox(),)
+            SafeArea(top: false, child: SizedBox()),
           ],
         ),
       ),

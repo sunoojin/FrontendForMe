@@ -4,8 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
-import '../../db_models/diary_model.dart';
-import '../../db_models/tag_model.dart';
+import '../../db_models/diary/diary_model.dart';
 import '../widgets/tag_box.dart';
 
 class MyLibraryScreen extends StatefulWidget {
@@ -34,29 +33,23 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SafeArea(bottom: false, child: SizedBox(),),
+              SafeArea(bottom: false, child: SizedBox()),
               // 페이지 제목
               contents(
                 children: [
-                  Text(
-                    '나의 서고',
-                    style: pageTitle(),
-                  ),
-                  SizedBox(height: 8,),
-                  Text(
-                    '저장된 일기들을 이곳에서 볼 수 있어요.',
-                    style: cardDetail(),
-                  ),
-                ]
+                  Text('나의 서고', style: pageTitle()),
+                  SizedBox(height: 8),
+                  Text('저장된 일기들을 이곳에서 볼 수 있어요.', style: cardDetail()),
+                ],
               ),
-              SizedBox(height: 8,),
+              SizedBox(height: 8),
               // 태그 선택창
               SingleChildScrollView(
                 physics: BouncingScrollPhysics(),
                 scrollDirection: Axis.horizontal,
                 child: Row(
                   children: [
-                    SizedBox(width: 20,),
+                    SizedBox(width: 20),
                     GestureDetector(
                       onTap: () {
                         setState(() {
@@ -64,7 +57,10 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         });
                       },
                       behavior: HitTestBehavior.opaque,
-                      child: tagBox(text: '전체', activated: _selectedTag == null),
+                      child: tagBox(
+                        text: '전체',
+                        activated: _selectedTag == null,
+                      ),
                     ),
                     GestureDetector(
                       onTap: () {
@@ -73,7 +69,10 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         });
                       },
                       behavior: HitTestBehavior.opaque,
-                      child: tagBox(text: '즐겨찾기', activated: _selectedTag == '@f'),
+                      child: tagBox(
+                        text: '즐겨찾기',
+                        activated: _selectedTag == '@f',
+                      ),
                     ),
                     ValueListenableBuilder(
                       valueListenable: tagsBox.listenable(),
@@ -104,11 +103,11 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         );
                       },
                     ),
-                    SizedBox(width: 14,),
+                    SizedBox(width: 14),
                   ],
-                )
+                ),
               ),
-              SizedBox(height: 8,),
+              SizedBox(height: 8),
               // 일기 목록
               ValueListenableBuilder(
                 valueListenable: diaryBox.listenable(),
@@ -142,11 +141,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                     itemBuilder: (BuildContext context, int index) {
                       return Row(
                         children: [
-                          Expanded(
-                            child: DiaryTile(
-                              diary: diaries[index],
-                            ),
-                          ),
+                          Expanded(child: DiaryTile(diary: diaries[index])),
                           ContainerButton(
                             height: 40,
                             width: 40,
@@ -154,7 +149,9 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                               child: Icon(
                                 Icons.bookmark,
                                 size: 26,
-                                color: diaries[index].tag.contains('@f') ? themeColor : Colors.grey.shade300,
+                                color: diaries[index].tag.contains('@f')
+                                    ? themeColor
+                                    : Colors.grey.shade300,
                               ),
                             ),
                             // 즐겨찾기 로직(임시)
@@ -162,7 +159,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                               diaries[index].updateTag('@f');
                             },
                           ),
-                          SizedBox(width: 10,)
+                          SizedBox(width: 10),
                         ],
                       );
                     },
@@ -219,7 +216,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                 },
               ),
                */
-              SafeArea(top: false, child: SizedBox(),)
+              SafeArea(top: false, child: SizedBox()),
             ],
           ),
         ),

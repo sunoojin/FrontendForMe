@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/diary_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_model.dart';
 import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';
 import 'package:flutter/material.dart';
@@ -12,10 +12,7 @@ import 'package:smooth_corner/smooth_corner.dart';
 class DiaryScreen extends StatefulWidget {
   final String diaryKey;
 
-  const DiaryScreen({
-    super.key,
-    required this.diaryKey
-  });
+  const DiaryScreen({super.key, required this.diaryKey});
 
   @override
   State<DiaryScreen> createState() => _DiaryScreenState();

@@ -24,7 +24,7 @@ class ContainerButton extends StatefulWidget {
     this.color,
     this.shadows,
     this.side,
-    this.margin
+    this.margin,
   });
 
   @override
@@ -63,9 +63,10 @@ class _ContainerButtonState extends State<ContainerButton> {
   @override
   Widget build(BuildContext context) {
     // _isPressed 상태에 따라 값 결정
-    final double scale = _isPressed ? 0.96 : 1.0;
-    final Color dimColor =
-    _isPressed ? Color(0xFF111111).withAlpha(28) : Colors.transparent;
+    final double scale = _isPressed ? 0.94 : 1.0;
+    final Color dimColor = _isPressed
+        ? Color(0xFF111111).withAlpha(28)
+        : Colors.transparent;
 
     return Listener(
       onPointerDown: _onPointerDown,
@@ -75,10 +76,10 @@ class _ContainerButtonState extends State<ContainerButton> {
         onTapDown: _onTapDown,
         onTapUp: _onTapUp,
         onTapCancel: _onTapCancel,
-        child: AnimatedContainer( // AnimatedScale + Container -> AnimatedContainer
-          duration: const Duration(milliseconds: 400),
-          curve: Curves.easeOutBack, // 기존 커브 유지
-
+        child: AnimatedContainer(
+          // AnimatedScale + Container -> AnimatedContainer
+          duration: const Duration(milliseconds: 200),
+          curve: Curves.easeOut, // 기존 커브 유지
           // 1. Scale 애니메이션
           transform: Matrix4.identity()..scale(scale),
           transformAlignment: Alignment.center,
@@ -96,7 +97,7 @@ class _ContainerButtonState extends State<ContainerButton> {
               borderRadius: widget.borderRadius ?? BorderRadius.circular(12),
               smoothness: 0.6,
             ),
-            shadows: widget.shadows
+            shadows: widget.shadows,
           ),
           foregroundDecoration: ShapeDecoration(
             color: dimColor,
@@ -106,7 +107,7 @@ class _ContainerButtonState extends State<ContainerButton> {
             ),
           ),
           alignment: Alignment.topLeft,
-          child: widget.child
+          child: widget.child,
         ),
       ),
     );
@@ -120,6 +121,6 @@ Widget bottomButton({required VoidCallback onTap, required Widget child}) {
       onTap: onTap,
       padding: EdgeInsets.symmetric(horizontal: 10, vertical: 8),
       child: child,
-    )
+    ),
   );
 }

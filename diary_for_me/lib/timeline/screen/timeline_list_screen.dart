@@ -1,11 +1,11 @@
-import 'package:diary_for_me/home/widgets/today_widget.dart';
+// import 'package:diary_for_me/home/widgets/today_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 
-import '../../db_models/timeline_model.dart';
+import '../../db_models/timeline/timeline_model.dart';
 
 class TimelineListScreen extends StatelessWidget {
   const TimelineListScreen({super.key});
@@ -26,14 +26,11 @@ class TimelineListScreen extends StatelessWidget {
           children: [
             SafeArea(bottom: false, child: SizedBox()),
             // 제목
-            Text(
-              "나의 타임라인",
-              style: pageTitle(),
-            ),
+            Text("나의 타임라인", style: pageTitle()),
             const SizedBox(height: 8),
             Text(
               "사관이 기록한 타임라인이에요\n모인 타임라인으로 일기를 생성할 수 있어요.",
-              style: cardDetail()
+              style: cardDetail(),
             ),
 
             const SizedBox(height: 16),
@@ -44,7 +41,7 @@ class TimelineListScreen extends StatelessWidget {
               builder: (context, Box<TimeLine> box, _) {
                 final timelines = box.values.toList();
 
-                if(timelines.isEmpty) {
+                if (timelines.isEmpty) {
                   return SizedBox();
                 }
 
@@ -60,7 +57,7 @@ class TimelineListScreen extends StatelessWidget {
                   },
                 );
               },
-            )
+            ),
           ],
         ),
       ),
