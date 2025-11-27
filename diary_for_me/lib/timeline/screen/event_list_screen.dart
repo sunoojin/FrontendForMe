@@ -1,0 +1,170 @@
+import 'dart:developer';
+
+import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
+import 'package:diary_for_me/db_models/event_model.dart';
+import 'package:diary_for_me/timeline/widget/add_event_button.dart';
+import 'package:diary_for_me/timeline/widget/time_line_card.dart';
+import 'package:flutter/material.dart';
+import 'package:diary_for_me/common/ui_kit.dart';
+import 'package:flutter/cupertino.dart';
+
+import 'package:diary_for_me/timeline/widget/event_card.dart';
+import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/adapters.dart';
+import 'package:smooth_corner/smooth_corner.dart';
+
+import '../../db_models/timeline_model.dart';
+
+class EventListScreen extends StatelessWidget {
+  final String timelineKey;
+  const EventListScreen({super.key, required this.timelineKey});
+
+  @override
+  Widget build(BuildContext context) {
+    final timelineBox = Hive.box<TimeLine>('timelineBox');
+
+    void _showEventModal(BuildContext context, TimeLine timeline, int? eventIndex) async {
+      final Event? initialEvent = (eventIndex != null) ? timeline.events[eventIndex] : null;
+
+      final Event? resultEvent = await ActivityEditSheet.show(context, initialEvent: initialEvent);
+      if (resultEvent != null) {
+        if (eventIndex != null) {
+          timeline.events[eventIndex] = resultEvent;
+        } else {
+          timeline.events ??= [];
+          timeline.events.add(resultEvent);
+        }
+      }
+
+      await timeline.save();
+    }
+
+    return Scaffold(
+      appBar: blurryAppBar(color: Colors.white,
+        actions: [
+          Text('1', style: appbarButton(color: textPrimary)),
+          Text('/3', style: appbarButton(color: textTertiary)),
+          SizedBox(width: 20),
+        ]
+      ),
+      backgroundColor: Colors.white,
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // 제목
+            Text(
+              "하루 돌아보기",
+              style: pageTitle(),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
+              "실제 있었던 일과 다르다면 수정해 주세요.",
+              style: cardDetail()
+            ),
+            const SizedBox(height: 16),
+
+            // 이벤트 목록
+            /*
+            Expanded(
+              child: SmoothClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: ListView.builder(
+                  physics: BouncingScrollPhysics(),
+                  itemCount: events.length + 1,
+                  itemBuilder: (context, index) {
+                    if (index == events.length) return AddEventButton();
+                    final e = events[index];
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: EventCard(
+                        time: e["time"]!,
+                        title: e["title"]!,
+                        description: e["description"]!,
+                        onEdit: () {
+                          ActivityEditSheet.show(context);
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text("${e["title"]} 수정 클릭")),
+                          );
+                        },
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ),
+             */
+            Expanded(
+              child: SmoothClipRRect(
+                borderRadius: BorderRadius.circular(32),
+                child: ValueListenableBuilder(
+                  valueListenable: timelineBox.listenable(),
+                  builder: (context, Box<TimeLine> box, _) {
+                    final TimeLine? timeline = box.get(timelineKey);
+
+                    if(timeline == null) return Text('타임라인 에러');
+
+                    final events = timeline.events;
+                    events.sort();
+
+                    return ListView.builder(
+                      physics: BouncingScrollPhysics(),
+                      itemCount: events.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index == events.length) return AddEventButton(onTap: () => _showEventModal(context, timeline, null),);
+                        final e = events[index];
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 16),
+                          child: EventCard(
+                            event: e,
+                            onEdit: () {
+                              _showEventModal(context, timeline, index);
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(content: Text("${e.title} 수정 클릭")),
+                              );
+                            },
+                          ),
+                        );
+                      },
+                    );
+                  }
+                ),
+              ),
+            ),
+
+            const SizedBox(height: 16),
+
+            // 다음 버튼
+            ContainerButton(
+              borderRadius: BorderRadius.circular(24),
+              height: 68,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => SelectMoodScreen(timelineKey: timelineKey,),
+                  ),
+                );
+              },
+              child: Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('다음으로', style: mainButton(color: textPrimary)),
+                    Icon(Icons.navigate_next, size: 24, color: textPrimary),
+                  ],
+                ),
+              ),
+            ),
+
+            SafeArea(top: false,child: SizedBox(),)
+          ],
+        ),
+      ),
+    );
+  }
+}
