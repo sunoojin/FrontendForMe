@@ -1,5 +1,4 @@
-//
-import 'dart:io' show Platform;
+// import 'dart:io' show Platform;
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/colors.dart';
@@ -8,6 +7,7 @@ import 'package:permission_handler/permission_handler.dart';
 import 'package:diary_for_me/tutorial/widget/consent_card.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
+import 'package:photo_manager/photo_manager.dart';
 
 import '../../common/ui_kit.dart';
 
@@ -138,19 +138,15 @@ class _EditCollectionScreenState extends State<EditCollectionScreen> {
 
     // 3) 갤러리 권한 요청 (플랫폼별)
     if (_selected['gallery'] == true) {
-      bool granted = false;
-      if (Platform.isIOS) {
-        granted = await requestPermission(Permission.photos);
-      } else {
-        // Android: 외부 저장소 접근 (Android 13 이상은 별도 권한 필요할 수 있음)
-        granted = await requestPermission(Permission.storage);
-      }
-      consentResult['gallery'] = granted;
-      if (!granted) {
+      // bool granted = false;
+      final perm = await PhotoManager.requestPermissionExtend();
+      if (!perm.hasAccess) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('갤러리 접근 권한이 없어 사진 수집이 제한됩니다.')),
         );
+        consentResult['gallery'] = false;
       }
+      consentResult['gallery'] = true;
     } else {
       consentResult['gallery'] = false;
     }
