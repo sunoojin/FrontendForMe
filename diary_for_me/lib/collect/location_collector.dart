@@ -1,86 +1,14 @@
-import 'package:flutter/material.dart';
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter_background_service/flutter_background_service.dart';
-import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:flutter_naver_map/flutter_naver_map.dart';
-// import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:hive/hive.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:intl/intl.dart';
-import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
-import 'package:intl/date_symbol_data_local.dart';
-import 'package:flutter_notification_listener_plus/flutter_notification_listener_plus.dart';
 
-import 'package:diary_for_me/collect/notification.dart';
-import 'package:diary_for_me/db_models/daily_data/daily_data_model.dart';
-import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
-import 'package:diary_for_me/db_models/event/event_model.dart';
-import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
-
-import 'db_models/diary/diary_model.dart';
-import 'home/screen/home_screen.dart';
-import 'tutorial/screen/first_screen.dart';
-
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
-  await initializeDateFormatting('ko_KR', null);
-
-  // SharedPreferences 인스턴스 가져오기
-  final prefs = await SharedPreferences.getInstance();
-
-  // 사용자 정보 입력 여부 확인 (true면 이미 입력 완료)
-  final bool hasUserInfo = prefs.getBool('hasUserInfo') ?? false;
-
-  // Hive db 코드
-  // Hive 초기화
-  await Hive.initFlutter();
-  // 어댑터 호출
-  // 데일리 데이터
-  Hive.registerAdapter(AppNotificationAdapter()); // Notification
-  Hive.registerAdapter(LocationAdapter()); // LocationData
-  Hive.registerAdapter(DailyDataAdapter()); // DailyData
-  // 일기
-  Hive.registerAdapter(DiaryContentAdapter()); // DiaryContent
-  Hive.registerAdapter(DiaryAdapter()); // Diary
-  // 이벤트
-  Hive.registerAdapter(EventAdapter()); // Event
-  // 타임라인
-  Hive.registerAdapter(TimeLineAdapter()); // Timeline
-
-  // open
-  await Hive.openBox<Tag>('tagsBox');
-  await Hive.openBox<Diary>('diaryBox');
-  await Hive.openBox<TimeLine>('timelineBox');
-
-  await dotenv.load(fileName: ".env");
-
-  // 2. 키 가져오기
-  String clientId = dotenv.env['NAVER_CLIENT_ID'] ?? '';
-
-  // 3. SDK 초기화에 사용
-  await FlutterNaverMap().init(
-    clientId: clientId,
-    onAuthFailed: (ex) {
-      switch (ex) {
-        case NQuotaExceededException(:final message):
-          debugPrint("사용량 초과 (message: $message)");
-          break;
-        case NUnauthorizedClientException() ||
-            NClientUnspecifiedException() ||
-            NAnotherAuthFailedException():
-          debugPrint("인증 실패: $ex");
-          break;
-      }
-    },
-  );
-
-  await NotificationsListener.initialize(); // 1) 플러그인 초기화
-  await NotificationsListener.registerEventHandle(
-    // 2) 콜백 등록
-    backgroundCallback, //  static / 최상위 함수
-  );
-
-  runApp(MyApp(hasUserInfo: hasUserInfo));
-}
+import '../db_models/daily_data/daily_data_model.dart';
 
 const notificationChannelId = 'my_foreground';
 
@@ -259,9 +187,9 @@ Future<void> onStart(ServiceInstance service) async {
       try {
         // 1) 위치 가져오기
         Position position = await Geolocator.getCurrentPosition(
-          locationSettings: AndroidSettings(
-            accuracy: LocationAccuracy.high,
-          )
+            locationSettings: AndroidSettings(
+              accuracy: LocationAccuracy.high,
+            )
         );
 
         final newLocation = Location(
@@ -289,108 +217,4 @@ Future<void> onStart(ServiceInstance service) async {
       print("대기 중... 현재 ${now.minute}분 (목표: 00, 30분)");
     }
   });
-}
-
-class MyApp extends StatelessWidget {
-  final bool hasUserInfo;
-  const MyApp({super.key, required this.hasUserInfo});
-
-  // This widget is the root of your application.
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Diary for me',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-      ),
-      // home: const MyHomePage(title: 'Flutter Demo Home Page'),
-      home: hasUserInfo ? const HomePage() : const FirstScreen(),
-    );
-  }
-}
-
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-
-  // This widget is the home page of your application. It is stateful, meaning
-  // that it has a State object (defined below) that contains fields that affect
-  // how it looks.
-
-  // This class is the configuration for the state. It holds the values (in this
-  // case the title) provided by the parent (in this case the App widget) and
-  // used by the build method of the State. Fields in a Widget subclass are
-  // always marked "final".
-
-  final String title;
-
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
-
-class _MyHomePageState extends State<MyHomePage> {
-  int _counter = 0;
-
-  void _incrementCounter() {
-    setState(() {
-      // This call to setState tells the Flutter framework that something has
-      // changed in this State, which causes it to rerun the build method below
-      // so that the display can reflect the updated values. If we changed
-      // _counter without calling setState(), then the build method would not be
-      // called again, and so nothing would appear to happen.
-      _counter++;
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // This method is rerun every time setState is called, for instance as done
-    // by the _incrementCounter method above.
-    //
-    // The Flutter framework has been optimized to make rerunning build methods
-    // fast, so that you can just rebuild anything that needs updating rather
-    // than having to individually change instances of widgets.
-    return Scaffold(
-      appBar: AppBar(
-        // TRY THIS: Try changing the color here to a specific color (to
-        // Colors.amber, perhaps?) and trigger a hot reload to see the AppBar
-        // change color while the other colors stay the same.
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        // Here we take the value from the MyHomePage object that was created by
-        // the App.build method, and use it to set our appbar title.
-        title: Text(widget.title),
-      ),
-      body: Center(
-        // Center is a layout widget. It takes a single child and positions it
-        // in the middle of the parent.
-        child: Column(
-          // Column is also a layout widget. It takes a list of children and
-          // arranges them vertically. By default, it sizes itself to fit its
-          // children horizontally, and tries to be as tall as its parent.
-          //
-          // Column has various properties to control how it sizes itself and
-          // how it positions its children. Here we use mainAxisAlignment to
-          // center the children vertically; the main axis here is the vertical
-          // axis because Columns are vertical (the cross axis would be
-          // horizontal).
-          //
-          // TRY THIS: Invoke "debug painting" (choose the "Toggle Debug Paint"
-          // action in the IDE, or press "p" in the console), to see the
-          // wireframe for each widget.
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            const Text('You have pushed the button this many times:'),
-            Text(
-              '$_counter',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: const Icon(Icons.add),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
-  }
 }

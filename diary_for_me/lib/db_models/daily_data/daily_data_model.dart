@@ -48,14 +48,21 @@ class Location extends HiveObject {
   @HiveField(1)
   double lng;
 
-  Location({required this.lat, required this.lng});
+  @HiveField(2)
+  DateTime timestamp;
+
+  Location({required this. lat, required this.lng, required this.timestamp});
 
   factory Location.empty() {
-    return Location(lat: 37.5583, lng: 127.0001);
+    return Location(lat: 37.5583, lng: 127.0001, timestamp: DateTime.now());
   }
 
-  Location copyWith({double? lat, double? lng}) {
-    return Location(lat: lat ?? this.lat, lng: lng ?? this.lng);
+  Location copyWith({double? lat, double? lng, DateTime? timestamp,}) {
+    return Location(
+      lat: lat ?? this.lat,
+      lng: lng ?? this.lng,
+      timestamp: timestamp ?? this.timestamp
+    );
   }
 }
 
