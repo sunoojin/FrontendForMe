@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:smooth_corner/smooth_corner.dart';
+// import 'package:smooth_corner/smooth_corner.dart';
 import 'package:diary_for_me/common/colors.dart';
 
 Widget tagBox({required String text, bool activated = false}) {

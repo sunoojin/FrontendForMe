@@ -1,8 +1,8 @@
-import 'dart:developer';
+// import 'dart:developer';
 import 'dart:ui';
 
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
+// import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
 // import 'package:diary_for_me/my_library/widgets/tag_box.dart';
 // import 'package:diary_for_me/my_library/test_diary.dart';

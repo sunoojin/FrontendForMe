@@ -2,7 +2,7 @@ import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:smooth_corner/smooth_corner.dart';
+// import 'package:smooth_corner/smooth_corner.dart';
 
 class EventCard extends StatelessWidget {
   final VoidCallback? onEdit;

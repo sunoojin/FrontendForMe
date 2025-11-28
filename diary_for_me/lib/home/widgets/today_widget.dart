@@ -2,7 +2,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 // import 'package:smooth_corner/smooth_corner.dart';
-import 'package:diary_for_me/timeline/screen/event_list_screen.dart';
+// import 'package:diary_for_me/timeline/screen/event_list_screen.dart';
 import '../../common/ui_kit.dart';
 import 'dart:async';
 
@@ -72,7 +72,7 @@ class _TodayWidgetState extends State<TodayWidget> {
                 textAlign: TextAlign.center,
                 style: contentDetail(),
               ),
-              SizedBox(height: 16,),
+              SizedBox(height: 16),
               // 진행 바
               Container(
                 clipBehavior: Clip.antiAlias,
@@ -109,7 +109,11 @@ class _TodayWidgetState extends State<TodayWidget> {
               Text('오늘의 실록을 만들 준비를 마쳤어요.', style: contentTitle()),
               SizedBox(height: 8),
               // 정보
-              Text('사관이 정보 수집을 끝냈어요. 이제 일기를 생성해 보세요.', style: contentDetail(), textAlign: TextAlign.center,),
+              Text(
+                '사관이 정보 수집을 끝냈어요. 이제 일기를 생성해 보세요.',
+                style: contentDetail(),
+                textAlign: TextAlign.center,
+              ),
               SizedBox(height: 16),
               // 일기 생성 버튼
               ContainerButton(
