@@ -9,88 +9,88 @@ import 'package:flutter_notification_listener_plus/flutter_notification_listener
 
 import 'package:diary_for_me/collect/DB.dart';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
 
-  // 알림 리스너 플러그인 초기화
-  await NotificationsListener.initialize(
-    callbackHandle: _callback, // 백그라운드 엔트리포인트 연결
-  );
-  runApp(MyApp());
-}
+//   // 알림 리스너 플러그인 초기화
+//   await NotificationsListener.initialize(
+//     callbackHandle: _callback, // 백그라운드 엔트리포인트 연결
+//   );
+//   runApp(MyApp());
+// }
 
-class MyApp extends StatefulWidget {
-  const MyApp({super.key});
+// class MyApp extends StatefulWidget {
+//   const MyApp({super.key});
 
-  @override
-  State<MyApp> createState() => _MyAppState();
-}
+//   @override
+//   State<MyApp> createState() => _MyAppState();
+// }
 
-class _MyAppState extends State<MyApp> {
-  List<Map<String, dynamic>> _logs = [];
+// class _MyAppState extends State<MyApp> {
+//   List<Map<String, dynamic>> _logs = [];
 
-  @override
-  void initState() {
-    super.initState();
-    _loadLogs();
-  }
+//   @override
+//   void initState() {
+//     super.initState();
+//     _loadLogs();
+//   }
 
-  void _loadLogs() {
-    final raw = db.load(); // List<Map<String,dynamic>>
-    final List<Map<String, dynamic>> normalized = raw.map((r) {
-      final event = (r['event'] ?? {}) as Map<String, dynamic>;
-      return {
-        'package': event['package'] ?? r['package'],
-        'title': event['title'] ?? '',
-        'text': event['text'] ?? '',
-        'timestamp': event['timestamp'] ?? r['timestamp'],
-        'millis': r['millis'],
-        // 원본 보존하고 싶으면 아래 같이 포함
-        'raw': r,
-      };
-    }).toList();
+//   void _loadLogs() {
+//     final raw = db.load(); // List<Map<String,dynamic>>
+//     final List<Map<String, dynamic>> normalized = raw.map((r) {
+//       final event = (r['event'] ?? {}) as Map<String, dynamic>;
+//       return {
+//         'package': event['package'] ?? r['package'],
+//         'title': event['title'] ?? '',
+//         'text': event['text'] ?? '',
+//         'timestamp': event['timestamp'] ?? r['timestamp'],
+//         'millis': r['millis'],
+//         // 원본 보존하고 싶으면 아래 같이 포함
+//         'raw': r,
+//       };
+//     }).toList();
 
-    setState(() {
-      _logs = normalized;
-    });
-  }
+//     setState(() {
+//       _logs = normalized;
+//     });
+//   }
 
-  @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: const Text("알림 기록"),
-          actions: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: _loadLogs, // 버튼 눌리면 새로고침
-            ),
-          ],
-        ),
-        body: _logs.isEmpty
-            ? const Center(child: Text("기록이 없습니다"))
-            : ListView.builder(
-                itemCount: _logs.length,
-                itemBuilder: (context, index) {
-                  final record = _logs[index];
-                  return ListTile(
-                    title: Text(record['title'] ?? ''),
-                    subtitle: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("앱: ${record['package']}"),
-                        Text("내용: ${record['text']}"),
-                        Text("시간: ${record['timestamp']}"),
-                      ],
-                    ),
-                  );
-                },
-              ),
-      ),
-    );
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     return MaterialApp(
+//       home: Scaffold(
+//         appBar: AppBar(
+//           title: const Text("알림 기록"),
+//           actions: [
+//             IconButton(
+//               icon: const Icon(Icons.refresh),
+//               onPressed: _loadLogs, // 버튼 눌리면 새로고침
+//             ),
+//           ],
+//         ),
+//         body: _logs.isEmpty
+//             ? const Center(child: Text("기록이 없습니다"))
+//             : ListView.builder(
+//                 itemCount: _logs.length,
+//                 itemBuilder: (context, index) {
+//                   final record = _logs[index];
+//                   return ListTile(
+//                     title: Text(record['title'] ?? ''),
+//                     subtitle: Column(
+//                       crossAxisAlignment: CrossAxisAlignment.start,
+//                       children: [
+//                         Text("앱: ${record['package']}"),
+//                         Text("내용: ${record['text']}"),
+//                         Text("시간: ${record['timestamp']}"),
+//                       ],
+//                     ),
+//                   );
+//                 },
+//               ),
+//       ),
+//     );
+//   }
+// }
 
 /// 백그라운드 엔트리 포인트로 사용
 @pragma('vm:entry-point')
