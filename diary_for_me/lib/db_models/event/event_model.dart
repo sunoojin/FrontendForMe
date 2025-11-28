@@ -1,4 +1,4 @@
-import 'dart:math';
+// import 'dart:math';
 
 import 'package:hive/hive.dart';
 import '../daily_data/daily_data_model.dart';
@@ -6,8 +6,7 @@ import '../daily_data/daily_data_model.dart';
 part 'event_model.g.dart';
 
 @HiveType(typeId: 20) // typeId는 앱 내의 다른 HiveType과 겹치지 않아야 합니다.
-class Event extends HiveObject implements Comparable<Event>{
-
+class Event extends HiveObject implements Comparable<Event> {
   @HiveField(0)
   String id;
 
@@ -42,7 +41,7 @@ class Event extends HiveObject implements Comparable<Event>{
       title: '',
       content: '',
       feeling: '',
-      dailydata: DailyData.empty()
+      dailydata: DailyData.empty(),
     );
   }
 
@@ -52,7 +51,7 @@ class Event extends HiveObject implements Comparable<Event>{
     String? title,
     String? content,
     String? feeling,
-    DailyData? dailydata
+    DailyData? dailydata,
   }) {
     return Event(
       id: id ?? this.id,
@@ -60,14 +59,14 @@ class Event extends HiveObject implements Comparable<Event>{
       title: title ?? this.title,
       content: content ?? this.content,
       feeling: feeling ?? this.feeling,
-      dailydata: dailydata ?? this.dailydata.copyWith()
+      dailydata: dailydata ?? this.dailydata.copyWith(),
     );
   }
 
   @override
   int compareTo(Event other) {
     // TODO: implement compareTo
-    return this.timestamp.compareTo(other.timestamp);
+    return timestamp.compareTo(other.timestamp);
   }
 
   void addPicture(String picture) {
