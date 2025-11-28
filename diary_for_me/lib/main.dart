@@ -1,21 +1,20 @@
-import 'dart:async';
-import 'dart:ui';
-
-import 'package:diary_for_me/db_models/daily_data/daily_data_model.dart';
-import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
-import 'package:diary_for_me/db_models/event/event_model.dart';
-import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:hive/hive.dart';
+// import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
+import 'package:flutter_notification_listener_plus/flutter_notification_listener_plus.dart';
+
+import 'package:diary_for_me/collect/notification.dart';
+import 'package:diary_for_me/db_models/daily_data/daily_data_model.dart';
+import 'package:diary_for_me/db_models/diary/diary_content_model.dart';
+import 'package:diary_for_me/db_models/event/event_model.dart';
+import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 
 import 'db_models/diary/diary_model.dart';
 import 'home/screen/home_screen.dart';
@@ -36,7 +35,7 @@ void main() async {
   await Hive.initFlutter();
   // 어댑터 호출
   // 데일리 데이터
-  Hive.registerAdapter(NotificationAdapter()); // Notification
+  Hive.registerAdapter(AppNotificationAdapter()); // Notification
   Hive.registerAdapter(LocationAdapter()); // LocationData
   Hive.registerAdapter(DailyDataAdapter()); // DailyData
   // 일기
@@ -63,19 +62,23 @@ void main() async {
     onAuthFailed: (ex) {
       switch (ex) {
         case NQuotaExceededException(:final message):
-          print("사용량 초과 (message: $message)");
+          debugPrint("사용량 초과 (message: $message)");
           break;
         case NUnauthorizedClientException() ||
             NClientUnspecifiedException() ||
             NAnotherAuthFailedException():
-          print("인증 실패: $ex");
+          debugPrint("인증 실패: $ex");
           break;
       }
     },
   );
 
+  await NotificationsListener.initialize(); // 1) 플러그인 초기화
+  await NotificationsListener.registerEventHandle(
+    // 2) 콜백 등록
+    backgroundCallback, //  static / 최상위 함수
+  );
 
-  await initializeService();
   runApp(MyApp(hasUserInfo: hasUserInfo));
 }
 

@@ -6,17 +6,17 @@ part of 'daily_data_model.dart';
 // TypeAdapterGenerator
 // **************************************************************************
 
-class NotificationAdapter extends TypeAdapter<Notification> {
+class AppNotificationAdapter extends TypeAdapter<AppNotification> {
   @override
   final int typeId = 0;
 
   @override
-  Notification read(BinaryReader reader) {
+  AppNotification read(BinaryReader reader) {
     final numOfFields = reader.readByte();
     final fields = <int, dynamic>{
       for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
     };
-    return Notification(
+    return AppNotification(
       appname: fields[0] as String,
       text: fields[1] as String,
       timestamp: fields[2] as DateTime,
@@ -24,7 +24,7 @@ class NotificationAdapter extends TypeAdapter<Notification> {
   }
 
   @override
-  void write(BinaryWriter writer, Notification obj) {
+  void write(BinaryWriter writer, AppNotification obj) {
     writer
       ..writeByte(3)
       ..writeByte(0)
@@ -41,7 +41,7 @@ class NotificationAdapter extends TypeAdapter<Notification> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is NotificationAdapter &&
+      other is AppNotificationAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }
@@ -99,7 +99,7 @@ class DailyDataAdapter extends TypeAdapter<DailyData> {
     return DailyData(
       gallery: (fields[0] as List).cast<String>(),
       location: (fields[1] as List).cast<Location>(),
-      appnoti: (fields[2] as List).cast<Notification>(),
+      appnoti: (fields[2] as List).cast<AppNotification>(),
     );
   }
 

@@ -1,9 +1,12 @@
+import 'dart:ui';
+import 'dart:io';
+import 'package:flutter/material.dart';
+
+import 'package:image_picker/image_picker.dart';
 import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:diary_for_me/timeline/widget/edit_event_cards/section_card.dart';
-import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
-import 'dart:ui';
 
 class RelatedPhotoCard extends StatefulWidget {
   final Event event;
@@ -24,7 +27,8 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
     // 2. 리스트에서 삭제 애니메이션 실행
     _listKey.currentState?.removeItem(
       index,
-          (context, animation) => _buildPhotoItem(picture, animation), // 사라질 때 보여줄 위젯
+      (context, animation) =>
+          _buildPhotoItem(picture, animation), // 사라질 때 보여줄 위젯
       duration: const Duration(milliseconds: 300), // 애니메이션 속도
     );
 
@@ -32,23 +36,45 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
     widget.event.removePicture(picture);
   }
 
-  void _addPicture() {
-    // 추가될 위치 (현재 리스트의 맨 뒤)
+  // void _addPicture() {
+  //   // 추가될 위치 (현재 리스트의 맨 뒤)
+  //   final int newIndex = _gallery.length;
+
+  //   // 1. 실제 데이터 추가
+  //   widget.event.addPicture('https://picsum.photos/100?random=${DateTime.now().millisecondsSinceEpoch}');
+
+  //   // 2. 리스트에 추가 애니메이션 실행
+  //   _listKey.currentState?.insertItem(
+  //     newIndex,
+  //     duration: const Duration(milliseconds: 300),
+  //   );
+  // }
+  void _addPicture() async {
+    final ImagePicker picker = ImagePicker();
+
+    // 갤러리에서 이미지 선택
+    final XFile? pickedFile = await picker.pickImage(
+      source: ImageSource.gallery,
+    );
+
+    if (pickedFile == null) return; // 취소 시 종료
+
+    final String filePath = pickedFile.path;
+
+    // 1. 데이터 추가
     final int newIndex = _gallery.length;
+    widget.event.addPicture(filePath);
 
-    // 1. 실제 데이터 추가
-    widget.event.addPicture('https://picsum.photos/100?random=${DateTime.now().millisecondsSinceEpoch}');
-
-    // 2. 리스트에 추가 애니메이션 실행
+    // 2. AnimatedList 애니메이션
     _listKey.currentState?.insertItem(
       newIndex,
       duration: const Duration(milliseconds: 300),
     );
+
+    setState(() {}); // 필요 시 UI 갱신
   }
 
-
   final double imageSize = 120;
-
 
   // 개별 사진 아이템을 빌드하는 메서드 (애니메이션 적용)
   Widget _buildPhotoItem(String picture, Animation<double> animation) {
@@ -73,12 +99,21 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                 SmoothClipRRect(
                   borderRadius: BorderRadius.circular(22),
                   smoothness: 0.6,
-                  child: Image.network(
-                    picture,
-                    width: imageSize,
-                    height: imageSize,
-                    fit: BoxFit.cover,
-                  ),
+                  child:
+                      // Image.network(
+                      //   picture,
+                      //   width: imageSize,
+                      //   height: imageSize,
+                      //   fit: BoxFit.cover,
+                      // ),
+                      Image(
+                        image: picture.startsWith('http')
+                            ? NetworkImage(picture)
+                            : FileImage(File(picture)) as ImageProvider,
+                        width: imageSize,
+                        height: imageSize,
+                        fit: BoxFit.cover,
+                      ),
                 ),
                 Container(
                   padding: EdgeInsets.all(8),
@@ -87,8 +122,11 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                     shape: SmoothRectangleBorder(
                       borderRadius: BorderRadius.circular(22),
                       smoothness: 0.6,
-                      side: BorderSide(color: Colors.black.withAlpha(24), width: 1.0)
-                    )
+                      side: BorderSide(
+                        color: Colors.black.withAlpha(24),
+                        width: 1.0,
+                      ),
+                    ),
                   ),
                   child: GestureDetector(
                     // 삭제 시 인덱스가 필요하므로 수정
@@ -149,7 +187,9 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                     onTap: _addPicture,
                     color: themePageColor, // 기존 코드의 변수 사용
                     side: BorderSide(
-                        color: themeDeepColor, width: 1.0), // 기존 코드 변수
+                      color: themeDeepColor,
+                      width: 1.0,
+                    ), // 기존 코드 변수
                     width: imageSize,
                     height: imageSize,
                     borderRadius: BorderRadius.circular(24),
