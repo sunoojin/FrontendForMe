@@ -1,8 +1,12 @@
+import 'dart:async';
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
+import 'package:geolocator/geolocator.dart';
 // import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:intl/intl.dart';
@@ -78,6 +82,8 @@ void main() async {
     // 2) 콜백 등록
     backgroundCallback, //  static / 최상위 함수
   );
+
+  await initializeService();
 
   runApp(MyApp(hasUserInfo: hasUserInfo));
 }
@@ -200,6 +206,7 @@ Future<void> onStart(ServiceInstance service) async {
   final locationBox = await Hive.openBox<Location>('locationBox');
 
   // 3. 1분마다 검사하는 타이머 시작
+  // minutes: 1
   Timer.periodic(const Duration(minutes: 1), (timer) async {
     final now = DateTime.now();
 
@@ -234,10 +241,12 @@ Future<void> onStart(ServiceInstance service) async {
       return;
     }
 
+
     // ★ 핵심 로직: 00분 혹은 30분인지 체크
     bool isTimeSlot = (now.minute >= 0 && now.minute <= 5) ||
         (now.minute >= 30 && now.minute <= 35);
 
+    // isTimeSlot
     if (isTimeSlot) {
 
       // 같은 분(minute)에 이미 수집했다면 건너뜀 (중복 방지)
@@ -251,6 +260,7 @@ Future<void> onStart(ServiceInstance service) async {
           // print("⏳ 이미 기록됨. (마지막 기록: ${difference.inMinutes}분 전)");
           return;
         }
+
 
       }
 
