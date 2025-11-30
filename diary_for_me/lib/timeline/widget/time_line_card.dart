@@ -1,10 +1,11 @@
-import 'package:diary_for_me/db_models/timeline/timeline_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:intl/intl.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
+// [변경] Isar 모델 import
+import '../../DB/timeline/timeline_model.dart';
 import '../screen/event_list_screen.dart';
 
 class TimeLineCard extends StatelessWidget {
@@ -14,6 +15,9 @@ class TimeLineCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // [안전 장치] 날짜가 null일 경우 현재 시간 사용
+    final date = timeline.date ?? DateTime.now();
+
     return Container(
       decoration: ShapeDecoration(
         shape: SmoothRectangleBorder(
@@ -22,8 +26,8 @@ class TimeLineCard extends StatelessWidget {
           side: BorderSide(color: themeDeepColor, width: 1.0),
         ),
       ),
-      padding: EdgeInsets.all(20),
-      margin: EdgeInsets.only(bottom: 16),
+      padding: const EdgeInsets.all(20),
+      margin: const EdgeInsets.only(bottom: 16),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -32,17 +36,18 @@ class TimeLineCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                //DateFormat('yyyy년 MM/dd').format(timeline.date),
-                DateFormat('yyyy년 MM/dd (E)').format(timeline.date),
+                // [변경] Null safe한 date 변수 사용
+                DateFormat('yyyy년 MM/dd (E)').format(date),
                 style: cardTitle(),
               ),
-              SizedBox(height: 4),
+              const SizedBox(height: 4),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.end,
                 children: [
                   Text(
-                    '수집된 정보 ${timeline.date.second}개',
-                    style: TextStyle(
+                    // [참고] date.second는 임시 로직으로 보이며, 추후 실제 수집 데이터 개수 로직으로 변경 필요
+                    '수집된 정보 ${date.second}개',
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: textTertiary,
                       fontWeight: FontWeight.w500,
@@ -51,7 +56,7 @@ class TimeLineCard extends StatelessWidget {
                   ),
                   Text(
                     '생성된 활동 ${timeline.events.length}개',
-                    style: TextStyle(
+                    style: const TextStyle(
                       fontSize: 16.0,
                       color: textTertiary,
                       fontWeight: FontWeight.w500,
@@ -62,16 +67,17 @@ class TimeLineCard extends StatelessWidget {
               ),
             ],
           ),
-          SizedBox(height: 16),
+          const SizedBox(height: 16),
           ContainerButton(
             color: themeColor.withAlpha(24),
-            padding: EdgeInsets.symmetric(horizontal: 14, vertical: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
             onTap: () {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) =>
-                      EventListScreen(timelineKey: timeline.key),
+                  // [변경] timelineKey(String) -> timelineId(int) 전달
+                  EventListScreen(timelineId: timeline.id),
                 ),
               );
             },
@@ -94,41 +100,5 @@ class TimeLineCard extends StatelessWidget {
         ],
       ),
     );
-    /*
-    return contentsCard(
-      children: [
-        contents(
-          children: [
-            Text(
-              DateFormat('yyyy 년 MM/dd (E)').format(timeline.date),
-              style: cardTitle(),
-            ),
-            const SizedBox(height: 16),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                InfoBox(title: "생성된 활동", value: '${timeline.events.length}'),
-                InfoBox(title: "수집된 정보", value: '${timeline.date.second}'),
-              ],
-            ),
-            const SizedBox(height: 16),
-            Text(
-              "실록이 도착했어요!",
-              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 15),
-            ),
-            const SizedBox(height: 6),
-            Text(
-              "사관이 정보 수집을 끝냈어요. 이제 일기를 작성해보세요.",
-              style: const TextStyle(color: Colors.black54, fontSize: 13),
-            ),
-            const SizedBox(height: 16),
-            // PurpleButton(text: "일기 생성하기", date: date),
-            GenerateButton(timelineKey: timeline.key,),
-          ],
-        ),
-      ],
-    );
-
-     */
   }
 }

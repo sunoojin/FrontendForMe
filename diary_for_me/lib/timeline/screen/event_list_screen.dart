@@ -1,181 +1,212 @@
-// import 'dart:developer';
-
 import 'package:diary_for_me/new_diary/screen/select_mood_screen.dart';
-import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:diary_for_me/timeline/widget/add_event_button.dart';
-// import 'package:diary_for_me/timeline/widget/time_line_card.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:isar/isar.dart'; // [필수] Isar 패키지
+import 'package:smooth_corner/smooth_corner.dart';
 
 import 'package:diary_for_me/timeline/widget/event_card.dart';
 import 'package:diary_for_me/timeline/screen/edit_event_screen.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
-import 'package:smooth_corner/smooth_corner.dart';
 
-import '../../db_models/timeline/timeline_model.dart';
+// [필수] DB 매니저 및 모델 import
+import '../../DB/db_manager.dart';
+import '../../DB/timeline/timeline_model.dart';
 
-class EventListScreen extends StatelessWidget {
-  final String timelineKey;
-  const EventListScreen({super.key, required this.timelineKey});
+class EventListScreen extends StatefulWidget {
+  // [변경] String Key -> int ID
+  final int timelineId;
+  const EventListScreen({super.key, required this.timelineId});
+
+  @override
+  State<EventListScreen> createState() => _EventListScreenState();
+}
+
+class _EventListScreenState extends State<EventListScreen> {
+  // DB 연결 Future 캐싱
+  late Future<Isar> _dbFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _dbFuture = DB().instance;
+  }
+
+  // [기능] 이벤트 추가/수정 모달 및 DB 저장
+  Future<void> _showEventModal(
+      BuildContext context,
+      Isar isar,
+      TimeLine timeline,
+      int? eventIndex,
+      ) async {
+    // UI와 DB의 정합성을 위해 리스트를 먼저 정렬합니다. (UI가 정렬된 상태로 보여지므로)
+    // Isar 객체의 리스트는 수정 가능하므로 직접 sort 해도 됩니다.
+    timeline.events.sort();
+
+    final Event? initialEvent =
+    (eventIndex != null) ? timeline.events[eventIndex] : null;
+
+    // 모달 띄우기 (수정/추가)
+    final Event? resultEvent = await ActivityEditSheet.show(
+      context,
+      initialEvent: initialEvent,
+    );
+
+    if (resultEvent != null) {
+      await isar.writeTxn(() async {
+        // 리스트를 수정 가능한 상태로 복사 (안전장치)
+        final currentEvents = [...timeline.events];
+
+        if (eventIndex != null) {
+          // 수정
+          currentEvents[eventIndex] = resultEvent;
+        } else {
+          // 추가
+          currentEvents.add(resultEvent);
+        }
+
+        // 타임라인 객체 업데이트
+        timeline.events = currentEvents;
+
+        // 정렬된 상태로 저장 (선택 사항)
+        timeline.events.sort();
+
+        await isar.timeLines.put(timeline);
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    final timelineBox = Hive.box<TimeLine>('timelineBox');
-
-    void showEventModal(
-      BuildContext context,
-      TimeLine timeline,
-      int? eventIndex,
-    ) async {
-      final Event? initialEvent = (eventIndex != null)
-          ? timeline.events[eventIndex]
-          : null;
-
-      final Event? resultEvent = await ActivityEditSheet.show(
-        context,
-        initialEvent: initialEvent,
-      );
-      if (resultEvent != null) {
-        if (eventIndex != null) {
-          timeline.events[eventIndex] = resultEvent;
-        } else {
-          timeline.events ??= [];
-          timeline.events.add(resultEvent);
-        }
-      }
-
-      await timeline.save();
-    }
-
     return Scaffold(
       appBar: blurryAppBar(
         color: Colors.white,
         actions: [
           Text('1', style: appbarButton(color: textPrimary)),
           Text('/3', style: appbarButton(color: textTertiary)),
-          SizedBox(width: 20),
+          const SizedBox(width: 20),
         ],
       ),
       backgroundColor: Colors.white,
-      body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // 제목
-            Text("하루 돌아보기", style: pageTitle()),
-            const SizedBox(height: 8),
-            Text(
-              "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
-              "실제 있었던 일과 다르다면 수정해 주세요.",
-              style: cardDetail(),
-            ),
-            const SizedBox(height: 16),
+      // 1. DB 인스턴스 확보
+      body: FutureBuilder<Isar>(
+        future: _dbFuture,
+        builder: (context, dbSnapshot) {
+          if (!dbSnapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            // 이벤트 목록
-            /*
-            Expanded(
-              child: SmoothClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                child: ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: events.length + 1,
-                  itemBuilder: (context, index) {
-                    if (index == events.length) return AddEventButton();
-                    final e = events[index];
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: EventCard(
-                        time: e["time"]!,
-                        title: e["title"]!,
-                        description: e["description"]!,
-                        onEdit: () {
-                          ActivityEditSheet.show(context);
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(content: Text("${e["title"]} 수정 클릭")),
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-              ),
-            ),
-             */
-            Expanded(
-              child: SmoothClipRRect(
-                borderRadius: BorderRadius.circular(32),
-                child: ValueListenableBuilder(
-                  valueListenable: timelineBox.listenable(),
-                  builder: (context, Box<TimeLine> box, _) {
-                    final TimeLine? timeline = box.get(timelineKey);
+          final isar = dbSnapshot.data!;
 
-                    if (timeline == null) return Text('타임라인 에러');
+          // 2. 타임라인 데이터 감시 (StreamBuilder)
+          return StreamBuilder<TimeLine?>(
+            stream: isar.timeLines.watchObject(widget.timelineId, fireImmediately: true),
+            builder: (context, snapshot) {
+              if (!snapshot.hasData || snapshot.data == null) {
+                return const Center(child: Text('타임라인을 불러올 수 없습니다.'));
+              }
 
-                    final events = timeline.events;
-                    events.sort();
+              final timeline = snapshot.data!;
+              final events = timeline.events;
 
-                    return ListView.builder(
-                      physics: BouncingScrollPhysics(),
-                      itemCount: events.length + 1,
-                      itemBuilder: (context, index) {
-                        if (index == events.length)
-                          return AddEventButton(
-                            onTap: () =>
-                                showEventModal(context, timeline, null),
-                          );
-                        final e = events[index];
-                        return Padding(
-                          padding: const EdgeInsets.only(bottom: 16),
-                          child: EventCard(
-                            event: e,
-                            onEdit: () {
-                              showEventModal(context, timeline, index);
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                SnackBar(content: Text("${e.title} 수정 클릭")),
+              // 날짜순 정렬 (Event 클래스에 Comparable 구현됨)
+              events.sort();
+
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // 제목
+                    Text("하루 돌아보기", style: pageTitle()),
+                    const SizedBox(height: 8),
+                    Text(
+                      "수집된 정보들을 바탕으로 생성된 타임라인이에요.\n"
+                          "실제 있었던 일과 다르다면 수정해 주세요.",
+                      style: cardDetail(),
+                    ),
+                    const SizedBox(height: 16),
+
+                    // 이벤트 목록
+                    Expanded(
+                      child: SmoothClipRRect(
+                        borderRadius: BorderRadius.circular(32),
+                        child: ListView.builder(
+                          physics: const BouncingScrollPhysics(),
+                          itemCount: events.length + 1,
+                          itemBuilder: (context, index) {
+                            // 마지막 아이템: 추가 버튼
+                            if (index == events.length) {
+                              return AddEventButton(
+                                onTap: () => _showEventModal(
+                                  context,
+                                  isar,
+                                  timeline,
+                                  null, // null이면 추가 모드
+                                ),
                               );
-                            },
+                            }
+
+                            final e = events[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: 16),
+                              child: EventCard(
+                                event: e,
+                                onEdit: () {
+                                  _showEventModal(
+                                    context,
+                                    isar,
+                                    timeline,
+                                    index, // index 전달하여 수정 모드
+                                  );
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(content: Text("${e.title} 수정 클릭")),
+                                  );
+                                },
+                              ),
+                            );
+                          },
+                        ),
+                      ),
+                    ),
+
+                    const SizedBox(height: 16),
+
+                    // 다음 버튼
+                    ContainerButton(
+                      borderRadius: BorderRadius.circular(24),
+                      height: 68,
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            // [변경] timelineId(int) 전달
+                            // SelectMoodScreen도 int ID를 받도록 수정 필요
+                            builder: (context) => SelectMoodScreen(
+                              timelineId: widget.timelineId,
+                            ),
                           ),
                         );
                       },
-                    );
-                  },
-                ),
-              ),
-            ),
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('다음으로', style: mainButton(color: textPrimary)),
+                            Icon(Icons.navigate_next, size: 24, color: textPrimary),
+                          ],
+                        ),
+                      ),
+                    ),
 
-            const SizedBox(height: 16),
-
-            // 다음 버튼
-            ContainerButton(
-              borderRadius: BorderRadius.circular(24),
-              height: 68,
-              onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) =>
-                        SelectMoodScreen(timelineKey: timelineKey),
-                  ),
-                );
-              },
-              child: Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text('다음으로', style: mainButton(color: textPrimary)),
-                    Icon(Icons.navigate_next, size: 24, color: textPrimary),
+                    const SafeArea(top: false, child: SizedBox()),
                   ],
                 ),
-              ),
-            ),
-
-            SafeArea(top: false, child: SizedBox()),
-          ],
-        ),
+              );
+            },
+          );
+        },
       ),
     );
   }

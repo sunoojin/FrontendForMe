@@ -2,11 +2,14 @@ import 'package:diary_for_me/home/widgets/my_library_card.dart';
 import 'package:diary_for_me/setting/screen/setting_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:hive_flutter/adapters.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-
 import 'package:flutter/cupertino.dart';
-import '../../db_models/timeline/timeline_model.dart';
+
+// [1] Isar 관련 패키지 Import
+import 'package:isar/isar.dart';
+import 'package:diary_for_me/DB/db_manager.dart';
+import 'package:diary_for_me/DB/timeline/timeline_model.dart';
+
 import '../service/greeting.dart';
 import '../widgets/today_widget.dart';
 import 'package:diary_for_me/timeline/screen/timeline_list_screen.dart';
@@ -24,17 +27,19 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
   String? _gender;
   String _currentGreeting = '';
 
+  // [2] DB 인스턴스를 저장할 변수
+  late Future<Isar> _dbFuture;
+
   @override
   void initState() {
     super.initState();
 
-    // [3. 생명주기 감지기 등록]
     WidgetsBinding.instance.addObserver(this);
-
-    // [4. 초기 인사말 설정]
     _updateGreeting();
-
     _loadUserInfo();
+
+    // [3] 앱 시작 시 DB 연결 준비 (한 번만 실행)
+    _dbFuture = DB().instance;
   }
 
   @override
@@ -67,7 +72,7 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
-    final timelineBox = Hive.box<TimeLine>('timelineBox');
+    // Hive 관련 코드 삭제됨
 
     return Scaffold(
       extendBodyBehindAppBar: true,
@@ -89,94 +94,107 @@ class _HomePageState extends State<HomePage> with WidgetsBindingObserver {
               );
             },
           ),
-          SizedBox(width: 4),
+          const SizedBox(width: 4),
         ],
       ),
       backgroundColor: themePageColor,
       body: SingleChildScrollView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         child: Padding(
-          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
-              // 안전영역 설정
-              SafeArea(bottom: false, child: SizedBox()),
-              SizedBox(height: 28),
+              const SafeArea(bottom: false, child: SizedBox()),
+              const SizedBox(height: 28),
               // 타이틀
               Text(
                 '${_name ?? '사용자'}님',
-                // PageTitle
                 style: pageTitle(),
               ),
               Text(
                 _currentGreeting,
-                // PageTitle
                 style: pageTitle(fontWeight: FontWeight.w500),
               ),
-              SizedBox(height: 28),
-              SizedBox(height: 16),
+              const SizedBox(height: 28),
+              const SizedBox(height: 16),
               // 오늘의 일기
-              TodayWidget(),
+              const TodayWidget(),
               // 나의 서고
-              MyLibraryCard(),
-              // 저장된 타임라인
-              ValueListenableBuilder(
-                valueListenable: timelineBox.listenable(),
-                builder: (context, Box<TimeLine> box, _) {
-                  return contentsCard(
-                    children: [
-                      contents(
+              const MyLibraryCard(),
+
+              // [4] 저장된 타임라인 (Isar 적용)
+              FutureBuilder<Isar>(
+                future: _dbFuture, // initState에서 준비한 DB 사용
+                builder: (context, dbSnapshot) {
+                  // DB 로딩 중일 때 처리 (필요시 로딩 위젯 표시)
+                  if (!dbSnapshot.hasData) {
+                    return const SizedBox(height: 100);
+                  }
+
+                  final isar = dbSnapshot.data!;
+
+                  // [5] StreamBuilder로 타임라인 개수 변화 감지
+                  return StreamBuilder<int>(
+                    // 전체 리스트를 구독하되, 개수(length)만 추출하여 스트림으로 받음
+                    stream: isar.timeLines.where().watch(fireImmediately: true).map((list) => list.length),
+                    builder: (context, snapshot) {
+                      final count = snapshot.data ?? 0;
+
+                      return contentsCard(
                         children: [
-                          Row(
+                          contents(
                             children: [
-                              Text('내 타임라인 ', style: cardTitle()),
-                              Text(
-                                '${timelineBox.length}개',
-                                style: cardTitle(color: mainColor),
+                              Row(
+                                children: [
+                                  Text('내 타임라인 ', style: cardTitle()),
+                                  Text(
+                                    '${count}개', // 실시간 개수 반영
+                                    style: cardTitle(color: mainColor),
+                                  ),
+                                ],
                               ),
+                              const SizedBox(height: 8),
+                              Text(
+                                '사관이 모은 기록들을 바탕으로 생성된 타임라인이에요. '
+                                    '저장된 타임라인으로 일기를 작성할 수 있어요.',
+                                style: cardDetail(),
+                              ),
+                              const SizedBox(height: 16),
+                              borderHorizontal(),
                             ],
                           ),
-                          SizedBox(height: 8),
-                          Text(
-                            '사관이 모은 기록들을 바탕으로 생성된 타임라인이에요. '
-                            '저장된 타임라인으로 일기를 작성할 수 있어요.',
-                            style: cardDetail(),
+                          bottomButton(
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '타임라인 보기',
+                                  style: cardDetail(color: textTertiary),
+                                ),
+                                const Icon(
+                                  Icons.arrow_forward,
+                                  size: 19,
+                                  color: textTertiary,
+                                ),
+                              ],
+                            ),
+                            onTap: () {
+                              Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => const TimelineListScreen(),
+                                ),
+                              );
+                            },
                           ),
-                          SizedBox(height: 16),
-                          borderHorizontal(),
                         ],
-                      ),
-                      bottomButton(
-                        child: Row(
-                          crossAxisAlignment: CrossAxisAlignment.end,
-                          children: [
-                            Text(
-                              '타임라인 보기',
-                              style: cardDetail(color: textTertiary),
-                            ),
-                            Icon(
-                              Icons.arrow_forward,
-                              size: 19,
-                              color: textTertiary,
-                            ),
-                          ],
-                        ),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => const TimelineListScreen(),
-                            ),
-                          );
-                        },
-                      ),
-                    ],
+                      );
+                    },
                   );
                 },
               ),
-              // 하단 안전영역
-              SafeArea(top: false, child: SizedBox(height: 80)),
+              const SafeArea(top: false, child: SizedBox(height: 80)),
             ],
           ),
         ),

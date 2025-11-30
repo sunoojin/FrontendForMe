@@ -1,12 +1,14 @@
 import 'dart:ui';
 import 'dart:io';
+import 'package:diary_for_me/DB/timeline/timeline_model.dart';
 import 'package:flutter/material.dart';
 
 import 'package:image_picker/image_picker.dart';
-import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:diary_for_me/timeline/widget/edit_event_cards/section_card.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:smooth_corner/smooth_corner.dart';
+
+// [변경] Isar 모델 import
 
 class RelatedPhotoCard extends StatefulWidget {
   final Event event;
@@ -20,35 +22,24 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
   // 1. AnimatedList를 제어하기 위한 GlobalKey 선언
   final GlobalKey<AnimatedListState> _listKey = GlobalKey<AnimatedListState>();
 
-  // 편의를 위해 갤러리 리스트 게터(getter) 사용
-  List<String> get _gallery => widget.event.dailydata.gallery;
+  // [수정] 편의를 위해 갤러리 리스트 게터(getter) 사용 (Null Safety 적용)
+  // dailydata가 null이면 빈 리스트 반환
+  List<String> get _gallery => widget.event.dailydata?.gallery ?? [];
 
   void _removePicture(int index, String picture) {
     // 2. 리스트에서 삭제 애니메이션 실행
     _listKey.currentState?.removeItem(
       index,
-      (context, animation) =>
+          (context, animation) =>
           _buildPhotoItem(picture, animation), // 사라질 때 보여줄 위젯
       duration: const Duration(milliseconds: 300), // 애니메이션 속도
     );
 
-    // 3. 실제 데이터 삭제 (setState 불필요 - AnimatedList가 알아서 다시 그림)
+    // 3. 실제 데이터 삭제
+    // (Event 모델 내부의 removePicture가 null 체크를 수행하므로 안전함)
     widget.event.removePicture(picture);
   }
 
-  // void _addPicture() {
-  //   // 추가될 위치 (현재 리스트의 맨 뒤)
-  //   final int newIndex = _gallery.length;
-
-  //   // 1. 실제 데이터 추가
-  //   widget.event.addPicture('https://picsum.photos/100?random=${DateTime.now().millisecondsSinceEpoch}');
-
-  //   // 2. 리스트에 추가 애니메이션 실행
-  //   _listKey.currentState?.insertItem(
-  //     newIndex,
-  //     duration: const Duration(milliseconds: 300),
-  //   );
-  // }
   void _addPicture() async {
     final ImagePicker picker = ImagePicker();
 
@@ -62,6 +53,7 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
     final String filePath = pickedFile.path;
 
     // 1. 데이터 추가
+    // (Event 모델 내부의 addPicture가 dailydata가 없으면 생성해주므로 안전함)
     final int newIndex = _gallery.length;
     widget.event.addPicture(filePath);
 
@@ -71,7 +63,7 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
       duration: const Duration(milliseconds: 300),
     );
 
-    setState(() {}); // 필요 시 UI 갱신
+    setState(() {}); // 데이터가 추가되었으므로 UI 갱신 (특히 dailydata가 새로 생성된 경우 필요)
   }
 
   final double imageSize = 120;
@@ -99,24 +91,17 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                 SmoothClipRRect(
                   borderRadius: BorderRadius.circular(22),
                   smoothness: 0.6,
-                  child:
-                      // Image.network(
-                      //   picture,
-                      //   width: imageSize,
-                      //   height: imageSize,
-                      //   fit: BoxFit.cover,
-                      // ),
-                      Image(
-                        image: picture.startsWith('http')
-                            ? NetworkImage(picture)
-                            : FileImage(File(picture)) as ImageProvider,
-                        width: imageSize,
-                        height: imageSize,
-                        fit: BoxFit.cover,
-                      ),
+                  child: Image(
+                    image: picture.startsWith('http')
+                        ? NetworkImage(picture)
+                        : FileImage(File(picture)) as ImageProvider,
+                    width: imageSize,
+                    height: imageSize,
+                    fit: BoxFit.cover,
+                  ),
                 ),
                 Container(
-                  padding: EdgeInsets.all(8),
+                  padding: const EdgeInsets.all(8),
                   alignment: Alignment.topRight,
                   decoration: ShapeDecoration(
                     shape: SmoothRectangleBorder(
@@ -166,10 +151,13 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
 
   @override
   Widget build(BuildContext context) {
+    // 갤러리 리스트 가져오기 (Null일 경우 빈 리스트)
+    final galleryList = _gallery;
+
     return SectionCard(
       title: '관련 사진',
       children: [
-        SizedBox(height: 16),
+        const SizedBox(height: 16),
         SizedBox(
           height: imageSize, // 리스트의 높이 고정
           child: AnimatedList(
@@ -178,18 +166,18 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
             physics: const BouncingScrollPhysics(),
             padding: const EdgeInsets.only(left: 20), // 시작 여백
             // 아이템 개수: 사진 개수 + 추가 버튼(1개)
-            initialItemCount: _gallery.length + 1,
+            initialItemCount: galleryList.length + 1,
             itemBuilder: (context, index, animation) {
-              if (index == _gallery.length) {
+              if (index == galleryList.length) {
                 return Padding(
                   padding: const EdgeInsets.only(right: 20), // 끝 여백
                   child: ContainerButton(
                     onTap: _addPicture,
-                    color: themePageColor, // 기존 코드의 변수 사용
+                    color: themePageColor,
                     side: BorderSide(
                       color: themeDeepColor,
                       width: 1.0,
-                    ), // 기존 코드 변수
+                    ),
                     width: imageSize,
                     height: imageSize,
                     borderRadius: BorderRadius.circular(24),
@@ -199,7 +187,7 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           fontSize: 15,
-                          color: textSecondary, // 기존 코드 변수
+                          color: textSecondary,
                           fontWeight: FontWeight.w500,
                         ),
                       ),
@@ -209,11 +197,11 @@ class _RelatedPhotoCardState extends State<RelatedPhotoCard> {
               }
 
               // 그 외에는 사진 아이템
-              return _buildPhotoItem(_gallery[index], animation);
+              return _buildPhotoItem(galleryList[index], animation);
             },
           ),
         ),
-        SizedBox(height: 8),
+        const SizedBox(height: 8),
       ],
     );
   }

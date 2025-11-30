@@ -1,65 +1,101 @@
-// import 'package:diary_for_me/home/widgets/today_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/timeline/widget/time_line_card.dart';
-import 'package:hive/hive.dart';
-import 'package:hive_flutter/adapters.dart';
+import 'package:isar/isar.dart'; // [필수] Isar 패키지
 
-import '../../db_models/timeline/timeline_model.dart';
+// [필수] DB 매니저 및 모델 import
+import '../../DB/db_manager.dart';
+import '../../DB/timeline/timeline_model.dart';
 
-class TimelineListScreen extends StatelessWidget {
+class TimelineListScreen extends StatefulWidget {
   const TimelineListScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
-    final timelineBox = Hive.box<TimeLine>('timelineBox');
+  State<TimelineListScreen> createState() => _TimelineListScreenState();
+}
 
+class _TimelineListScreenState extends State<TimelineListScreen> {
+  // DB 연결 Future 캐싱
+  late Future<Isar> _dbFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    _dbFuture = DB().instance;
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: blurryAppBar(color: Colors.white),
       backgroundColor: Colors.white,
       extendBodyBehindAppBar: true,
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-        physics: BouncingScrollPhysics(),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            SafeArea(bottom: false, child: SizedBox()),
-            // 제목
-            Text("나의 타임라인", style: pageTitle()),
-            const SizedBox(height: 8),
-            Text(
-              "사관이 기록한 타임라인이에요\n모인 타임라인으로 일기를 생성할 수 있어요.",
-              style: cardDetail(),
-            ),
+      // 1. DB 인스턴스 확보
+      body: FutureBuilder<Isar>(
+        future: _dbFuture,
+        builder: (context, dbSnapshot) {
+          if (!dbSnapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
 
-            const SizedBox(height: 16),
+          final isar = dbSnapshot.data!;
 
-            // 이전
-            ValueListenableBuilder(
-              valueListenable: timelineBox.listenable(),
-              builder: (context, Box<TimeLine> box, _) {
-                final timelines = box.values.toList();
+          return SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+            physics: const BouncingScrollPhysics(),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const SafeArea(bottom: false, child: SizedBox()),
+                // 제목
+                Text("나의 타임라인", style: pageTitle()),
+                const SizedBox(height: 8),
+                Text(
+                  "사관이 기록한 타임라인이에요\n모인 타임라인으로 일기를 생성할 수 있어요.",
+                  style: cardDetail(),
+                ),
 
-                if (timelines.isEmpty) {
-                  return SizedBox();
-                }
+                const SizedBox(height: 16),
 
-                timelines.sort();
+                // 2. 타임라인 목록 감시 (StreamBuilder)
+                StreamBuilder<List<TimeLine>>(
+                  stream: isar.timeLines.where().watch(fireImmediately: true),
+                  builder: (context, snapshot) {
+                    if (!snapshot.hasData) {
+                      return const SizedBox();
+                    }
 
-                return ListView.builder(
-                  shrinkWrap: true,
-                  padding: EdgeInsets.zero,
-                  physics: NeverScrollableScrollPhysics(),
-                  itemCount: timelines.length,
-                  itemBuilder: (BuildContext context, int index) {
-                    return TimeLineCard(timeline: timelines[index]);
+                    final timelines = snapshot.data!;
+
+                    if (timelines.isEmpty) {
+                      return const SizedBox(
+                        height: 100,
+                        child: Center(child: Text("저장된 타임라인이 없습니다.")),
+                      );
+                    }
+
+                    // 3. 최신순 정렬 (내림차순)
+                    timelines.sort((a, b) {
+                      final dateA = a.date ?? DateTime(0);
+                      final dateB = b.date ?? DateTime(0);
+                      return dateB.compareTo(dateA);
+                    });
+
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      padding: EdgeInsets.zero,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: timelines.length,
+                      itemBuilder: (BuildContext context, int index) {
+                        return TimeLineCard(timeline: timelines[index]);
+                      },
+                    );
                   },
-                );
-              },
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }

@@ -1,5 +1,5 @@
+import 'package:diary_for_me/DB/timeline/timeline_model.dart';
 import 'package:flutter/material.dart';
-import '../../db_models/event/event_model.dart';
 import 'edit_event_cards/app_noti_card.dart';
 import 'edit_event_cards/location_card.dart';
 import 'edit_event_cards/related_photo_card.dart';
