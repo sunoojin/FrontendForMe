@@ -3,7 +3,7 @@ import 'package:diary_for_me/DB/diary/diary_model.dart'; // [필수] Diary 모�
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:isar/isar.dart'; // [필수] Isar 패키지
+// import 'package:isar/isar.dart'; // [필수] Isar 패키지
 import 'package:smooth_corner/smooth_corner.dart';
 
 import '../../diary/screen/diary_screen.dart';
@@ -67,7 +67,10 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                   size: 76,
                 ),
                 const SizedBox(height: 16),
-                Text('일기 생성을 완료했어요', style: pageTitle(fontWeight: FontWeight.w500)),
+                Text(
+                  '일기 생성을 완료했어요',
+                  style: pageTitle(fontWeight: FontWeight.w500),
+                ),
                 const Expanded(child: SizedBox()),
                 Container(
                   padding: const EdgeInsets.all(20),
@@ -127,7 +130,10 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('홈으로', style: mainButton(color: textTertiary)),
+                              Text(
+                                '홈으로',
+                                style: mainButton(color: textTertiary),
+                              ),
                               const Icon(
                                 Icons.navigate_before,
                                 size: 24,
@@ -149,8 +155,8 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                             context,
                             CupertinoPageRoute(
                               builder: (context) =>
-                              // [변경] diaryKey 대신 diaryId 전달
-                              DiaryScreen(diaryId: widget.diaryId),
+                                  // [변경] diaryKey 대신 diaryId 전달
+                                  DiaryScreen(diaryId: widget.diaryId),
                             ),
                           );
                         },
@@ -159,7 +165,10 @@ class _FinishGenerationScreenState extends State<FinishGenerationScreen> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text('바로 읽기', style: mainButton(color: themeColor)),
+                              Text(
+                                '바로 읽기',
+                                style: mainButton(color: themeColor),
+                              ),
                               const Icon(
                                 Icons.navigate_next,
                                 size: 24,

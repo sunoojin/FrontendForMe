@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/home/screen/home_screen.dart';
 import 'package:diary_for_me/new_diary/screen/finish_generation_screen.dart';
-import 'package:diary_for_me/new_diary/service/diary_service.dart';
+// import 'package:diary_for_me/new_diary/service/diary_service.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart';
+// import 'package:isar/isar.dart';
 import 'package:smooth_corner/smooth_corner.dart';
 
 // [필수] DB 매니저 및 모델 import
@@ -75,7 +75,11 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
       // 실제로는 여기서 AI API를 호출하여 결과를 받아와야 합니다.
       final newDiary = Diary(
         title: '새 일기', // AI가 생성한 제목
-        content: DiaryContent(text: _controller.text.isEmpty ? 'AI가 생성한 일기 내용입니다.' : _controller.text), // AI 생성 내용
+        content: DiaryContent(
+          text: _controller.text.isEmpty
+              ? 'AI가 생성한 일기 내용입니다.'
+              : _controller.text,
+        ), // AI 생성 내용
         tag: [], // 초기 태그
       );
 
@@ -98,14 +102,15 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
     Navigator.pushAndRemoveUntil(
       context,
       CupertinoPageRoute(builder: (context) => const HomePage()),
-          (Route<dynamic> route) => false,
+      (Route<dynamic> route) => false,
     );
 
     // 완료 화면으로 이동
     Navigator.push(
       context,
       CupertinoPageRoute(
-        builder: (context) => FinishGenerationScreen(diaryId: newDiaryId!), // ID 전달
+        builder: (context) =>
+            FinishGenerationScreen(diaryId: newDiaryId!), // ID 전달
       ),
     );
   }
@@ -175,68 +180,68 @@ class _WriteDraftScreenState extends State<WriteDraftScreen> {
               Center(
                 child: _controller.text.isEmpty
                     ? Text(
-                  textAlign: TextAlign.center,
-                  '일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',
-                  style: contentDetail(),
-                )
+                        textAlign: TextAlign.center,
+                        '일기 초안이 없어도 AI가 일기를 생성할 수 있지만,\n결과가 정확하지 않을 수 있어요.',
+                        style: contentDetail(),
+                      )
                     : const SizedBox.shrink(),
               ),
               const SizedBox(height: 16),
               // 버튼
               _controller.text.isEmpty
                   ? ContainerButton(
-                key: const ValueKey('empty'),
-                borderRadius: BorderRadius.circular(24),
-                color: themeColor.withAlpha(24),
-                height: 68,
-                onTap: _generateDiary,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        '건너뛰고 일기 생성하기',
-                        style: mainButton(color: themeColor),
+                      key: const ValueKey('empty'),
+                      borderRadius: BorderRadius.circular(24),
+                      color: themeColor.withAlpha(24),
+                      height: 68,
+                      onTap: _generateDiary,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '건너뛰고 일기 생성하기',
+                              style: mainButton(color: themeColor),
+                            ),
+                            Icon(
+                              Icons.navigate_next,
+                              size: 24,
+                              color: themeColor,
+                            ),
+                          ],
+                        ),
                       ),
-                      Icon(
-                        Icons.navigate_next,
-                        size: 24,
-                        color: themeColor,
-                      ),
-                    ],
-                  ),
-                ),
-              )
+                    )
                   : ContainerButton(
-                key: const ValueKey('fill'),
-                borderRadius: BorderRadius.circular(24),
-                color: themeColor.withAlpha(255),
-                height: 68,
-                shadows: [
-                  BoxShadow(
-                    color: themeColor.withAlpha(128),
-                    spreadRadius: -20,
-                    blurRadius: 30,
-                    offset: const Offset(0, 30),
-                  ),
-                ],
-                onTap: _generateDiary,
-                child: Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text('일기 생성하기', style: mainButton()),
-                      const Icon(
-                        Icons.navigate_next,
-                        size: 24,
-                        color: Colors.white,
+                      key: const ValueKey('fill'),
+                      borderRadius: BorderRadius.circular(24),
+                      color: themeColor.withAlpha(255),
+                      height: 68,
+                      shadows: [
+                        BoxShadow(
+                          color: themeColor.withAlpha(128),
+                          spreadRadius: -20,
+                          blurRadius: 30,
+                          offset: const Offset(0, 30),
+                        ),
+                      ],
+                      onTap: _generateDiary,
+                      child: Center(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text('일기 생성하기', style: mainButton()),
+                            const Icon(
+                              Icons.navigate_next,
+                              size: 24,
+                              color: Colors.white,
+                            ),
+                          ],
+                        ),
                       ),
-                    ],
-                  ),
-                ),
-              ),
+                    ),
               // 안전영역
               const SafeArea(child: SizedBox()),
             ],
