@@ -3,13 +3,13 @@ import 'dart:io';
 import 'package:diary_for_me/DB/background_log/background_log_model.dart';
 import 'package:diary_for_me/DB/daily_data/daily_data_model.dart';
 import 'package:diary_for_me/DB/db_manager.dart';
-import 'package:diary_for_me/DB/timeline/timeline_model.dart';
+// import 'package:diary_for_me/DB/timeline/timeline_model.dart';
 import 'package:diary_for_me/collect/image.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
 import 'dart:convert';
-import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:dio/dio.dart';
+// import 'package:flutter/foundation.dart';
 
 import 'api_service.dart';
 
@@ -17,7 +17,11 @@ Future<bool> generateTimeline() async {
   DateTime now = DateTime.now();
   DateTime targetDate = (now.hour >= 21)
       ? DateTime(now.year, now.month, now.day)
-      : DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
+      : DateTime(
+          now.year,
+          now.month,
+          now.day,
+        ).subtract(const Duration(days: 1));
 
   try {
     print("timeline generating...");
@@ -49,9 +53,23 @@ Future<bool> generateTimeline() async {
   }
 }
 
-Future<Map<String, dynamic>> collectedDailyData (DateTime targetDate) async {
-  final start = DateTime(targetDate.year, targetDate.month, targetDate.day, 0, 0, 0);
-  final end = DateTime(targetDate.year, targetDate.month, targetDate.day, 23, 59, 59);
+Future<Map<String, dynamic>> collectedDailyData(DateTime targetDate) async {
+  final start = DateTime(
+    targetDate.year,
+    targetDate.month,
+    targetDate.day,
+    0,
+    0,
+    0,
+  );
+  final end = DateTime(
+    targetDate.year,
+    targetDate.month,
+    targetDate.day,
+    23,
+    59,
+    59,
+  );
 
   try {
     final isar = await DB().instance;
@@ -93,19 +111,27 @@ Future<Map<String, dynamic>> collectedDailyData (DateTime targetDate) async {
 
     /// 데이터 가공
     // 위치 데이터 변환
-    final locationsJson = locationLogs.map((log) => {
-      'lat': log.lat,
-      'lng': log.lng,
-      'timestamp': log.timestamp.toIso8601String(),
-      "place_name": null,
-    }).toList();
+    final locationsJson = locationLogs
+        .map(
+          (log) => {
+            'lat': log.lat,
+            'lng': log.lng,
+            'timestamp': log.timestamp.toIso8601String(),
+            "place_name": null,
+          },
+        )
+        .toList();
 
     // 알림 데이터 변환
-    final notificationsJson = notificationLogs.map((log) => {
-      'appname': log.appname,
-      'text': log.text,
-      'timestamp': log.timestamp.toIso8601String(),
-    }).toList();
+    final notificationsJson = notificationLogs
+        .map(
+          (log) => {
+            'appname': log.appname,
+            'text': log.text,
+            'timestamp': log.timestamp.toIso8601String(),
+          },
+        )
+        .toList();
 
     //
     final Map<String, dynamic> result = {
@@ -114,11 +140,10 @@ Future<Map<String, dynamic>> collectedDailyData (DateTime targetDate) async {
         'locations': locationsJson,
         'notifications': notificationsJson,
         'images': imagePaths, // 이미지 경로 리스트 (String List)
-      }
+      },
     };
 
     return result;
-
   } catch (e) {
     print('❌ 데이터 집계 중 에러 발생: $e');
     return {};

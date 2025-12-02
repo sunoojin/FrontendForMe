@@ -33,15 +33,15 @@ class _DiaryScreenState extends State<DiaryScreen> {
   }
 
   // [참고] 태그 추가 로직 예시
-  Future<void> _addTag(Isar isar, Diary diary) async {
-    /*
-    await isar.writeTxn(() async {
-      // 리스트는 수정 가능한 새 리스트로 복사해서 넣어야 안전함
-      diary.tag = [...?diary.tag, '새 태그'];
-      await isar.diaries.put(diary);
-    });
-    */
-  }
+  // Future<void> _addTag(Isar isar, Diary diary) async {
+  //   /*
+  //   await isar.writeTxn(() async {
+  //     // 리스트는 수정 가능한 새 리스트로 복사해서 넣어야 안전함
+  //     diary.tag = [...?diary.tag, '새 태그'];
+  //     await isar.diaries.put(diary);
+  //   });
+  //   */
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +59,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
 
         // 4. StreamBuilder: 데이터 변경 실시간 감지
         return StreamBuilder<Diary?>(
-          stream: isar.diarys.watchObject(widget.diaryId, fireImmediately: true),
+          stream: isar.diarys.watchObject(
+            widget.diaryId,
+            fireImmediately: true,
+          ),
           builder: (context, snapshot) {
             // 데이터가 없거나 로딩 중일 때
             if (!snapshot.hasData || snapshot.data == null) {
@@ -102,7 +105,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
               body: SingleChildScrollView(
                 physics: const BouncingScrollPhysics(),
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 0, vertical: 8),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 0,
+                    vertical: 8,
+                  ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -127,7 +133,10 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               borderRadius: BorderRadius.circular(23),
                               smoothness: 0.6,
                               child: BackdropFilter(
-                                filter: ImageFilter.blur(sigmaX: 14, sigmaY: 14),
+                                filter: ImageFilter.blur(
+                                  sigmaX: 14,
+                                  sigmaY: 14,
+                                ),
                                 child: GestureDetector(
                                   onTap: () {
                                     setState(() {
@@ -154,12 +163,16 @@ class _DiaryScreenState extends State<DiaryScreen> {
                                           width: 30,
                                           height: 30,
                                           decoration: BoxDecoration(
-                                            borderRadius: BorderRadius.circular(15),
+                                            borderRadius: BorderRadius.circular(
+                                              15,
+                                            ),
                                             color: Colors.black.withAlpha(64),
                                           ),
                                           alignment: Alignment.center,
                                           child: Icon(
-                                            _isPlaying ? Icons.pause : Icons.play_arrow,
+                                            _isPlaying
+                                                ? Icons.pause
+                                                : Icons.play_arrow,
                                             size: 24,
                                             color: Colors.white,
                                           ),
@@ -180,8 +193,8 @@ class _DiaryScreenState extends State<DiaryScreen> {
                           Text(diary.title, style: pageTitle()),
                           const SizedBox(height: 16),
                           Text(
-                              diary.content?.text ?? '', // Null 안전 처리
-                              style: diaryDetail()
+                            diary.content?.text ?? '', // Null 안전 처리
+                            style: diaryDetail(),
                           ),
                         ],
                       ),
@@ -199,16 +212,19 @@ class _DiaryScreenState extends State<DiaryScreen> {
                               child: Row(
                                 children: [
                                   // Null 안전 처리 및 리스트 맵핑
-                                  ...?diary.tag?.map((tagData) {
-                                    return tagBox(text: '#$tagData', activated: false);
+                                  ...diary.tag.map((tagData) {
+                                    return tagBox(
+                                      text: '#$tagData',
+                                      activated: false,
+                                    );
                                   }),
 
                                   // 태그 추가 버튼
                                   GestureDetector(
-                                      onTap: () {
-                                        // _addTag(isar, diary);
-                                      },
-                                      child: tagBox(text: '+ 새 태그')
+                                    onTap: () {
+                                      // _addTag(isar, diary);
+                                    },
+                                    child: tagBox(text: '+ 새 태그'),
                                   ),
                                   const SizedBox(width: 14),
                                 ],

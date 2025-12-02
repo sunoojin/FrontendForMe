@@ -6,6 +6,7 @@ import 'package:isar/isar.dart'; // [필수] Isar 패키지
 // [필수] DB 매니저 및 모델 import
 import '../../DB/db_manager.dart';
 import '../../DB/timeline/timeline_model.dart';
+import 'package:diary_for_me/DB/import_timeline.dart';
 
 class TimelineListScreen extends StatefulWidget {
   const TimelineListScreen({super.key});
@@ -76,8 +77,8 @@ class _TimelineListScreenState extends State<TimelineListScreen> {
 
                     // 3. 최신순 정렬 (내림차순)
                     timelines.sort((a, b) {
-                      final dateA = a.date ?? DateTime(0);
-                      final dateB = b.date ?? DateTime(0);
+                      final dateA = a.date; //?? DateTime(0);
+                      final dateB = b.date; //?? DateTime(0);
                       return dateB.compareTo(dateA);
                     });
 
@@ -90,6 +91,16 @@ class _TimelineListScreenState extends State<TimelineListScreen> {
                         return TimeLineCard(timeline: timelines[index]);
                       },
                     );
+                  },
+                ),
+                IconButton(
+                  icon: Icon(Icons.refresh),
+                  tooltip: '로컬 JSON 임포트',
+                  onPressed: () async {
+                    final saved = await readAndImport(context: context);
+                    if (saved != null) {
+                      // 성공하면 자동으로 StreamBuilder가 갱신된다.
+                    }
                   },
                 ),
               ],

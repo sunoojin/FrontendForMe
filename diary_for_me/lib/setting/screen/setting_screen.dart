@@ -1,7 +1,7 @@
 import 'package:diary_for_me/setting/widget/setting_category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:isar/isar.dart'; // [필수] Isar 패키지
+// import 'package:isar/isar.dart'; // [필수] Isar 패키지
 
 import '../../DB/background_log/background_log_model.dart';
 import '../../common/ui_kit.dart';
@@ -31,9 +31,9 @@ class SettingScreen extends StatelessWidget {
     });
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('모든 데이터가 초기화되었습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('모든 데이터가 초기화되었습니다.')));
     }
   }
 
@@ -79,9 +79,9 @@ class SettingScreen extends StatelessWidget {
     });
 
     if (context.mounted) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('테스트 타임라인이 추가되었습니다.')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('테스트 타임라인이 추가되었습니다.')));
     }
   }
 

@@ -1,4 +1,4 @@
-import 'package:diary_for_me/DB/daily_data/daily_data_model.dart';
+// import 'package:diary_for_me/DB/daily_data/daily_data_model.dart';
 import 'package:isar/isar.dart';
 
 part 'background_log_model.g.dart';
@@ -13,11 +13,7 @@ class LocationLog {
   double? lat;
   double? lng;
 
-  LocationLog({
-    required this.timestamp,
-    this.lat,
-    this.lng,
-  });
+  LocationLog({required this.timestamp, this.lat, this.lng});
 }
 
 @collection
@@ -30,17 +26,13 @@ class AppNotificationLog {
   String? appname;
   String? text;
 
-  AppNotificationLog({
-    required this.timestamp,
-    this.appname,
-    this.text
-  });
+  AppNotificationLog({required this.timestamp, this.appname, this.text});
 }
 
 enum AppServiceState {
   collecting, // 수집 중 (06:00 ~ 21:00)
   processing, // 분석 중 (21:00 ~ 처리 완료)
-  waiting,    // 휴식 중 (처리 완료 ~ 06:00)
+  waiting, // 휴식 중 (처리 완료 ~ 06:00)
 }
 
 @collection
