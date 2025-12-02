@@ -644,13 +644,18 @@ const DiarySchema = CollectionSchema(
       type: IsarType.object,
       target: r'DiaryContent',
     ),
-    r'tag': PropertySchema(
+    r'serverId': PropertySchema(
       id: 1,
+      name: r'serverId',
+      type: IsarType.string,
+    ),
+    r'tag': PropertySchema(
+      id: 2,
       name: r'tag',
       type: IsarType.stringList,
     ),
     r'title': PropertySchema(
-      id: 2,
+      id: 3,
       name: r'title',
       type: IsarType.string,
     )
@@ -690,6 +695,7 @@ int _diaryEstimateSize(
               value, allOffsets[DiaryContent]!, allOffsets);
     }
   }
+  bytesCount += 3 + object.serverId.length * 3;
   bytesCount += 3 + object.tag.length * 3;
   {
     for (var i = 0; i < object.tag.length; i++) {
@@ -713,8 +719,9 @@ void _diarySerialize(
     DiaryContentSchema.serialize,
     object.content,
   );
-  writer.writeStringList(offsets[1], object.tag);
-  writer.writeString(offsets[2], object.title);
+  writer.writeString(offsets[1], object.serverId);
+  writer.writeStringList(offsets[2], object.tag);
+  writer.writeString(offsets[3], object.title);
 }
 
 Diary _diaryDeserialize(
@@ -729,8 +736,9 @@ Diary _diaryDeserialize(
       DiaryContentSchema.deserialize,
       allOffsets,
     ),
-    tag: reader.readStringList(offsets[1]) ?? const [],
-    title: reader.readStringOrNull(offsets[2]) ?? '',
+    serverId: reader.readStringOrNull(offsets[1]) ?? '',
+    tag: reader.readStringList(offsets[2]) ?? const [],
+    title: reader.readStringOrNull(offsets[3]) ?? '',
   );
   object.id = id;
   return object;
@@ -750,8 +758,10 @@ P _diaryDeserializeProp<P>(
         allOffsets,
       )) as P;
     case 1:
-      return (reader.readStringList(offset) ?? const []) as P;
+      return (reader.readStringOrNull(offset) ?? '') as P;
     case 2:
+      return (reader.readStringList(offset) ?? const []) as P;
+    case 3:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -911,6 +921,136 @@ extension DiaryQueryFilter on QueryBuilder<Diary, Diary, QFilterCondition> {
         includeLower: includeLower,
         upper: upper,
         includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'serverId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'serverId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterFilterCondition> serverIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'serverId',
+        value: '',
       ));
     });
   }
@@ -1283,6 +1423,18 @@ extension DiaryQueryLinks on QueryBuilder<Diary, Diary, QFilterCondition> {
 }
 
 extension DiaryQuerySortBy on QueryBuilder<Diary, Diary, QSortBy> {
+  QueryBuilder<Diary, Diary, QAfterSortBy> sortByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterSortBy> sortByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Diary, Diary, QAfterSortBy> sortByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -1309,6 +1461,18 @@ extension DiaryQuerySortThenBy on QueryBuilder<Diary, Diary, QSortThenBy> {
     });
   }
 
+  QueryBuilder<Diary, Diary, QAfterSortBy> thenByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<Diary, Diary, QAfterSortBy> thenByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<Diary, Diary, QAfterSortBy> thenByTitle() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'title', Sort.asc);
@@ -1323,6 +1487,13 @@ extension DiaryQuerySortThenBy on QueryBuilder<Diary, Diary, QSortThenBy> {
 }
 
 extension DiaryQueryWhereDistinct on QueryBuilder<Diary, Diary, QDistinct> {
+  QueryBuilder<Diary, Diary, QDistinct> distinctByServerId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'serverId', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<Diary, Diary, QDistinct> distinctByTag() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'tag');
@@ -1347,6 +1518,12 @@ extension DiaryQueryProperty on QueryBuilder<Diary, Diary, QQueryProperty> {
   QueryBuilder<Diary, DiaryContent?, QQueryOperations> contentProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'content');
+    });
+  }
+
+  QueryBuilder<Diary, String, QQueryOperations> serverIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'serverId');
     });
   }
 

@@ -81,6 +81,8 @@ class SelfSurvey {
 class TimeLine {
   Id id = Isar.autoIncrement;
 
+  String serverId;
+
   // [핵심] 상태 필드 추가 (기본값: 대기 중)
   @Enumerated(EnumType.ordinal) // 정수형으로 저장되어 빠름
   TimelineStatus status = TimelineStatus.pending;
@@ -95,6 +97,7 @@ class TimeLine {
   SelfSurvey? selfsurvey;
 
   TimeLine({
+    this.serverId = '',
     this.title = '',
     required this.date,
     this.events = const [],

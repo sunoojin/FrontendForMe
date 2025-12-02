@@ -3,7 +3,7 @@ import 'dart:ui';
 
 import 'package:diary_for_me/DB/service_status_manager.dart';
 import 'package:diary_for_me/DB/timeline/timeline_model.dart';
-import 'package:diary_for_me/api_service/get_timeline_api.dart';
+import 'package:diary_for_me/api_service/generate_timeline.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 // import 'package:geolocator/geolocator.dart';

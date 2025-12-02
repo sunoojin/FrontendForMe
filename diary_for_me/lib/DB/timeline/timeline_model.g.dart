@@ -34,14 +34,19 @@ const TimeLineSchema = CollectionSchema(
       type: IsarType.object,
       target: r'SelfSurvey',
     ),
-    r'status': PropertySchema(
+    r'serverId': PropertySchema(
       id: 3,
+      name: r'serverId',
+      type: IsarType.string,
+    ),
+    r'status': PropertySchema(
+      id: 4,
       name: r'status',
       type: IsarType.byte,
       enumMap: _TimeLinestatusEnumValueMap,
     ),
     r'title': PropertySchema(
-      id: 4,
+      id: 5,
       name: r'title',
       type: IsarType.string,
     )
@@ -102,6 +107,7 @@ int _timeLineEstimateSize(
               value, allOffsets[SelfSurvey]!, allOffsets);
     }
   }
+  bytesCount += 3 + object.serverId.length * 3;
   bytesCount += 3 + object.title.length * 3;
   return bytesCount;
 }
@@ -125,8 +131,9 @@ void _timeLineSerialize(
     SelfSurveySchema.serialize,
     object.selfsurvey,
   );
-  writer.writeByte(offsets[3], object.status.index);
-  writer.writeString(offsets[4], object.title);
+  writer.writeString(offsets[3], object.serverId);
+  writer.writeByte(offsets[4], object.status.index);
+  writer.writeString(offsets[5], object.title);
 }
 
 TimeLine _timeLineDeserialize(
@@ -149,11 +156,12 @@ TimeLine _timeLineDeserialize(
       SelfSurveySchema.deserialize,
       allOffsets,
     ),
-    title: reader.readStringOrNull(offsets[4]) ?? '',
+    serverId: reader.readStringOrNull(offsets[3]) ?? '',
+    title: reader.readStringOrNull(offsets[5]) ?? '',
   );
   object.id = id;
   object.status =
-      _TimeLinestatusValueEnumMap[reader.readByteOrNull(offsets[3])] ??
+      _TimeLinestatusValueEnumMap[reader.readByteOrNull(offsets[4])] ??
           TimelineStatus.pending;
   return object;
 }
@@ -182,9 +190,11 @@ P _timeLineDeserializeProp<P>(
         allOffsets,
       )) as P;
     case 3:
+      return (reader.readStringOrNull(offset) ?? '') as P;
+    case 4:
       return (_TimeLinestatusValueEnumMap[reader.readByteOrNull(offset)] ??
           TimelineStatus.pending) as P;
-    case 4:
+    case 5:
       return (reader.readStringOrNull(offset) ?? '') as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -596,6 +606,136 @@ extension TimeLineQueryFilter
     });
   }
 
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdEqualTo(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdGreaterThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdLessThan(
+    String value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdBetween(
+    String lower,
+    String upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'serverId',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdContains(
+      String value,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'serverId',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdMatches(
+      String pattern,
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'serverId',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'serverId',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> serverIdIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'serverId',
+        value: '',
+      ));
+    });
+  }
+
   QueryBuilder<TimeLine, TimeLine, QAfterFilterCondition> statusEqualTo(
       TimelineStatus value) {
     return QueryBuilder.apply(this, (query) {
@@ -813,6 +953,18 @@ extension TimeLineQuerySortBy on QueryBuilder<TimeLine, TimeLine, QSortBy> {
     });
   }
 
+  QueryBuilder<TimeLine, TimeLine, QAfterSortBy> sortByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterSortBy> sortByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TimeLine, TimeLine, QAfterSortBy> sortByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -864,6 +1016,18 @@ extension TimeLineQuerySortThenBy
     });
   }
 
+  QueryBuilder<TimeLine, TimeLine, QAfterSortBy> thenByServerId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.asc);
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QAfterSortBy> thenByServerIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'serverId', Sort.desc);
+    });
+  }
+
   QueryBuilder<TimeLine, TimeLine, QAfterSortBy> thenByStatus() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'status', Sort.asc);
@@ -894,6 +1058,13 @@ extension TimeLineQueryWhereDistinct
   QueryBuilder<TimeLine, TimeLine, QDistinct> distinctByDate() {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'date');
+    });
+  }
+
+  QueryBuilder<TimeLine, TimeLine, QDistinct> distinctByServerId(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'serverId', caseSensitive: caseSensitive);
     });
   }
 
@@ -934,6 +1105,12 @@ extension TimeLineQueryProperty
   QueryBuilder<TimeLine, SelfSurvey?, QQueryOperations> selfsurveyProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'selfsurvey');
+    });
+  }
+
+  QueryBuilder<TimeLine, String, QQueryOperations> serverIdProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'serverId');
     });
   }
 

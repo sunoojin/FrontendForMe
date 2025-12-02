@@ -38,6 +38,8 @@ class Tag {
 class Diary {
   Id id = Isar.autoIncrement;
 
+  String serverId;
+
   final timeline = IsarLink<TimeLine>();
 
   String title;
@@ -48,6 +50,7 @@ class Diary {
 
   // 생성자
   Diary({
+    this.serverId = '',
     this.title = '',
     this.content,
     this.tag = const []
