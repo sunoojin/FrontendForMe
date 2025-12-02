@@ -40,6 +40,7 @@ class DB {
           // (@embedded 클래스는 넣지 않아도 됩니다)
           LocationLogSchema,      // from background_log_model
           AppNotificationLogSchema, // from background_log_model
+          ServiceStatusSchema,
           DiarySchema,            // from diary_model
           TagSchema,              // from diary_model
           TimeLineSchema,         // from timeline_model

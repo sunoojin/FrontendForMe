@@ -15,6 +15,7 @@ import 'package:flutter_notification_listener_plus/flutter_notification_listener
 
 import 'package:diary_for_me/collect/notification.dart';
 
+import 'collect/background_timer.dart';
 import 'collect/location_collector.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';

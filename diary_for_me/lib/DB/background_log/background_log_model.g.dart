@@ -1618,3 +1618,373 @@ extension AppNotificationLogQueryProperty
     });
   }
 }
+
+// coverage:ignore-file
+// ignore_for_file: duplicate_ignore, non_constant_identifier_names, constant_identifier_names, invalid_use_of_protected_member, unnecessary_cast, prefer_const_constructors, lines_longer_than_80_chars, require_trailing_commas, inference_failure_on_function_invocation, unnecessary_parenthesis, unnecessary_raw_strings, unnecessary_null_checks, join_return_with_assignment, prefer_final_locals, avoid_js_rounded_ints, avoid_positional_boolean_parameters, always_specify_types
+
+extension GetServiceStatusCollection on Isar {
+  IsarCollection<ServiceStatus> get serviceStatus => this.collection();
+}
+
+const ServiceStatusSchema = CollectionSchema(
+  name: r'ServiceStatus',
+  id: 3577301799402168855,
+  properties: {
+    r'state': PropertySchema(
+      id: 0,
+      name: r'state',
+      type: IsarType.byte,
+      enumMap: _ServiceStatusstateEnumValueMap,
+    )
+  },
+  estimateSize: _serviceStatusEstimateSize,
+  serialize: _serviceStatusSerialize,
+  deserialize: _serviceStatusDeserialize,
+  deserializeProp: _serviceStatusDeserializeProp,
+  idName: r'id',
+  indexes: {},
+  links: {},
+  embeddedSchemas: {},
+  getId: _serviceStatusGetId,
+  getLinks: _serviceStatusGetLinks,
+  attach: _serviceStatusAttach,
+  version: '3.1.0+1',
+);
+
+int _serviceStatusEstimateSize(
+  ServiceStatus object,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  var bytesCount = offsets.last;
+  return bytesCount;
+}
+
+void _serviceStatusSerialize(
+  ServiceStatus object,
+  IsarWriter writer,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  writer.writeByte(offsets[0], object.state.index);
+}
+
+ServiceStatus _serviceStatusDeserialize(
+  Id id,
+  IsarReader reader,
+  List<int> offsets,
+  Map<Type, List<int>> allOffsets,
+) {
+  final object = ServiceStatus(
+    state: _ServiceStatusstateValueEnumMap[reader.readByteOrNull(offsets[0])] ??
+        AppServiceState.collecting,
+  );
+  object.id = id;
+  return object;
+}
+
+P _serviceStatusDeserializeProp<P>(
+  IsarReader reader,
+  int propertyId,
+  int offset,
+  Map<Type, List<int>> allOffsets,
+) {
+  switch (propertyId) {
+    case 0:
+      return (_ServiceStatusstateValueEnumMap[reader.readByteOrNull(offset)] ??
+          AppServiceState.collecting) as P;
+    default:
+      throw IsarError('Unknown property with id $propertyId');
+  }
+}
+
+const _ServiceStatusstateEnumValueMap = {
+  'collecting': 0,
+  'processing': 1,
+  'waiting': 2,
+};
+const _ServiceStatusstateValueEnumMap = {
+  0: AppServiceState.collecting,
+  1: AppServiceState.processing,
+  2: AppServiceState.waiting,
+};
+
+Id _serviceStatusGetId(ServiceStatus object) {
+  return object.id;
+}
+
+List<IsarLinkBase<dynamic>> _serviceStatusGetLinks(ServiceStatus object) {
+  return [];
+}
+
+void _serviceStatusAttach(
+    IsarCollection<dynamic> col, Id id, ServiceStatus object) {
+  object.id = id;
+}
+
+extension ServiceStatusQueryWhereSort
+    on QueryBuilder<ServiceStatus, ServiceStatus, QWhere> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhere> anyId() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(const IdWhereClause.any());
+    });
+  }
+}
+
+extension ServiceStatusQueryWhere
+    on QueryBuilder<ServiceStatus, ServiceStatus, QWhereClause> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhereClause> idEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhereClause> idNotEqualTo(
+      Id id) {
+    return QueryBuilder.apply(this, (query) {
+      if (query.whereSort == Sort.asc) {
+        return query
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            )
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            );
+      } else {
+        return query
+            .addWhereClause(
+              IdWhereClause.greaterThan(lower: id, includeLower: false),
+            )
+            .addWhereClause(
+              IdWhereClause.lessThan(upper: id, includeUpper: false),
+            );
+      }
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhereClause> idGreaterThan(
+      Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.greaterThan(lower: id, includeLower: include),
+      );
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhereClause> idLessThan(
+      Id id,
+      {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(
+        IdWhereClause.lessThan(upper: id, includeUpper: include),
+      );
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterWhereClause> idBetween(
+    Id lowerId,
+    Id upperId, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension ServiceStatusQueryFilter
+    on QueryBuilder<ServiceStatus, ServiceStatus, QFilterCondition> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition> idEqualTo(
+      Id value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition>
+      idGreaterThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition> idLessThan(
+    Id value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition> idBetween(
+    Id lower,
+    Id upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition>
+      stateEqualTo(AppServiceState value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'state',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition>
+      stateGreaterThan(
+    AppServiceState value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'state',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition>
+      stateLessThan(
+    AppServiceState value, {
+    bool include = false,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'state',
+        value: value,
+      ));
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterFilterCondition>
+      stateBetween(
+    AppServiceState lower,
+    AppServiceState upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'state',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+}
+
+extension ServiceStatusQueryObject
+    on QueryBuilder<ServiceStatus, ServiceStatus, QFilterCondition> {}
+
+extension ServiceStatusQueryLinks
+    on QueryBuilder<ServiceStatus, ServiceStatus, QFilterCondition> {}
+
+extension ServiceStatusQuerySortBy
+    on QueryBuilder<ServiceStatus, ServiceStatus, QSortBy> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> sortByState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'state', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> sortByStateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'state', Sort.desc);
+    });
+  }
+}
+
+extension ServiceStatusQuerySortThenBy
+    on QueryBuilder<ServiceStatus, ServiceStatus, QSortThenBy> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> thenById() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> thenByIdDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'id', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> thenByState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'state', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ServiceStatus, ServiceStatus, QAfterSortBy> thenByStateDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'state', Sort.desc);
+    });
+  }
+}
+
+extension ServiceStatusQueryWhereDistinct
+    on QueryBuilder<ServiceStatus, ServiceStatus, QDistinct> {
+  QueryBuilder<ServiceStatus, ServiceStatus, QDistinct> distinctByState() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'state');
+    });
+  }
+}
+
+extension ServiceStatusQueryProperty
+    on QueryBuilder<ServiceStatus, ServiceStatus, QQueryProperty> {
+  QueryBuilder<ServiceStatus, int, QQueryOperations> idProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'id');
+    });
+  }
+
+  QueryBuilder<ServiceStatus, AppServiceState, QQueryOperations>
+      stateProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'state');
+    });
+  }
+}

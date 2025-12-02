@@ -1,9 +1,6 @@
 import 'dart:async';
 import 'dart:ui';
 
-import 'package:diary_for_me/DB/service_status_manager.dart';
-import 'package:diary_for_me/DB/timeline/timeline_model.dart';
-import 'package:diary_for_me/api_service/get_timeline_api.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
@@ -13,7 +10,6 @@ import 'package:isar/isar.dart'; // [필수] Isar 패키지
 // [필수] DB 매니저 및 모델 import
 import '../DB/db_manager.dart';
 import '../DB/background_log/background_log_model.dart';
-import 'location_collector.dart';
 
 const notificationChannelId = 'my_foreground';
 const notificationId = 888;
@@ -52,11 +48,10 @@ Future<void> initializeService() async {
 
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
-
-  print('백그라운드 서비스 시작됨');
-
+  // 1. 플러그인 초기화
   DartPluginRegistrant.ensureInitialized();
 
+  // 2. [가장 중요] 서비스 시작 즉시 네이티브 쪽에 알림 정보 등록 (앱 꺼짐 방지)
   if (service is AndroidServiceInstance) {
     service.on('setAsForeground').listen((event) {
       service.setAsForegroundService();
@@ -76,6 +71,7 @@ Future<void> onStart(ServiceInstance service) async {
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
   FlutterLocalNotificationsPlugin();
 
+  // 3. 알림 헬퍼 함수 (조건문 제거함)
   Future<void> showNotification(String content) async {
     if (service is AndroidServiceInstance) {
       // ★ 제거함: if (await service.isForegroundService())
@@ -107,108 +103,74 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   // 첫 알림 즉시 표시
-  await showNotification('서비스가 시작되는 중입니다');
+  await showNotification('위치 기록 대기 중... (매시 00분, 30분)');
 
   // [DB 연결]
   final isar = await DB().instance;
-  final statusManager = ServiceStatusManager();
 
-  // 상태 변경 함수
-  Future<AppServiceState> _updatedState () async {
+  // 매 1분마다 실행됨
+  Timer.periodic(const Duration(minutes: 1), (timer) async {
     final now = DateTime.now();
 
-    if (now.hour >= 6 && now.hour < 21) {
-      statusManager.updateServiceStatus(AppServiceState.collecting);
-      return AppServiceState.collecting;
+    // === [로그 확인용 로직 유지] ===
+    final count = await isar.locationLogs.count();
+    print("\n-------- 📂 [Isar] LocationLog 데이터 확인 (총 ${count}개) --------");
+    if (count > 0) {
+      final recentLogs = await isar.locationLogs.where().sortByTimestampDesc().limit(1).findAll();
+      print("🕒 최신 기록: ${DateFormat('MM-dd HH:mm').format(recentLogs[0].timestamp)}");
     }
-    else {
-      DateTime targetDate = (now.hour >= 21)
-          ? DateTime(now.year, now.month, now.day)
-          : DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
-      final latestTimeLine = await isar.timeLines.where().sortByDateDesc().findFirst();
+    print("----------------------------------------------------------------------\n");
 
-      if (latestTimeLine != null) {
-        if (latestTimeLine.date.year == targetDate.year &&
-            latestTimeLine.date.month == targetDate.month &&
-            latestTimeLine.date.day == targetDate.day) {
-          statusManager.updateServiceStatus(AppServiceState.waiting);
-          return AppServiceState.waiting;
-        }
-      } else {
-        statusManager.updateServiceStatus(AppServiceState.processing);
-        return AppServiceState.processing;
+    // 수면 시간 체크
+    if (now.hour < 6 || now.hour >= 21) {
+      if (now.minute == 0) {
+        await showNotification('수면 시간에는 위치를 기록하지 않습니다. 🌙');
       }
+      return;
     }
 
-    return AppServiceState.waiting;
-  }
+    // 00분, 30분 체크
+    bool isTimeSlot = (now.minute >= 0 && now.minute <= 5) ||
+        (now.minute >= 30 && now.minute <= 35);
 
-  AppServiceState currentState = await _updatedState();
+    if (isTimeSlot) {
+      final lastLog = await isar.locationLogs.where().sortByTimestampDesc().findFirst();
 
-  bool isAnalysisRunning = false;
-
-  switch (currentState) {
-    case AppServiceState.collecting:
-      await showNotification('정보를 수집중이에요');
-      break;
-    case AppServiceState.processing:
-      await showNotification('타임라인을 생성중이에요');
-      break;
-    case AppServiceState.waiting:
-      await showNotification('기록이 끝났어요');
-      break;
-  }
-
-  // 1분마다 반복
-  Timer.periodic(const Duration(minutes: 1), (timer) async {
-
-    print('백그라운드 서비스 실행됨');
-
-    AppServiceState targetState = await _updatedState();
-
-    if (currentState != targetState && !isAnalysisRunning) {
-      currentState = targetState;
-      switch (currentState) {
-        case AppServiceState.collecting:
-          await showNotification('정보를 수집중이에요');
-          break;
-        case AppServiceState.processing:
-          await showNotification('타임라인을 생성중이에요');
-          break;
-        case AppServiceState.waiting:
-          await showNotification('기록이 끝났어요');
-          break;
-      }
-    }
-
-    switch (currentState) {
-
-      case AppServiceState.collecting:
-        // 정보 수집 함수
-        await saveLocation();
-        break;
-
-      case AppServiceState.processing:
-        if (!isAnalysisRunning) {
-          isAnalysisRunning = true;
-
-          // 타임라인 요청 함수
-          bool success = await generateTimeline();
-
-          isAnalysisRunning = false;
-
-          if (success) {
-            // 성공했으면 바로 대기 모드로 전환
-            currentState = AppServiceState.waiting;
-            await showNotification('타임라인 생성 성공');
-          }
+      if (lastLog != null) {
+        final difference = now.difference(lastLog.timestamp);
+        if (difference.inMinutes < 20) {
+          return;
         }
-        break;
+      }
 
-      case AppServiceState.waiting:
-      // 대기 중에는 아무것도 안 함
-        break;
+      print(">>> [위치 수집 시작]");
+
+      try {
+        Position position = await Geolocator.getCurrentPosition(
+            locationSettings: AndroidSettings(
+              accuracy: LocationAccuracy.high,
+              // 타임아웃 설정 (GPS가 안 잡히면 무한 대기하는 것 방지)
+              timeLimit: const Duration(seconds: 10),
+            )
+        );
+
+        final newLog = LocationLog(
+          timestamp: now,
+          lat: position.latitude,
+          lng: position.longitude,
+        );
+
+        await isar.writeTxn(() async {
+          await isar.locationLogs.put(newLog);
+        });
+
+        String timeString = DateFormat('HH:mm').format(now);
+        await showNotification('$timeString 에 위치가 기록되었습니다.');
+
+      } catch (e) {
+        print("위치 수집 실패: $e");
+        await showNotification('위치 정보를 가져올 수 없습니다.');
+      }
     }
   });
 }
-
