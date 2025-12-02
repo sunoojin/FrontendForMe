@@ -1,3 +1,4 @@
+import 'package:diary_for_me/api_service/generate_timeline.dart';
 import 'package:diary_for_me/setting/widget/setting_category.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -141,6 +142,20 @@ class SettingScreen extends StatelessWidget {
                 title: '초기화',
                 icon: Icons.warning,
                 onTap: () => _resetDatabase(context),
+              ),
+              const SizedBox(height: 16),
+
+              // [테스트용] 타임라인 생성 버튼
+              SettingCategory(
+                title: '초기화',
+                icon: Icons.warning,
+                onTap: () async {
+                  bool success = await generateTimeline();
+
+                  if (success) {
+                    print('타임라인 통신 성공');
+                  }
+                },
               ),
               const SizedBox(height: 16),
 
