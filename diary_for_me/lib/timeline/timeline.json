@@ -12,7 +12,31 @@
       "dailydata": {
         "gallery": [
           {
-            "url": "/data/user/0/com.example.diary_for_me/cache/969de450-b3e6-47a8-8be3-8eb80ed95d8d/1000015613.jpg",
+            "url": "/api/v1/files/images/asd34w.jpg",
+            "timestamp": "2025-11-28T08:30:00"
+          }
+        ],
+        "location": [
+          {
+            "lat": 37.5665,
+            "lng": 126.978,
+            "timestamp": "2025-11-28T09:00:00",
+            "place_name": null
+          }
+        ],
+        "appnoti": []
+      }
+    },
+    {
+      "id": "evt-3c26dded",
+      "timestamp": "2025-11-28T09:00:00",
+      "title": "서울 도착",
+      "content": "서울 도심(광화문 인근)에 도착하여 오전 일정을 시작했습니다.",
+      "feeling": null,
+      "dailydata": {
+        "gallery": [
+          {
+            "url": "/api/v1/files/images/asd34w.jpg",
             "timestamp": "2025-11-28T08:30:00"
           }
         ],
@@ -79,7 +103,7 @@
       "dailydata": {
         "gallery": [
           {
-            "url": "/data/user/0/com.example.diary_for_me/cache/969de450-b3e6-47a8-8be3-8eb80ed95d8d/1000015613.jpg",
+            "url": "/api/v1/files/images/20251128_170416.heic",
             "timestamp": "2025-11-28T17:04:16"
           }
         ],
@@ -92,6 +116,48 @@
           }
         ],
         "appnoti": []
+      }
+    },
+    {
+      "id": "evt-a4a9bb07",
+      "timestamp": "2025-11-28T18:00:00",
+      "title": "해질녘 감상",
+      "content": "서울로 돌아온 후, 붉게 물든 해넘이 풍경을 감상했습니다. 바다와 갈매기, 배가 어우러진 아름다운 장면을 사진에 담았습니다.",
+      "feeling": null,
+      "dailydata": {
+        "gallery": [
+          {
+            "url": "/api/v1/files/images/sae3gwet.jpg",
+            "timestamp": "2025-11-28T18:00:00"
+          }
+        ],
+        "location": [
+          {
+            "lat": 37.558,
+            "lng": 126.977,
+            "timestamp": "2025-11-28T18:00:00",
+            "place_name": null
+          }
+        ],
+        "appnoti": []
+      }
+    },
+    {
+      "id": "evt-6a8bd890",
+      "timestamp": "2025-11-28T19:30:00",
+      "title": "유튜브 시청",
+      "content": "저녁 시간에 구독한 유튜브 채널의 새 동영상을 시청했습니다.",
+      "feeling": null,
+      "dailydata": {
+        "gallery": [],
+        "location": [],
+        "appnoti": [
+          {
+            "appname": "YouTube",
+            "text": "구독한 채널에 새 동영상이 업로드되었습니다",
+            "timestamp": "2025-11-28T19:30:00"
+          }
+        ]
       }
     }
   ],
