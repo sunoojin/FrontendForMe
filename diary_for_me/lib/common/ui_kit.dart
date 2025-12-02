@@ -1,6 +1,7 @@
 
 export 'colors.dart';
 export 'text_style.dart';
+export 'type_scale.dart';
 
 
 export 'widgets/cards.dart';

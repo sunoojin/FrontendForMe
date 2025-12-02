@@ -116,7 +116,7 @@ TextStyle button1({Color color = textPrimary}) {
       fontSize: 16,
       letterSpacing: 1.25,
       height: 1.4,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w700,
       color: color
   );
 }
@@ -126,7 +126,7 @@ TextStyle button2({Color color = textPrimary}) {
       fontSize: 14,
       letterSpacing: 1.25,
       height: 1.4,
-      fontWeight: FontWeight.w500,
+      fontWeight: FontWeight.w700,
       color: color
   );
 }

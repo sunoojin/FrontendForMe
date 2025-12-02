@@ -3,7 +3,9 @@ import 'dart:ui';
 import 'package:diary_for_me/DB/diary/diary_model.dart';
 import 'package:diary_for_me/common/ui_kit.dart';
 import 'package:diary_for_me/DB/db_manager.dart'; // DB 매니저
+import 'package:diary_for_me/diary/screen/share_screen.dart';
 import 'package:diary_for_me/my_library/widgets/tag_box.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart'; // Isar 패키지
@@ -199,6 +201,7 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         ],
                       ),
 
+                      /*
                       // === 태그 섹션 ===
                       Row(
                         children: [
@@ -270,6 +273,48 @@ class _DiaryScreenState extends State<DiaryScreen> {
                         ],
                       ),
                       const SafeArea(top: false, child: SizedBox()),
+
+                       */
+
+                      contents(
+                        children: [
+                          IntrinsicWidth(
+                            child: ContainerButton(
+                              padding: EdgeInsets.symmetric(horizontal: 20),
+                              borderRadius: BorderRadius.circular(22),
+                              height: 44,
+                              color: themeColor.withAlpha(24),
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  CupertinoPageRoute(
+                                    builder: (context) => ShareScreen(
+                                      diary: diary,
+                                    ),
+                                  ),
+                                );
+                              },
+                              child: Center(
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.ios_share,
+                                      color: themeColor,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 4,),
+                                    Text(
+                                      '공유하기',
+                                      style: button1(color: themeColor),
+                                    ),
+
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        ]
+                      )
                     ],
                   ),
                 ),
