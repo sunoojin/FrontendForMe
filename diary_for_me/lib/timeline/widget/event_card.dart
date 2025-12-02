@@ -1,8 +1,9 @@
 import 'package:diary_for_me/common/ui_kit.dart';
-import 'package:diary_for_me/db_models/event/event_model.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-// import 'package:smooth_corner/smooth_corner.dart';
+
+// [변경] Isar 모델 import
+import '../../DB/timeline/timeline_model.dart';
 
 class EventCard extends StatelessWidget {
   final VoidCallback? onEdit;
@@ -12,6 +13,9 @@ class EventCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // timestamp가 null일 경우 안전하게 현재 시간 표시
+    final eventTime = event.timestamp ?? DateTime.now();
+
     return ContainerButton(
       color: themePageColor,
       padding: const EdgeInsets.all(20),
@@ -26,7 +30,7 @@ class EventCard extends StatelessWidget {
             width: 48,
             height: 36,
             child: Text(
-              DateFormat('HH:mm').format(event.timestamp),
+              DateFormat('HH:mm').format(eventTime),
               style: const TextStyle(
                 fontSize: 16,
                 color: textSecondary,
@@ -37,14 +41,24 @@ class EventCard extends StatelessWidget {
           const SizedBox(width: 12),
           Container(height: 24, width: 1, color: Colors.black.withAlpha(16)),
           const SizedBox(width: 12),
-          // 내용
+          // 내용 (Expanded로 감싸서 오버플로우 방지)
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(event.title, style: contentTitle()),
+                Text(
+                  event.title, // Isar 모델에서 기본값('')이 있으므로 안전
+                  style: contentTitle(),
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
                 const SizedBox(height: 6),
-                Text(event.content, style: contentDetail()),
+                Text(
+                  event.content, // Isar 모델에서 기본값('')이 있으므로 안전
+                  style: contentDetail(),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
             ),
           ),
@@ -53,69 +67,4 @@ class EventCard extends StatelessWidget {
       ),
     );
   }
-
-  /*
-  Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(32),
-      decoration: ShapeDecoration(
-        shape: SmoothRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-        ),
-        color: const Color(0xFFF7F7F8),
-      ),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 시간
-          Text(
-            time,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.black87,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          const SizedBox(width: 16),
-          // 내용
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.w700,
-                    fontSize: 16,
-                  ),
-                ),
-                const SizedBox(height: 4),
-                Text(
-                  description,
-                  style: const TextStyle(fontSize: 13, color: Colors.black54),
-                ),
-              ],
-            ),
-          ),
-          // 편집 버튼
-          GestureDetector(
-            onTap: onEdit,
-            child: const Padding(
-              padding: EdgeInsets.only(left: 8, top: 4),
-              child: Text(
-                "편집 →",
-                style: TextStyle(
-                  fontSize: 13,
-                  color: Colors.black45,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-   */
 }
