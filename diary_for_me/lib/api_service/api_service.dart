@@ -1,5 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+// import 'package:flutter/foundation.dart';
 
 class DailyLogApiService {
   final Dio _dio = Dio();
@@ -24,7 +24,6 @@ class DailyLogApiService {
       );
 
       print('✅ 업로드 성공: ${response.statusCode}');
-
     } catch (e) {
       print('❌ 업로드 에러: $e');
     }

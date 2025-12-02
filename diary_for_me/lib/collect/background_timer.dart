@@ -6,8 +6,8 @@ import 'package:diary_for_me/DB/timeline/timeline_model.dart';
 import 'package:diary_for_me/api_service/get_timeline_api.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
-import 'package:geolocator/geolocator.dart';
-import 'package:intl/intl.dart';
+// import 'package:geolocator/geolocator.dart';
+// import 'package:intl/intl.dart';
 import 'package:isar/isar.dart'; // [필수] Isar 패키지
 
 // [필수] DB 매니저 및 모델 import
@@ -29,11 +29,12 @@ Future<void> initializeService() async {
   );
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   await flutterLocalNotificationsPlugin
       .resolvePlatformSpecificImplementation<
-      AndroidFlutterLocalNotificationsPlugin>()
+        AndroidFlutterLocalNotificationsPlugin
+      >()
       ?.createNotificationChannel(channel);
 
   await service.configure(
@@ -52,7 +53,6 @@ Future<void> initializeService() async {
 
 @pragma('vm:entry-point')
 Future<void> onStart(ServiceInstance service) async {
-
   print('백그라운드 서비스 시작됨');
 
   DartPluginRegistrant.ensureInitialized();
@@ -74,7 +74,7 @@ Future<void> onStart(ServiceInstance service) async {
   }
 
   final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+      FlutterLocalNotificationsPlugin();
 
   Future<void> showNotification(String content) async {
     if (service is AndroidServiceInstance) {
@@ -91,18 +91,15 @@ Future<void> onStart(ServiceInstance service) async {
             notificationChannelId,
             'MY FOREGROUND SERVICE',
             icon: 'ic_bg_service_small',
-            ongoing: true,            // 지울 수 없음
-            autoCancel: false,        // 터치해도 안 사라짐
+            ongoing: true, // 지울 수 없음
+            autoCancel: false, // 터치해도 안 사라짐
             showWhen: true,
           ),
         ),
       );
 
       // [안전장치] 네이티브 서비스 정보도 같이 업데이트 (일부 기기 호환성 위해)
-      service.setForegroundNotificationInfo(
-        title: '나의 일기장',
-        content: content,
-      );
+      service.setForegroundNotificationInfo(title: '나의 일기장', content: content);
     }
   }
 
@@ -114,18 +111,24 @@ Future<void> onStart(ServiceInstance service) async {
   final statusManager = ServiceStatusManager();
 
   // 상태 변경 함수
-  Future<AppServiceState> _updatedState () async {
+  Future<AppServiceState> updatedState() async {
     final now = DateTime.now();
 
     if (now.hour >= 6 && now.hour < 21) {
       statusManager.updateServiceStatus(AppServiceState.collecting);
       return AppServiceState.collecting;
-    }
-    else {
+    } else {
       DateTime targetDate = (now.hour >= 21)
           ? DateTime(now.year, now.month, now.day)
-          : DateTime(now.year, now.month, now.day).subtract(const Duration(days: 1));
-      final latestTimeLine = await isar.timeLines.where().sortByDateDesc().findFirst();
+          : DateTime(
+              now.year,
+              now.month,
+              now.day,
+            ).subtract(const Duration(days: 1));
+      final latestTimeLine = await isar.timeLines
+          .where()
+          .sortByDateDesc()
+          .findFirst();
 
       if (latestTimeLine != null) {
         if (latestTimeLine.date.year == targetDate.year &&
@@ -143,7 +146,7 @@ Future<void> onStart(ServiceInstance service) async {
     return AppServiceState.waiting;
   }
 
-  AppServiceState currentState = await _updatedState();
+  AppServiceState currentState = await updatedState();
 
   bool isAnalysisRunning = false;
 
@@ -161,10 +164,9 @@ Future<void> onStart(ServiceInstance service) async {
 
   // 1분마다 반복
   Timer.periodic(const Duration(minutes: 1), (timer) async {
-
     print('백그라운드 서비스 실행됨');
 
-    AppServiceState targetState = await _updatedState();
+    AppServiceState targetState = await updatedState();
 
     if (currentState != targetState && !isAnalysisRunning) {
       currentState = targetState;
@@ -182,7 +184,6 @@ Future<void> onStart(ServiceInstance service) async {
     }
 
     switch (currentState) {
-
       case AppServiceState.collecting:
         // 정보 수집 함수
         await saveLocation();
@@ -206,9 +207,8 @@ Future<void> onStart(ServiceInstance service) async {
         break;
 
       case AppServiceState.waiting:
-      // 대기 중에는 아무것도 안 함
+        // 대기 중에는 아무것도 안 함
         break;
     }
   });
 }
-

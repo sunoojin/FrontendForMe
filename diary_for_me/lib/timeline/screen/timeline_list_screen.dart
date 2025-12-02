@@ -77,8 +77,8 @@ class _TimelineListScreenState extends State<TimelineListScreen> {
 
                     // 3. 최신순 정렬 (내림차순)
                     timelines.sort((a, b) {
-                      final dateA = a.date ?? DateTime(0);
-                      final dateB = b.date ?? DateTime(0);
+                      final dateA = a.date; //?? DateTime(0);
+                      final dateB = b.date; //?? DateTime(0);
                       return dateB.compareTo(dateA);
                     });
 

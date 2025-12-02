@@ -24,7 +24,8 @@ class _LocationCardState extends State<LocationCard> {
   Widget build(BuildContext context) {
     // 1. 유효한 위치 데이터가 있는지 검사
     // 리스트가 있어야 하고, 첫 번째 좌표 값들이 null이 아니어야 함
-    final bool hasValidLocation = locations.isNotEmpty &&
+    final bool hasValidLocation =
+        locations.isNotEmpty &&
         locations.first.lat != null &&
         locations.first.lng != null;
 
@@ -71,14 +72,20 @@ class _LocationCardState extends State<LocationCard> {
                       zoomGesturesEnable: false,
                       rotationGesturesEnable: false,
                       initialCameraPosition: NCameraPosition(
-                        target: NLatLng(firstLocation!.lat!, firstLocation.lng!),
+                        target: NLatLng(
+                          firstLocation!.lat!,
+                          firstLocation.lng!,
+                        ),
                         zoom: 14,
                       ),
                     ),
                     onMapReady: (controller) {
                       final marker = NMarker(
                         id: 'loc',
-                        position: NLatLng(firstLocation!.lat!, firstLocation.lng!),
+                        position: NLatLng(
+                          firstLocation.lat!,
+                          firstLocation.lng!,
+                        ),
                       );
                       controller.addOverlay(marker);
                     },
@@ -86,7 +93,7 @@ class _LocationCardState extends State<LocationCard> {
                 ),
               )
             else
-            // 위치 정보가 없을 때 보여줄 플레이스홀더
+              // 위치 정보가 없을 때 보여줄 플레이스홀더
               Container(
                 height: 160,
                 width: double.infinity,
@@ -101,7 +108,11 @@ class _LocationCardState extends State<LocationCard> {
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.map_outlined, color: textTertiary.withAlpha(128), size: 40),
+                      Icon(
+                        Icons.map_outlined,
+                        color: textTertiary.withAlpha(128),
+                        size: 40,
+                      ),
                       const SizedBox(height: 8),
                       Text(
                         '지도를 불러올 수 없습니다',
@@ -120,15 +131,8 @@ class _LocationCardState extends State<LocationCard> {
           child: Row(
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
-              Text(
-                '위치 변경',
-                style: cardDetail(color: textTertiary),
-              ),
-              const Icon(
-                Icons.arrow_forward,
-                size: 19,
-                color: textTertiary,
-              ),
+              Text('위치 변경', style: cardDetail(color: textTertiary)),
+              const Icon(Icons.arrow_forward, size: 19, color: textTertiary),
             ],
           ),
           onTap: () {

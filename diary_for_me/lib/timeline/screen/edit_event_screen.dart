@@ -49,7 +49,10 @@ class ActivityEditSheet {
 
 class _ActivityEditContent extends StatefulWidget {
   final Event? initialEvent;
-  const _ActivityEditContent({super.key, this.initialEvent});
+  const _ActivityEditContent({
+    // super.key,
+    this.initialEvent,
+  });
 
   @override
   State<_ActivityEditContent> createState() => _ActivityEditContentState();

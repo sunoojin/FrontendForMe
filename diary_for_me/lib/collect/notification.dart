@@ -1,9 +1,9 @@
-import 'dart:isolate';
+// import 'dart:isolate';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_notification_listener_plus/flutter_notification_listener_plus.dart';
-import 'package:isar/isar.dart';
+// import 'package:isar/isar.dart';
 
 // [필수] DB 매니저 및 모델 import (경로 확인해주세요)
 import 'package:diary_for_me/DB/db_manager.dart';
@@ -40,7 +40,6 @@ Future<void> backgroundCallback(NotificationEvent evt) async {
       });
     }
      */
-
   } catch (e, st) {
     print('error in background callback: $e\n$st');
   }

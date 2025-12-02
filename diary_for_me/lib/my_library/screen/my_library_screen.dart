@@ -32,7 +32,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
   Future<void> _toggleFavorite(Isar isar, Diary diary) async {
     await isar.writeTxn(() async {
       // 리스트는 수정 가능한 새 리스트로 복사해서 조작해야 안전함
-      final List<String> currentTags = [...?diary.tag];
+      final List<String> currentTags = [...diary.tag];
 
       if (currentTags.contains('@f')) {
         currentTags.remove('@f');
@@ -160,7 +160,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                       // 1. 태그 필터링
                       if (_selectedTag != null) {
                         diaries = diaries.where((diary) {
-                          final tags = diary.tag ?? [];
+                          final tags = diary.tag; //?? [];
                           return tags.contains(_selectedTag);
                         }).toList();
                       }
@@ -187,7 +187,7 @@ class _MyLibraryScreenState extends State<MyLibraryScreen> {
                         itemCount: diaries.length,
                         itemBuilder: (BuildContext context, int index) {
                           final diary = diaries[index];
-                          final isFavorite = diary.tag?.contains('@f') ?? false;
+                          final isFavorite = diary.tag.contains('@f');
 
                           return Row(
                             children: [
