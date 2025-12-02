@@ -3,7 +3,7 @@ import 'dart:io';
 import 'package:diary_for_me/DB/background_log/background_log_model.dart';
 import 'package:diary_for_me/DB/daily_data/daily_data_model.dart';
 import 'package:diary_for_me/DB/db_manager.dart';
-// import 'package:diary_for_me/DB/timeline/timeline_model.dart';
+import 'package:diary_for_me/DB/timeline/timeline_model.dart';
 import 'package:diary_for_me/collect/image.dart';
 import 'package:intl/intl.dart';
 import 'package:isar/isar.dart';
@@ -37,7 +37,9 @@ Future<bool> generateTimeline() async {
 
     // 3. API 전송 (이미지 포함 Multipart 전송)
     final apiService = DailyLogApiService();
-    final Map<String, dynamic>? responseMap = await apiService.uploadDailyLog(dailyData);
+    final Map<String, dynamic>? responseMap = await apiService.uploadDailyLog(
+      dailyData,
+    );
 
     if (responseMap != null) {
       await _saveTimelineToDB(responseMap, targetDate);
@@ -46,7 +48,6 @@ Future<bool> generateTimeline() async {
       print("서버 응답이 비어있거나 실패했습니다.");
       return false;
     }
-
   } catch (e) {
     print("타임라인 생성 및 전송 실패: $e");
     return false;
@@ -151,7 +152,10 @@ Future<Map<String, dynamic>> collectedDailyData(DateTime targetDate) async {
 }
 
 /// 서버 JSON을 Isar 모델로 변환하여 저장하는 함수
-Future<void> _saveTimelineToDB(Map<String, dynamic> json, DateTime targetDate) async {
+Future<void> _saveTimelineToDB(
+  Map<String, dynamic> json,
+  DateTime targetDate,
+) async {
   final isar = await DB().instance;
 
   // (1) Events 파싱
@@ -227,11 +231,15 @@ Event _parseEvent(Map<String, dynamic> json) {
     List<Location> locations = [];
     if (ddJson['location'] != null) {
       for (var loc in ddJson['location']) {
-        locations.add(Location(
-          lat: loc['lat'],
-          lng: loc['lng'],
-          timestamp: loc['timestamp'] != null ? DateTime.parse(loc['timestamp']) : null,
-        ));
+        locations.add(
+          Location(
+            lat: loc['lat'],
+            lng: loc['lng'],
+            timestamp: loc['timestamp'] != null
+                ? DateTime.parse(loc['timestamp'])
+                : null,
+          ),
+        );
       }
     }
 
@@ -239,11 +247,15 @@ Event _parseEvent(Map<String, dynamic> json) {
     List<AppNotification> notis = [];
     if (ddJson['appnoti'] != null) {
       for (var noti in ddJson['appnoti']) {
-        notis.add(AppNotification(
-          appname: noti['appname'],
-          text: noti['text'],
-          timestamp: noti['timestamp'] != null ? DateTime.parse(noti['timestamp']) : null,
-        ));
+        notis.add(
+          AppNotification(
+            appname: noti['appname'],
+            text: noti['text'],
+            timestamp: noti['timestamp'] != null
+                ? DateTime.parse(noti['timestamp'])
+                : null,
+          ),
+        );
       }
     }
 
@@ -256,7 +268,9 @@ Event _parseEvent(Map<String, dynamic> json) {
 
   return Event(
     id: json['id'] ?? '',
-    timestamp: json['timestamp'] != null ? DateTime.parse(json['timestamp']) : null,
+    timestamp: json['timestamp'] != null
+        ? DateTime.parse(json['timestamp'])
+        : null,
     title: json['title'] ?? '',
     content: json['content'] ?? '',
     feeling: json['feeling'] ?? '', // feeling은 null일 수 있음
