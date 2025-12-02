@@ -17,23 +17,20 @@ class ActivityEditSheet {
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder:
-          // (_) => _ActivityEditContent(
-          //   initialEvent: initialEvent,
-          // ),
-          (ctx) {
-            // ctx는 모달 내부 컨텍스트
-            return Padding(
-              padding: EdgeInsets.only(
-                bottom: MediaQuery.of(ctx).viewInsets.bottom,
-              ),
-              child: SizedBox(
-                // 전체 화면 modal처럼 보이게 높이 제한
-                height: MediaQuery.of(ctx).size.height * 0.92,
-                child: _ActivityEditContent(initialEvent: initialEvent),
-              ),
-            );
-          },
+      builder: (_) => _ActivityEditContent(initialEvent: initialEvent),
+      // (ctx) {
+      //   // ctx는 모달 내부 컨텍스트
+      //   return Padding(
+      //     padding: EdgeInsets.only(
+      //       bottom: MediaQuery.of(ctx).viewInsets.bottom,
+      //     ),
+      //     child: SizedBox(
+      //       // 전체 화면 modal처럼 보이게 높이 제한
+      //       height: MediaQuery.of(ctx).size.height * 0.92,
+      //       child: _ActivityEditContent(initialEvent: initialEvent),
+      //     ),
+      //   );
+      // },
       useSafeArea: true,
       shape: SmoothRectangleBorder(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
