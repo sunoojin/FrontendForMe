@@ -29,17 +29,7 @@ Future<void> backgroundCallback(NotificationEvent evt) async {
     });
     debugPrint('[BG] Saved to Isar: ${log.text}');
 
-    /*
-    // 메인으로 isolated 전송(불필요)
-    final SendPort? send = IsolateNameServer.lookupPortByName('_listener_');
-    if (send != null) {
-      send.send({
-        'appname': log.appname,
-        'text': log.text,
-        'timestamp': log.timestamp.toIso8601String(),
-      });
-    }
-     */
+
   } catch (e, st) {
     print('error in background callback: $e\n$st');
   }

@@ -100,5 +100,4 @@ class TimeLine {
     this.events = const [],
     this.selfsurvey,
   });
-
 }
