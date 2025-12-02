@@ -13,10 +13,26 @@ class TimeLineCard extends StatelessWidget {
 
   const TimeLineCard({super.key, required this.timeline});
 
+  int countCollectedData(TimeLine timeline) {
+    int total = 0;
+
+    for (final event in timeline.events) {
+      final daily = event.dailydata;
+      if (daily != null) {
+        total += daily.gallery.length;
+        total += daily.location.length;
+        total += daily.appnoti.length;
+      }
+    }
+
+    return total;
+  }
+
   @override
   Widget build(BuildContext context) {
     // [안전 장치] 날짜가 null일 경우 현재 시간 사용
-    final date = timeline.date ?? DateTime.now();
+    final date = timeline.date;
+    final collectedCount = countCollectedData(timeline);
 
     return Container(
       decoration: ShapeDecoration(
@@ -46,7 +62,7 @@ class TimeLineCard extends StatelessWidget {
                 children: [
                   Text(
                     // [참고] date.second는 임시 로직으로 보이며, 추후 실제 수집 데이터 개수 로직으로 변경 필요
-                    '수집된 정보 ${date.second}개',
+                    '수집된 정보 $collectedCount개',
                     style: const TextStyle(
                       fontSize: 16.0,
                       color: textTertiary,
@@ -76,8 +92,8 @@ class TimeLineCard extends StatelessWidget {
                 context,
                 CupertinoPageRoute(
                   builder: (context) =>
-                  // [변경] timelineKey(String) -> timelineId(int) 전달
-                  EventListScreen(timelineId: timeline.id),
+                      // [변경] timelineKey(String) -> timelineId(int) 전달
+                      EventListScreen(timelineId: timeline.id),
                 ),
               );
             },

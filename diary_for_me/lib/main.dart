@@ -1,14 +1,14 @@
-import 'dart:async';
-import 'dart:ui';
+// import 'dart:async';
+// import 'dart:ui';
 
 import 'package:flutter/material.dart';
-import 'package:flutter_background_service/flutter_background_service.dart';
+// import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+// import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:flutter_naver_map/flutter_naver_map.dart';
-import 'package:geolocator/geolocator.dart';
+// import 'package:geolocator/geolocator.dart';
 // import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
+// import 'package:intl/intl.dart';
 import 'package:shared_preferences/shared_preferences.dart'; // 로컬 저장소
 import 'package:intl/date_symbol_data_local.dart';
 import 'package:flutter_notification_listener_plus/flutter_notification_listener_plus.dart';
@@ -16,7 +16,7 @@ import 'package:flutter_notification_listener_plus/flutter_notification_listener
 import 'package:diary_for_me/collect/notification.dart';
 
 import 'collect/background_timer.dart';
-import 'collect/location_collector.dart';
+// import 'collect/location_collector.dart';
 import 'home/screen/home_screen.dart';
 import 'tutorial/screen/first_screen.dart';
 
@@ -66,7 +66,6 @@ void main() async {
 const notificationChannelId = 'my_foreground';
 
 const notificationId = 888;
-
 
 class MyApp extends StatelessWidget {
   final bool hasUserInfo;

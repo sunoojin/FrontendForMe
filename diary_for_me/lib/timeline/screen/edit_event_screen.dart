@@ -9,17 +9,31 @@ import '../../DB/timeline/timeline_model.dart';
 
 class ActivityEditSheet {
   static Future<Event?> show(
-      BuildContext context, {
-        Event? initialEvent, // 수정할 Event 객체를 받음
-      }) async {
+    BuildContext context, {
+    Event? initialEvent, // 수정할 Event 객체를 받음
+  }) async {
     // showModalBottomSheet가 Event?를 반환하도록 타입을 지정
     final Event? result = await showModalBottomSheet<Event?>(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (_) => _ActivityEditContent(
-        initialEvent: initialEvent,
-      ),
+      builder:
+          // (_) => _ActivityEditContent(
+          //   initialEvent: initialEvent,
+          // ),
+          (ctx) {
+            // ctx는 모달 내부 컨텍스트
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: MediaQuery.of(ctx).viewInsets.bottom,
+              ),
+              child: SizedBox(
+                // 전체 화면 modal처럼 보이게 높이 제한
+                height: MediaQuery.of(ctx).size.height * 0.92,
+                child: _ActivityEditContent(initialEvent: initialEvent),
+              ),
+            );
+          },
       useSafeArea: true,
       shape: SmoothRectangleBorder(
         borderRadius: const BorderRadius.vertical(top: Radius.circular(40)),
@@ -190,7 +204,10 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
               // 활동 정보
               Container(
                 color: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
+                padding: const EdgeInsets.symmetric(
+                  horizontal: 20,
+                  vertical: 16,
+                ),
                 child: Form(
                   key: _formKey,
                   child: Column(
@@ -317,24 +334,21 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                                             ? Colors.redAccent.withAlpha(36)
                                             : themePageColor,
                                         side: BorderSide(
-                                          color:
-                                          _resultEvent.feeling == 'good'
+                                          color: _resultEvent.feeling == 'good'
                                               ? Colors.redAccent.withAlpha(48)
                                               : themeDeepColor,
                                           width: 1.0,
                                         ),
                                         height: 52,
                                         onTap: () => setState(
-                                              () => _resultEvent.feeling = 'good',
+                                          () => _resultEvent.feeling = 'good',
                                         ),
-                                        borderRadius: BorderRadius.circular(
-                                          20,
-                                        ),
+                                        borderRadius: BorderRadius.circular(20),
                                         child: Center(
                                           child: Icon(
                                             Icons.thumb_up,
                                             color:
-                                            _resultEvent.feeling == 'good'
+                                                _resultEvent.feeling == 'good'
                                                 ? Colors.redAccent
                                                 : textTertiary,
                                             size: 20,
@@ -350,24 +364,19 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                                             : themePageColor,
                                         side: BorderSide(
                                           color: _resultEvent.feeling == 'bad'
-                                              ? Colors.blueAccent.withAlpha(
-                                            48,
-                                          )
+                                              ? Colors.blueAccent.withAlpha(48)
                                               : themeDeepColor,
                                           width: 1.0,
                                         ),
                                         height: 52,
                                         onTap: () => setState(
-                                              () => _resultEvent.feeling = 'bad',
+                                          () => _resultEvent.feeling = 'bad',
                                         ),
-                                        borderRadius: BorderRadius.circular(
-                                          20,
-                                        ),
+                                        borderRadius: BorderRadius.circular(20),
                                         child: Center(
                                           child: Icon(
                                             Icons.thumb_down,
-                                            color:
-                                            _resultEvent.feeling == 'bad'
+                                            color: _resultEvent.feeling == 'bad'
                                                 ? Colors.blueAccent
                                                 : textTertiary,
                                             size: 20,
@@ -396,10 +405,7 @@ class _ActivityEditContentState extends State<_ActivityEditContent> {
                       Container(
                         decoration: ShapeDecoration(
                           shape: SmoothRectangleBorder(
-                            side: BorderSide(
-                              color: themeDeepColor,
-                              width: 1.0,
-                            ),
+                            side: BorderSide(color: themeDeepColor, width: 1.0),
                             borderRadius: BorderRadius.circular(20),
                             smoothness: 0.6,
                           ),

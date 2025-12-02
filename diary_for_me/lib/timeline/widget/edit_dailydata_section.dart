@@ -16,8 +16,8 @@ Widget dailyDataEdit({required Event event}) {
         // 알림
         AppNotiCard(event: event),
 
-        SizedBox(height: 80,)
-      ]
+        SizedBox(height: 80),
+      ],
     ),
   );
 }
